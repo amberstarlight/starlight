@@ -1,0 +1,8 @@
+zigbee control website
+
+    to control bulbs
+        temperature in kelvin
+        brightness in %
+        turn on and off
+        
+    authenticate user

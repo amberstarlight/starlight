@@ -1,23 +1,44 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+
+import LightbulbCard from './components/LightbulbCard/LightbulbCard';
+import DeviceSettings from "./components/DeviceSettings/DeviceSettings";
+
+const devices = [
+  {
+    name: "Bedside",
+    id: "1"
+  },
+  {
+    name: "Outside",
+    id: "3"
+  },
+  {
+    name: "Ceiling",
+    id: "2"
+  }
+];
 
 function App() {
+  const [selectedDevice, setSelectedDevice] = useState();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {selectedDevice ?
+        <>
+          <button onClick={() => setSelectedDevice(undefined)}>Back</button>
+          <DeviceSettings
+            deviceName={selectedDevice.name}
+            deviceType={selectedDevice.deviceType}
+          />
+        </> : devices.map((element, index) => {
+        return (
+          <LightbulbCard
+            name={element.name}
+            id={element.id}
+            key={element.id}
+            onClick={() => setSelectedDevice(devices[index])}
+          />
+        )}
+      )}
     </div>
   );
 }
