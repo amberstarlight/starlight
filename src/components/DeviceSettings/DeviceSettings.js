@@ -27,6 +27,7 @@ function DeviceSettings(props) {
       />
 
       <Slider
+        disabled={!deviceState.powered}
         label="Colour Temperature"
         min="2700"
         max="5000"
@@ -41,6 +42,7 @@ function DeviceSettings(props) {
       />
       
       <Slider
+        disabled={!deviceState.powered}
         label="Brightness"
         min="0"
         max="100"
