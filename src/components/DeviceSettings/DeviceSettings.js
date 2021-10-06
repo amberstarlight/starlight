@@ -29,13 +29,6 @@ const deviceSettingsGenerator = (device) => {
   return deviceSettingsList;
 };
 
-const getDeviceState = (deviceFriendlyName) => {
-  // zigbee2mqtt/FRIENDLY_NAME/get
-  // subscribe to this topic
-  // fire off some JSON: {"state": ""}
-  // listen for response
-};
-
 function DeviceSettings(props) {
   let deviceDefinition = props.device.definition;
 
