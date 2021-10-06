@@ -1,9 +1,9 @@
 import Slider from '../Slider/Slider';
-import Checkbox from "../Checkbox/Checkbox";
+import Checkbox from '../Checkbox/Checkbox';
 
 const deviceSettingsGenerator = (device) => {
   if (!device || !device.definition || !device.definition.exposes) 
-    return <p>This device exposes nothing that can be controlled.</p>
+    return <p>This device exposes nothing that can be controlled.</p>;
 
   const exposes = device.definition.exposes;
   let deviceSettingsList = [];
@@ -11,30 +11,30 @@ const deviceSettingsGenerator = (device) => {
   for (let feature of exposes[0].features) {
     let settingComponent;
     switch (feature.type) {
-      case "binary":
-        settingComponent = <Checkbox label={feature.name} checked={false}/>;
-        break;
+    case 'binary':
+      settingComponent = <Checkbox label={feature.name} checked={false}/>;
+      break;
       
-      case "numeric":
-        settingComponent = <Slider label={feature.name} min={feature.value_min || 0} max={feature.value_max || 100} step={feature.value_step || 1}/>;
-        break;
+    case 'numeric':
+      settingComponent = <Slider label={feature.name} min={feature.value_min || 0} max={feature.value_max || 100} step={feature.value_step || 1}/>;
+      break;
     
-      default:
+    default:
         
-        break;
+      break;
     }
     deviceSettingsList.push(settingComponent);
   }
 
   return deviceSettingsList;
-}
+};
 
 const getDeviceState = (deviceFriendlyName) => {
   // zigbee2mqtt/FRIENDLY_NAME/get
   // subscribe to this topic
   // fire off some JSON: {"state": ""}
   // listen for response
-}
+};
 
 function DeviceSettings(props) {
   let deviceDefinition = props.device.definition;
@@ -42,12 +42,12 @@ function DeviceSettings(props) {
   return (
     <>
       <h2>{props.device.friendly_name}</h2>
-      <h4>{deviceDefinition ? `${deviceDefinition.vendor} ${deviceDefinition.model}` : "Unknown"}</h4>
+      <h4>{deviceDefinition ? `${deviceDefinition.vendor} ${deviceDefinition.model}` : 'Unknown'}</h4>
 
       {deviceSettingsGenerator(props.device)}
 
     </>
-  )
+  );
 }
 
 export default DeviceSettings;

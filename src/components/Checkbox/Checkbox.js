@@ -8,7 +8,7 @@ function Checkbox(props) {
         onChange={props.onChange}
       />
     </label>
-  )
+  );
 }
 
 export default Checkbox;

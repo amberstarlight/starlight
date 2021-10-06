@@ -15,7 +15,7 @@ function Slider(props) {
       </label>
       <p>{props.value}</p>
     </>
-  )
+  );
 }
 
 export default Slider;

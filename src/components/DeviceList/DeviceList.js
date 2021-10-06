@@ -11,7 +11,7 @@ function DeviceList(props) {
         />
       )}
     </div>
-  )
+  );
 }
 
 export default DeviceList;
