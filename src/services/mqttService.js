@@ -1,35 +1,43 @@
 import mqtt from 'mqtt';
 let client;
 
-let topicCallbacks = {};
-let devices = {};
+let oneTimeTopicCallbacks = {};
+let devices;
 
-export const init = () => {
-  client = mqtt.connect('mqtt://localhost:1884');
+export const init = (options) => {
+  client = mqtt.connect('mqtt://localhost:1884', options);
 
   if (!client.connected) {
-    client.once('connect', () => {
-      // https://github.com/Koenkk/zigbee2mqtt/blob/07a8a78a551f95ef345d97b4f5db79cb85318189/lib/extension/bridge.ts#L635
-      // retain:true means we get the retained message immediately after subscribing
-      client.subscribe('zigbee2mqtt/bridge/devices');
-      console.log('Connected to MQTT broker.');
-    });
-
     client.on('message', (topic, payload) => {
       if (topic === 'zigbee2mqtt/bridge/devices') {
-        devices = payload.toJSON();
+        devices = JSON.parse(payload.toString());
       }
 
-      if (topicCallbacks[topic]) {
-        let callback = topicCallbacks[topic].shift();
+      if (oneTimeTopicCallbacks[topic]) {
+        let callback = oneTimeTopicCallbacks[topic].shift();
         callback(payload);
       }
+    });
+
+    client.once('connect', () => {
+      client.subscribe('zigbee2mqtt/bridge/devices');
     });
   }
 };
 
 export const getDevices = () => {
-  return devices;
+  let topic = 'zigbee2mqtt/bridge/devices';
+
+  return new Promise((resolve) => {
+    if (devices !== undefined) resolve(devices);
+    
+    if (!oneTimeTopicCallbacks[topic]) oneTimeTopicCallbacks[topic] = [];
+    const callbackFunction = (payload) => {
+      resolve(JSON.parse(payload.toString()));
+    };
+
+    oneTimeTopicCallbacks[topic].push(callbackFunction);
+  });
 };
 
 export const getDeviceSettings = (deviceFriendlyName, exposes) => {
@@ -37,12 +45,12 @@ export const getDeviceSettings = (deviceFriendlyName, exposes) => {
     let topic = `zigbee2mqtt${deviceFriendlyName}`;
     client.subscribe(topic);
 
-    if (!topicCallbacks[topic]) topicCallbacks[topic] = [];
+    if (!oneTimeTopicCallbacks[topic]) oneTimeTopicCallbacks[topic] = [];
     const callbackFunction = (payload) => {
-      resolve(payload.toJSON());
+      resolve(JSON.parse(payload.toString()));
     };
 
-    topicCallbacks[topic].push(callbackFunction);
+    oneTimeTopicCallbacks[topic].push(callbackFunction);
 
     let message = {};
     message[exposes] = '';

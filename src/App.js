@@ -1,17 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as mqttService from './services/mqttService';
 
-import testDevices from './testDevices.json';
 import DeviceList from './components/DeviceList/DeviceList';
 import DeviceSettings from './components/DeviceSettings/DeviceSettings';
+import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
 
-mqttService.init();
+const options = {
+  reconnectPeriod: 10000
+};
 
 function App() {
-  const [devices, setDevices] = useState(testDevices);
+  const [ready, setReady] = useState(false);
+  const [devices, setDevices] = useState();
   const [selectedDevice, setSelectedDevice] = useState();
 
-  setDevices(mqttService.getDevices());
+  useEffect(() => {
+    mqttService.init(options);
+    mqttService.getDevices().then(setDevices);
+    setReady(true);
+  }, [ready]);
+
+  if (!ready) return (
+    <>
+      <LoadingSpinner/>
+      <p>Reticulating Splines...</p>
+    </>
+  );
+
+  if (!devices) return (
+    <>
+      <LoadingSpinner/>
+      <p>Reticulating Splines...</p>
+    </>
+  );
 
   if (selectedDevice) return (
     <>
