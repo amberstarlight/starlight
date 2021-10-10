@@ -23,7 +23,7 @@ services:
       - ./data:/app/data
       - /run/udev:/run/udev:ro
     devices:
-      - /dev/ttyACM0:/dev/ttyACM0
+      - $ZIGBEE2MQTT_CONFIG_SERIAL_PORT:$ZIGBEE2MQTT_CONFIG_SERIAL_PORT
     restart: always
     network_mode: host
     privileged: true
