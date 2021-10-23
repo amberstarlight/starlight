@@ -10,22 +10,13 @@ const options = {
 };
 
 function App() {
-  const [ready, setReady] = useState(false);
   const [devices, setDevices] = useState();
   const [selectedDevice, setSelectedDevice] = useState();
 
   useEffect(() => {
     mqttService.init(options);
     mqttService.getDevices().then(setDevices);
-    setReady(true);
-  }, [ready]);
-
-  if (!ready) return (
-    <>
-      <LoadingSpinner/>
-      <p>Reticulating Splines...</p>
-    </>
-  );
+  }, []);
 
   if (!devices) return (
     <>
