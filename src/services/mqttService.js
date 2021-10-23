@@ -13,7 +13,8 @@ export const init = (options) => {
         devices = JSON.parse(payload.toString());
       }
 
-      if (oneTimeTopicCallbacks[topic]) {
+      if (oneTimeTopicCallbacks[topic] && oneTimeTopicCallbacks[topic].length > 0) {
+        console.log(oneTimeTopicCallbacks[topic]);
         let callback = oneTimeTopicCallbacks[topic].shift();
         callback(payload);
       }
@@ -40,9 +41,10 @@ export const getDevices = () => {
   });
 };
 
-export const getDeviceSettings = (deviceFriendlyName, exposes) => {
+export const getDeviceSettings = (deviceFriendlyName, properties) => {
   return new Promise((resolve) => {
-    let topic = `zigbee2mqtt${deviceFriendlyName}`;
+    const topic = `zigbee2mqtt/${deviceFriendlyName}`;
+    
     client.subscribe(topic);
 
     if (!oneTimeTopicCallbacks[topic]) oneTimeTopicCallbacks[topic] = [];
@@ -52,13 +54,19 @@ export const getDeviceSettings = (deviceFriendlyName, exposes) => {
 
     oneTimeTopicCallbacks[topic].push(callbackFunction);
 
-    let message = {};
-    message[exposes] = '';
+    const message = {};
+    
+    properties.forEach(property => {
+      message[property] = '';
+    });
+
+    console.log(message);
+
     client.publish(`${topic}/get`, JSON.stringify(message));
   });
 };
 
 export const setDeviceSettings = (deviceFriendlyName, settings) => {
-  let topic = `zigbee2mqtt${deviceFriendlyName}`;
+  const topic = `zigbee2mqtt/${deviceFriendlyName}`;
   client.publish(`${topic}/set`, JSON.stringify(settings));
 };
