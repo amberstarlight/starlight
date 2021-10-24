@@ -4,8 +4,13 @@ let client;
 let oneTimeTopicCallbacks = {};
 let devices;
 
+const mqttPort = 1884;
+const hostname = window.location.hostname;
+const mqttEndpoint =
+  process.env.REACT_APP_MQTT_ENDPOINT || `mqtt://${hostname}:${mqttPort}`;
+
 export const init = (options) => {
-  client = mqtt.connect('mqtt://localhost:1884', options);
+  client = mqtt.connect(mqttEndpoint, options);
 
   if (!client.connected) {
     client.on('message', (topic, payload) => {
