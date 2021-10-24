@@ -10,12 +10,18 @@ export const booleanToMqttState = (boolean) => {
   return 'OFF';
 };
 
-export const updateDeviceState = (deviceSettingsState, setDeviceSettingsState, deviceFriendlyName, property, value) => {
+export const updateDeviceState = (
+  deviceSettingsState,
+  setDeviceSettingsState,
+  deviceFriendlyName,
+  property,
+  value
+) => {
   const updateObject = {};
   updateObject[property] = value;
   setDeviceSettings(deviceFriendlyName, updateObject);
 
-  const clonedState = {...deviceSettingsState};
+  const clonedState = { ...deviceSettingsState };
   clonedState[property] = value;
   setDeviceSettingsState(clonedState);
 };

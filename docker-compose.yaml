@@ -7,14 +7,13 @@
 # Before executing docker run pull the correct image with docker pull koenkk/zigbee2mqtt --platform linux/arm/v6.
 
 services:
- 
   broker:
     image: eclipse-mosquitto:latest
     ports:
-      - "1883:1883"
-      - "1884:1884"
-    volumes: 
-      - "./mosquitto.conf:/mosquitto/config/mosquitto.conf"
+      - '1883:1883'
+      - '1884:1884'
+    volumes:
+      - './mosquitto.conf:/mosquitto/config/mosquitto.conf'
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
