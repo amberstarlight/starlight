@@ -1,9 +1,14 @@
 import Checkbox from '../Checkbox/Checkbox';
+import ColorPicker from '../ColorPicker/ColorPicker';
 import Slider from '../Slider/Slider';
 
 import {
   booleanToMqttState,
+  hexToRGB,
+  hslToRGB,
   mqttStateToBoolean,
+  rgbToHex,
+  rgbToHSL,
   updateDeviceState,
 } from './utils';
 
@@ -21,6 +26,7 @@ export const deviceSettingsGenerator = (
       case 'binary':
         settingComponent = (
           <Checkbox
+            key={feature.name}
             label={feature.name}
             checked={mqttStateToBoolean(deviceSettingsState[feature.name])}
             onChange={(event) => {
@@ -40,6 +46,7 @@ export const deviceSettingsGenerator = (
       case 'numeric':
         settingComponent = (
           <Slider
+            key={feature.name}
             label={feature.name}
             min={feature.value_min || 0}
             max={feature.value_max || 100}
@@ -60,6 +67,39 @@ export const deviceSettingsGenerator = (
         break;
 
       case 'composite':
+        if (feature.name === 'color_hs') {
+          let rgb = hslToRGB({
+            h: deviceSettingsState.color.hue,
+            s: deviceSettingsState.color.saturation / 100,
+            l: deviceSettingsState.brightness / 255,
+          });
+
+          settingComponent = (
+            <ColorPicker
+              key={feature.name}
+              value={rgbToHex(rgb)}
+              onChange={(event) => {
+                const hex = event.target.value;
+                const rgb = hexToRGB(hex);
+                const hsl = rgbToHSL(rgb);
+                const newMqttColor = {
+                  hue: hsl.h,
+                  saturation: hsl.s * 100,
+                  lightness: hsl.l * 100,
+                };
+
+                updateDeviceState(
+                  deviceSettingsState,
+                  setDeviceSettingsState,
+                  device.friendly_name,
+                  'color',
+                  newMqttColor
+                );
+              }}
+            />
+          );
+        }
+
         break;
 
       default:

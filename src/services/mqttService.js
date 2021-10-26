@@ -22,7 +22,6 @@ export const init = (options) => {
         oneTimeTopicCallbacks[topic] &&
         oneTimeTopicCallbacks[topic].length > 0
       ) {
-        console.log(oneTimeTopicCallbacks[topic]);
         let callback = oneTimeTopicCallbacks[topic].shift();
         callback(payload);
       }
@@ -67,8 +66,6 @@ export const getDeviceSettings = (deviceFriendlyName, properties) => {
     properties.forEach((property) => {
       message[property] = '';
     });
-
-    console.log(message);
 
     client.publish(`${topic}/get`, JSON.stringify(message));
   });

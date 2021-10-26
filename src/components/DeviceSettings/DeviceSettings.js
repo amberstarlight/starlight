@@ -14,6 +14,7 @@ function DeviceSettings(props) {
 
   useEffect(() => {
     let propertiesArray = features.map((feature) => feature.name);
+
     getDeviceSettings(props.device.friendly_name, propertiesArray).then(
       setDeviceSettingsState
     );
