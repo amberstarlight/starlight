@@ -13,9 +13,13 @@ function DeviceSettings(props) {
   const features = props.device.definition.exposes[0].features;
 
   useEffect(() => {
-    let propertiesArray = features.map((feature) => feature.name);
+    let properties = {};
 
-    getDeviceSettings(props.device.friendly_name, propertiesArray).then(
+    features.forEach((property) => {
+      properties[property.name] = '';
+    });
+
+    getDeviceSettings(props.device.friendly_name, properties).then(
       setDeviceSettingsState
     );
   }, []);
@@ -32,18 +36,23 @@ function DeviceSettings(props) {
 
   return (
     <>
-      <h2>{props.device.friendly_name}</h2>
-      <h4>
-        {deviceDefinition
-          ? `${deviceDefinition.vendor} ${deviceDefinition.model}`
-          : 'Unknown'}
-      </h4>
+      <div>
+        <h2>{props.device.friendly_name}</h2>
+        <h4>
+          {deviceDefinition
+            ? `${deviceDefinition.vendor} ${deviceDefinition.model}`
+            : 'Unknown'}
+        </h4>
+      </div>
 
-      {deviceSettingsGenerator(
-        props.device,
-        deviceSettingsState,
-        setDeviceSettingsState
-      )}
+      <div>
+        <p>Device Settings</p>
+        {deviceSettingsGenerator(
+          props.device,
+          deviceSettingsState,
+          setDeviceSettingsState
+        )}
+      </div>
     </>
   );
 }

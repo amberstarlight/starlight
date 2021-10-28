@@ -1,3 +1,4 @@
+import Button from '../Button/Button';
 import Checkbox from '../Checkbox/Checkbox';
 import ColorPicker from '../ColorPicker/ColorPicker';
 import Slider from '../Slider/Slider';
@@ -21,10 +22,10 @@ export const deviceSettingsGenerator = (
   let deviceSettingsList = [];
 
   for (let feature of exposes[0].features) {
-    let settingComponent;
+    let settingComponentsArray = [];
     switch (feature.type) {
       case 'binary':
-        settingComponent = (
+        settingComponentsArray.push(
           <Checkbox
             key={feature.name}
             label={feature.name}
@@ -44,7 +45,7 @@ export const deviceSettingsGenerator = (
         break;
 
       case 'numeric':
-        settingComponent = (
+        settingComponentsArray.push(
           <Slider
             key={feature.name}
             label={feature.name}
@@ -64,6 +65,32 @@ export const deviceSettingsGenerator = (
             }}
           />
         );
+
+        if (feature.presets) {
+          const presets = feature.presets.map((preset) => (
+            <Button
+              key={`${feature.name}-preset-${preset.name}`}
+              text={preset.name}
+              onClick={() => {
+                updateDeviceState(
+                  deviceSettingsState,
+                  setDeviceSettingsState,
+                  device.friendly_name,
+                  feature.name,
+                  preset.name
+                );
+              }}
+            ></Button>
+          ));
+
+          settingComponentsArray.push(
+            <div>
+              <p>Presets for {feature.name}:</p>
+              {presets}
+            </div>
+          );
+        }
+
         break;
 
       case 'composite':
@@ -74,8 +101,9 @@ export const deviceSettingsGenerator = (
             l: deviceSettingsState.brightness / 255,
           });
 
-          settingComponent = (
+          settingComponentsArray.push(
             <ColorPicker
+              label={feature.name}
               key={feature.name}
               value={rgbToHex(rgb)}
               onChange={(event) => {
@@ -87,6 +115,8 @@ export const deviceSettingsGenerator = (
                   saturation: hsl.s * 100,
                   lightness: hsl.l * 100,
                 };
+
+                console.log(hsl);
 
                 updateDeviceState(
                   deviceSettingsState,
@@ -105,7 +135,7 @@ export const deviceSettingsGenerator = (
       default:
         break;
     }
-    deviceSettingsList.push(settingComponent);
+    deviceSettingsList.push(settingComponentsArray);
   }
 
   return deviceSettingsList;

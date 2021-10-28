@@ -61,13 +61,7 @@ export const getDeviceSettings = (deviceFriendlyName, properties) => {
 
     oneTimeTopicCallbacks[topic].push(callbackFunction);
 
-    const message = {};
-
-    properties.forEach((property) => {
-      message[property] = '';
-    });
-
-    client.publish(`${topic}/get`, JSON.stringify(message));
+    client.publish(`${topic}/get`, JSON.stringify(properties));
   });
 };
 
