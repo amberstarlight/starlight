@@ -84,7 +84,7 @@ export const deviceSettingsGenerator = (
           ));
 
           settingComponentsArray.push(
-            <div>
+            <div key={`preset-list-${feature.name}`}>
               <p>Presets for {feature.name}:</p>
               {presets}
             </div>
@@ -98,7 +98,7 @@ export const deviceSettingsGenerator = (
           let rgb = hslToRGB({
             h: deviceSettingsState.color.hue,
             s: deviceSettingsState.color.saturation / 100,
-            l: deviceSettingsState.brightness / 255,
+            l: 0.5,
           });
 
           settingComponentsArray.push(
@@ -115,8 +115,6 @@ export const deviceSettingsGenerator = (
                   saturation: hsl.s * 100,
                   lightness: hsl.l * 100,
                 };
-
-                console.log(hsl);
 
                 updateDeviceState(
                   deviceSettingsState,

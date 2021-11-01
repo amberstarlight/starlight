@@ -47,13 +47,12 @@ const byteToHex = (byte) => {
 };
 
 export const rgbToHex = (rgb) => {
-  // 0 - 255
   const hex = byteToHex(rgb.r) + byteToHex(rgb.g) + byteToHex(rgb.b);
   return `#${hex}`;
 };
 
 export const rgbToHSL = (rgb) => {
-  const r = rgb.r / 255; // 0-255
+  const r = rgb.r / 255;
   const g = rgb.g / 255;
   const b = rgb.b / 255;
 
@@ -65,10 +64,17 @@ export const rgbToHSL = (rgb) => {
   let h;
   let s;
 
-  if (c === 0) h = 0;
-  if (xMax === r) h = 60 * ((g - b) / c);
-  if (xMax === g) h = 60 * (2 + (b - r) / c);
-  if (xMax === b) h = 60 * (4 + (r - g) / c);
+  if (c === 0) {
+    h = 0;
+  } else {
+    if (xMax === r) h = 60 * ((g - b) / c);
+    if (xMax === g) h = 60 * (2 + (b - r) / c);
+    if (xMax === b) h = 60 * (4 + (r - g) / c);
+  }
+
+  if (h < 0) h += 360;
+
+  if (h > 360) h -= 360;
 
   if (l === 0 || l === 1) {
     s = 0;
