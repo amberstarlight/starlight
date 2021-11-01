@@ -1,11 +1,18 @@
 import { useState, useEffect } from 'react';
 
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
-import { getDeviceSettings } from '../../services/mqttService';
+import {
+  getDeviceSettings,
+  setDeviceFriendlyName,
+} from '../../services/mqttService';
 import { deviceSettingsGenerator } from './generator';
+import EditableText from '../EditableText/EditableText';
 
 function DeviceSettings(props) {
   const [deviceSettingsState, setDeviceSettingsState] = useState();
+  const [deviceFriendlyNameState, setDeviceFriendlyNameState] = useState(
+    props.device.friendly_name
+  );
 
   if (!props.device.supported)
     return <p>This device exposes nothing that can be controlled.</p>;
@@ -37,7 +44,19 @@ function DeviceSettings(props) {
   return (
     <>
       <div>
-        <h2>{props.device.friendly_name}</h2>
+        <EditableText
+          text={deviceFriendlyNameState}
+          onChange={(event) => {
+            const newFriendlyName = event.target.value;
+            setDeviceFriendlyNameState(newFriendlyName);
+          }}
+          onEditFinish={() => {
+            setDeviceFriendlyName(
+              props.device.friendly_name,
+              deviceFriendlyNameState
+            );
+          }}
+        />
         <h4>
           {deviceDefinition
             ? `${deviceDefinition.vendor} ${deviceDefinition.model}`

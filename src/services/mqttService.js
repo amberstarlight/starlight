@@ -69,3 +69,12 @@ export const setDeviceSettings = (deviceFriendlyName, settings) => {
   const topic = `zigbee2mqtt/${deviceFriendlyName}`;
   client.publish(`${topic}/set`, JSON.stringify(settings));
 };
+
+export const setDeviceFriendlyName = (deviceFriendlyName, newFriendlyName) => {
+  const topic = 'zigbee2mqtt/bridge/request/device/rename';
+  const message = {
+    from: deviceFriendlyName,
+    to: newFriendlyName,
+  };
+  client.publish(topic, JSON.stringify(message));
+};
