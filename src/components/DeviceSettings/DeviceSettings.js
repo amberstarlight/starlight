@@ -7,6 +7,7 @@ import {
 } from '../../services/mqttService';
 import { deviceSettingsGenerator } from './generator';
 import EditableText from '../EditableText/EditableText';
+import { deviceDescription } from '../../utils/deviceUtilities';
 
 function DeviceSettings(props) {
   const [deviceSettingsState, setDeviceSettingsState] = useState();
@@ -57,11 +58,7 @@ function DeviceSettings(props) {
             );
           }}
         />
-        <h4>
-          {deviceDefinition
-            ? `${deviceDefinition.vendor} ${deviceDefinition.model}`
-            : 'Unknown'}
-        </h4>
+        <h4>{deviceDescription(deviceDefinition)}</h4>
       </div>
 
       <div>

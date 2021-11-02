@@ -1,4 +1,4 @@
-import { setDeviceSettings } from '../../services/mqttService';
+import { setDeviceSettings } from '../services/mqttService';
 
 export const mqttStateToBoolean = (state) => {
   if (state === 'ON') return true;
@@ -24,6 +24,13 @@ export const updateDeviceState = (
   const clonedState = { ...deviceSettingsState };
   clonedState[property] = value;
   setDeviceSettingsState(clonedState);
+};
+
+export const deviceDescription = (deviceDefinition) => {
+  if (deviceDefinition)
+    return `${deviceDefinition.vendor} ${deviceDefinition.description}`;
+
+  return 'Unknown';
 };
 
 export const hexToRGB = (hexValue) => {

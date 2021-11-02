@@ -11,7 +11,7 @@ import {
   rgbToHex,
   rgbToHSL,
   updateDeviceState,
-} from './utils';
+} from '../../utils/deviceUtilities';
 
 export const deviceSettingsGenerator = (
   device,

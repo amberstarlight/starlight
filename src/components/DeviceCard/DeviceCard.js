@@ -1,3 +1,5 @@
+import { deviceDescription } from '../../utils/deviceUtilities';
+
 const emojiLookup = {
   light: '💡',
   switch: '🔌',
@@ -19,11 +21,7 @@ function DeviceCard(props) {
     <div onClick={props.onClick}>
       <p>{deviceEmoji}</p>
       <p>{props.device.friendly_name}</p>
-      <p>
-        {deviceDefinition
-          ? `${deviceDefinition.vendor} ${deviceDefinition.model}`
-          : 'Unknown'}
-      </p>
+      <p>{deviceDescription(deviceDefinition)}</p>
     </div>
   );
 }
