@@ -9,13 +9,21 @@ const hostname = window.location.hostname;
 const mqttEndpoint =
   process.env.REACT_APP_MQTT_ENDPOINT || `mqtt://${hostname}:${mqttPort}`;
 
-export const init = (options) => {
+export const init = (options, bridgeInfoOnChange) => {
   client = mqtt.connect(mqttEndpoint, options);
 
   if (!client.connected) {
     client.on('message', (topic, payload) => {
-      if (topic === 'zigbee2mqtt/bridge/devices') {
-        devices = JSON.parse(payload.toString());
+      switch (topic) {
+        case 'zigbee2mqtt/bridge/info':
+          if (bridgeInfoOnChange)
+            bridgeInfoOnChange(JSON.parse(payload.toString()));
+          break;
+        case 'zigbee2mqtt/bridge/devices':
+          devices = JSON.parse(payload.toString());
+          break;
+        default:
+          break;
       }
 
       if (
@@ -29,6 +37,7 @@ export const init = (options) => {
 
     client.once('connect', () => {
       client.subscribe('zigbee2mqtt/bridge/devices');
+      client.subscribe('zigbee2mqtt/bridge/info');
     });
   }
 };
@@ -76,5 +85,9 @@ export const setDeviceFriendlyName = (deviceFriendlyName, newFriendlyName) => {
     from: deviceFriendlyName,
     to: newFriendlyName,
   };
+  client.publish(topic, JSON.stringify(message));
+};
+
+export const sendMqttMessage = (topic, message) => {
   client.publish(topic, JSON.stringify(message));
 };
