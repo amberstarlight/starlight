@@ -1,14 +1,16 @@
+import { Link } from 'wouter';
 import DeviceCard from '../DeviceCard/DeviceCard';
 
 function DeviceList(props) {
   return (
     <div>
       {props.devices.map((device) => (
-        <DeviceCard
-          device={device}
+        <Link
+          href={`/devices/${device.friendly_name}`}
           key={device.ieee_address}
-          onClick={() => props.onClick(device)}
-        />
+        >
+          <DeviceCard device={device} onClick={() => props.onClick} />
+        </Link>
       ))}
     </div>
   );

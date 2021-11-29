@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import * as mqttService from './services/mqttService';
+import { Link, Route } from 'wouter';
 
-import DeviceList from './components/DeviceList/DeviceList';
-import DeviceSettings from './components/DeviceSettings/DeviceSettings';
-import LoadingSpinner from './components/LoadingSpinner/LoadingSpinner';
+import Devices from './pages/Devices/Devices';
+import Settings from './pages/Settings/Settings';
+
 import Button from './components/Button/Button';
+import DeviceSettings from './components/DeviceSettings/DeviceSettings';
 
 const options = {
   reconnectPeriod: 10000,
@@ -12,7 +14,6 @@ const options = {
 
 function App() {
   const [devices, setDevices] = useState();
-  const [selectedDevice, setSelectedDevice] = useState();
   const [bridgeState, setBridgeState] = useState();
 
   useEffect(() => {
@@ -20,50 +21,47 @@ function App() {
     mqttService.getDevices().then(setDevices);
   }, []);
 
-  let deviceContent = undefined;
-
-  if (!devices || !selectedDevice)
-    deviceContent = (
-      <>
-        <LoadingSpinner />
-        <p>Reticulating Splines...</p>
-      </>
-    );
-
-  if (selectedDevice)
-    deviceContent = (
-      <>
-        <button onClick={() => setSelectedDevice(null)}>Back</button>
-        <DeviceSettings device={selectedDevice} />
-      </>
-    );
-
-  if (devices && !selectedDevice) {
-    deviceContent = (
-      <DeviceList
-        onClick={(device) => setSelectedDevice(device)}
-        devices={devices}
-      />
-    );
-  }
-
   return (
     <>
-      {deviceContent !== undefined ? deviceContent : ''}
-      <Button
-        text="Permit Join"
-        onClick={() => {
-          mqttService.sendMqttMessage(
-            'zigbee2mqtt/bridge/request/permit_join',
-            { value: true, time: 10 }
+      <Link href={'/devices'}>
+        <Button text={'Devices'} />
+      </Link>
+      <Link href={'/groups'}>
+        <Button text={'Groups'} />
+      </Link>
+      <Link href={'/settings'}>
+        <Button text={'Settings'} />
+      </Link>
+
+      <Route path={'/devices'}>
+        <Devices devices={devices} />
+      </Route>
+
+      <Route path={'/devices/:friendlyName'}>
+        {(params) => {
+          if (!devices) return <></>;
+
+          const device = devices.find(
+            (device) =>
+              Object.prototype.hasOwnProperty.call(device, 'friendly_name') &&
+              device.friendly_name === decodeURIComponent(params.friendlyName)
           );
+
+          if (!device)
+            return (
+              <p>
+                Device <b>{params.friendlyName}</b> does not exist on this
+                network.
+              </p>
+            );
+
+          return <DeviceSettings device={device} />;
         }}
-      />
-      {bridgeState !== undefined ? (
-        <p>{bridgeState.permit_join_timeout}</p>
-      ) : (
-        ''
-      )}
+      </Route>
+
+      <Route path={'/settings'}>
+        <Settings bridgeState={bridgeState} />
+      </Route>
     </>
   );
 }
