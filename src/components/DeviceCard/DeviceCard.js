@@ -1,4 +1,6 @@
 import { deviceDescription } from '../../utils/deviceUtilities';
+import styled from 'styled-components';
+import { StyledText, StyledHeader } from '../../utils/theme';
 
 const emojiLookup = {
   light: '💡',
@@ -9,6 +11,17 @@ const emojiLookup = {
   climate: '❄️️',
 };
 
+const Card = styled.div`
+  margin: 2em 0em;
+  padding: 1em;
+  cursor: pointer;
+  border-radius: 2rem;
+
+  &:hover {
+    background-color: rgba(0,0,0,0.1);
+  }
+`;
+
 function DeviceCard(props) {
   let deviceEmoji = '❓';
   let deviceDefinition = props.device.definition;
@@ -18,11 +31,10 @@ function DeviceCard(props) {
   }
 
   return (
-    <div onClick={props.onClick}>
-      <p>{deviceEmoji}</p>
-      <p>{props.device.friendly_name}</p>
-      <p>{deviceDescription(deviceDefinition)}</p>
-    </div>
+    <Card onClick={props.onClick}>
+      <StyledHeader>{deviceEmoji} {props.device.friendly_name}</StyledHeader>
+      <StyledText>{deviceDescription(deviceDefinition)}</StyledText>
+    </Card>
   );
 }
 

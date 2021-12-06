@@ -9,6 +9,13 @@ import { deviceSettingsGenerator } from './generator';
 import EditableText from '../EditableText/EditableText';
 import { deviceDescription } from '../../utils/deviceUtilities';
 
+import styled from 'styled-components';
+
+const EditableHeader = styled(EditableText)`
+  font-weight: bold;
+  font-size: 2rem;
+`;
+
 function DeviceSettings(props) {
   const [deviceSettingsState, setDeviceSettingsState] = useState();
   const [deviceFriendlyNameState, setDeviceFriendlyNameState] = useState(
@@ -45,7 +52,7 @@ function DeviceSettings(props) {
   return (
     <>
       <div>
-        <EditableText
+        <EditableHeader
           text={deviceFriendlyNameState}
           onChange={(event) => {
             const newFriendlyName = event.target.value;

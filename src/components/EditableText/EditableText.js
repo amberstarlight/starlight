@@ -1,10 +1,16 @@
 import { useState } from 'react';
+import styled from 'styled-components';
+
+const StyledEditable = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 function EditableText(props) {
   const [editable, setEditable] = useState(false);
 
   return (
-    <>
+    <StyledEditable>
       {editable ? (
         <input value={props.text} onChange={props.onChange}></input>
       ) : (
@@ -24,7 +30,7 @@ function EditableText(props) {
       >
         ✏️
       </i>
-    </>
+    </StyledEditable>
   );
 }
 
