@@ -2,11 +2,11 @@ import styled, { css } from 'styled-components';
 
 const StyledButton = styled.button`
   display: inline-block;
-  padding: .75rem 2rem;
-  margin: .5rem;
+  padding: 0.75rem 2rem;
+  margin: 0.5rem;
   min-width: 5rem;
-  color: ${props => props.theme.text};
-  background: ${props => props.theme.background};
+  color: ${(props) => props.theme.text};
+  background: ${(props) => props.theme.background};
   border-radius: 2rem;
   border: 1px solid black;
   font-family: 'Inter', sans-serif;

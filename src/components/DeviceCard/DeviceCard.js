@@ -18,7 +18,7 @@ const Card = styled.div`
   border-radius: 2rem;
 
   &:hover {
-    background-color: rgba(0,0,0,0.1);
+    background-color: rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -32,7 +32,9 @@ function DeviceCard(props) {
 
   return (
     <Card onClick={props.onClick}>
-      <StyledHeader>{deviceEmoji} {props.device.friendly_name}</StyledHeader>
+      <StyledHeader>
+        {deviceEmoji} {props.device.friendly_name}
+      </StyledHeader>
       <StyledText>{deviceDescription(deviceDefinition)}</StyledText>
     </Card>
   );

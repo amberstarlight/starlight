@@ -52,15 +52,19 @@ function App() {
 
               const device = devices.find(
                 (device) =>
-                  Object.prototype.hasOwnProperty.call(device, 'friendly_name') &&
-                device.friendly_name === decodeURIComponent(params.friendlyName)
+                  Object.prototype.hasOwnProperty.call(
+                    device,
+                    'friendly_name'
+                  ) &&
+                  device.friendly_name ===
+                    decodeURIComponent(params.friendlyName)
               );
 
               if (!device)
                 return (
                   <StyledText>
-                  Device <b>{params.friendlyName}</b> does not exist on this
-                  network.
+                    Device <b>{params.friendlyName}</b> does not exist on this
+                    network.
                   </StyledText>
                 );
 
