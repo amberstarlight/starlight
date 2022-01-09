@@ -121,3 +121,19 @@ export const hslToRGB = (hsl) => {
     b: (b1 + m) * 255,
   };
 };
+
+export const miredToKelvin = (mired) => {
+  return Math.round(1000000 / mired);
+};
+
+export const kelvinToMired = (kelvin) => {
+  return Math.round(1000000 / kelvin);
+};
+
+export const stringTidy = (string) => {
+  return string
+    .replace(/[^0-9a-z]/gi, ' ')
+    .split(' ')
+    .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+};

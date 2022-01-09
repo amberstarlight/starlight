@@ -1,5 +1,5 @@
 import Button from '../Button/Button';
-import Checkbox from '../Checkbox/Checkbox';
+import Toggle from '../Toggle/Toggle';
 import ColorPicker from '../ColorPicker/ColorPicker';
 import Slider from '../Slider/Slider';
 
@@ -11,6 +11,7 @@ import {
   rgbToHex,
   rgbToHSL,
   updateDeviceState,
+  stringTidy,
 } from '../../utils/deviceUtilities';
 
 export const deviceSettingsGenerator = (
@@ -26,9 +27,8 @@ export const deviceSettingsGenerator = (
     switch (feature.type) {
       case 'binary':
         settingComponentsArray.push(
-          <Checkbox
+          <Toggle
             key={feature.name}
-            label={feature.name}
             checked={mqttStateToBoolean(deviceSettingsState[feature.name])}
             onChange={(event) => {
               const newMqttState = booleanToMqttState(event.target.checked);
@@ -48,7 +48,7 @@ export const deviceSettingsGenerator = (
         settingComponentsArray.push(
           <Slider
             key={feature.name}
-            label={feature.name}
+            label={stringTidy(feature.name)}
             min={feature.value_min || 0}
             max={feature.value_max || 100}
             step={feature.value_step || 1}
@@ -70,7 +70,7 @@ export const deviceSettingsGenerator = (
           const presets = feature.presets.map((preset) => (
             <Button
               key={`${feature.name}-preset-${preset.name}`}
-              text={preset.name}
+              text={stringTidy(preset.name)}
               onClick={() => {
                 updateDeviceState(
                   deviceSettingsState,
@@ -85,7 +85,7 @@ export const deviceSettingsGenerator = (
 
           settingComponentsArray.push(
             <div key={`preset-list-${feature.name}`}>
-              <p>Presets for {feature.name}:</p>
+              <p>Presets for {stringTidy(feature.name)}:</p>
               {presets}
             </div>
           );
@@ -103,7 +103,7 @@ export const deviceSettingsGenerator = (
 
           settingComponentsArray.push(
             <ColorPicker
-              label={feature.name}
+              label={'Color'}
               key={feature.name}
               value={rgbToHex(rgb)}
               onChange={(event) => {
