@@ -1,8 +1,3 @@
-import Button from '../Button/Button';
-import Toggle from '../Toggle/Toggle';
-import ColorPicker from '../ColorPicker/ColorPicker';
-import Slider from '../Slider/Slider';
-
 import {
   booleanToMqttState,
   hexToRGB,
@@ -11,8 +6,10 @@ import {
   rgbToHex,
   rgbToHSL,
   updateDeviceState,
-  stringTidy,
 } from '../../utils/deviceUtilities';
+import { numericTransformer } from '../../utils/transformers';
+import ColorPicker from '../ColorPicker/ColorPicker';
+import Toggle from '../Toggle/Toggle';
 
 export const deviceSettingsGenerator = (
   device,
@@ -46,50 +43,13 @@ export const deviceSettingsGenerator = (
 
       case 'numeric':
         settingComponentsArray.push(
-          <Slider
-            key={feature.name}
-            label={stringTidy(feature.name)}
-            min={feature.value_min || 0}
-            max={feature.value_max || 100}
-            step={feature.value_step || 1}
-            value={deviceSettingsState[feature.name]}
-            onChange={(event) => {
-              const newMqttValue = event.target.value;
-              updateDeviceState(
-                deviceSettingsState,
-                setDeviceSettingsState,
-                device.friendly_name,
-                feature.name,
-                newMqttValue
-              );
-            }}
-          />
+          numericTransformer(
+            feature,
+            device,
+            deviceSettingsState,
+            setDeviceSettingsState
+          )
         );
-
-        if (feature.presets) {
-          const presets = feature.presets.map((preset) => (
-            <Button
-              key={`${feature.name}-preset-${preset.name}`}
-              text={stringTidy(preset.name)}
-              onClick={() => {
-                updateDeviceState(
-                  deviceSettingsState,
-                  setDeviceSettingsState,
-                  device.friendly_name,
-                  feature.name,
-                  preset.value
-                );
-              }}
-            ></Button>
-          ));
-
-          settingComponentsArray.push(
-            <div key={`preset-list-${feature.name}`}>
-              <p>Presets for {stringTidy(feature.name)}:</p>
-              {presets}
-            </div>
-          );
-        }
 
         break;
 
