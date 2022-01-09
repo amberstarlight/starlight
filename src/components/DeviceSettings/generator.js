@@ -77,7 +77,7 @@ export const deviceSettingsGenerator = (
                   setDeviceSettingsState,
                   device.friendly_name,
                   feature.name,
-                  preset.name
+                  preset.value
                 );
               }}
             ></Button>
