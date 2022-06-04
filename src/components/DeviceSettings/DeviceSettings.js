@@ -32,13 +32,7 @@ function DeviceSettings(props) {
     );
   }, []);
 
-  if (!deviceSettingsState)
-    return (
-      <>
-        <LoadingSpinner />
-        <p>Reticulating Splines...</p>
-      </>
-    );
+  if (!deviceSettingsState) return <LoadingSpinner />;
 
   let deviceDefinition = props.device.definition;
 
