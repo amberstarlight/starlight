@@ -11,7 +11,6 @@ function Devices(props) {
     deviceContent = (
       <>
         <LoadingSpinner />
-        <p>Reticulating Splines...</p>
       </>
     );
 

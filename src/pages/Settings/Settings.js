@@ -10,7 +10,6 @@ function Settings(props) {
     settingsContent = (
       <>
         <LoadingSpinner />
-        <p>Reticulating Splines...</p>
       </>
     );
   }
