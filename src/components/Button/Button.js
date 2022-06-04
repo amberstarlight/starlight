@@ -8,7 +8,7 @@ const StyledButton = styled.button`
   color: ${(props) => props.theme.text};
   background: ${(props) => props.theme.background};
   border-radius: 2rem;
-  border: 1px solid black;
+  border: 1px solid ${(props) => props.theme.text};
   font-family: 'Inter', sans-serif;
   font-weight: bold;
   background: transparent;
