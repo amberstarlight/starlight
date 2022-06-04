@@ -21,6 +21,13 @@ const Wrapper = styled.div`
   padding: 2em;
 `;
 
+const NavBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1em;
+`;
+
 function App() {
   const [devices, setDevices] = useState();
   const [bridgeState, setBridgeState] = useState();
@@ -37,15 +44,17 @@ function App() {
     <ThemeProvider theme={themeMode}>
       <GlobalStyles />
       <Wrapper>
-        <Link href={'/devices'}>
-          <Button text={'Devices'} />
-        </Link>
-        <Link href={'/groups'}>
-          <Button text={'Groups'} />
-        </Link>
-        <Link href={'/settings'}>
-          <Button text={'Settings'} />
-        </Link>
+        <NavBar>
+          <Link href={'/devices'}>
+            <Button text={'Devices'} />
+          </Link>
+          <Link href={'/groups'}>
+            <Button text={'Groups'} />
+          </Link>
+          <Link href={'/settings'}>
+            <Button text={'Settings'} />
+          </Link>
+        </NavBar>
 
         {/* routes */}
         <Route path={'/devices'}>
