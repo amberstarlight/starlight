@@ -7,11 +7,7 @@ function Settings(props) {
   let settingsContent = undefined;
 
   if (!props.bridgeState) {
-    settingsContent = (
-      <>
-        <LoadingSpinner />
-      </>
-    );
+    settingsContent = <LoadingSpinner />;
   }
 
   if (props.bridgeState) {

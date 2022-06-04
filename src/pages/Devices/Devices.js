@@ -7,12 +7,7 @@ function Devices(props) {
 
   let deviceContent = undefined;
 
-  if (!props.devices || !selectedDevice)
-    deviceContent = (
-      <>
-        <LoadingSpinner />
-      </>
-    );
+  if (!props.devices || !selectedDevice) deviceContent = <LoadingSpinner />;
 
   if (selectedDevice)
     deviceContent = <DeviceSettings device={selectedDevice} />;

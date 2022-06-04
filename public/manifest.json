@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "ZigBee WebUI",
+  "name": "Control panel for ZigBee smart devices.",
   "icons": [
     {
       "src": "favicon.ico",
