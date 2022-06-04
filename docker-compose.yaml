@@ -1,13 +1,6 @@
-# services required #
-# website
-# broker (mosquitto)
-# zigbee2mqtt
-
-# Note for Raspberry Pi 1 and zero users: there is a bug in Docker which selects the wrong image architecture.
-# Before executing docker run pull the correct image with docker pull koenkk/zigbee2mqtt --platform linux/arm/v6.
-
 services:
   mosquitto:
+    container_name: mosquitto
     image: eclipse-mosquitto:latest
     ports:
       - '1883:1883'
@@ -32,6 +25,7 @@ services:
       - .env
 
   webserver:
-    build: .
+    container_name: zigbee_webui
+    image: ghcr.io/amberstarlight/zigbee-webui:latest
     ports:
       - '80:80'
