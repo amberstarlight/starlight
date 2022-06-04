@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const StyledButton = styled.button`
   display: inline-block;
@@ -6,22 +6,15 @@ const StyledButton = styled.button`
   margin: 0.5rem;
   min-width: 5rem;
   color: ${(props) => props.theme.text};
-  background: ${(props) => props.theme.background};
   border-radius: 2rem;
   border: 1px solid ${(props) => props.theme.text};
-  font-family: 'Inter', sans-serif;
-  font-weight: bold;
+  font: 0.8em 'rubikregular', sans-serif;
   background: transparent;
+  text-align: center;
 
   &:hover {
     cursor: pointer;
   }
-
-  ${(props) =>
-    props.mono &&
-    css`
-      font-family: monospace;
-    `}
 `;
 
 function Button(props) {

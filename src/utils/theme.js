@@ -3,7 +3,8 @@ import styled from 'styled-components';
 const colours = {
   platinum: '#E7E5E5',
   violet: '#6F73D2',
-  deepGrey: '#3C3C3C',
+  deepGrey: '#18181B',
+  midGrey: '#3C3C3C',
   red: '#FD151B',
   spaceBlue: '#2B3A67',
 };

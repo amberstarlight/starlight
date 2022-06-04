@@ -1,3 +1,4 @@
+import '../../font.css';
 import { createGlobalStyle } from 'styled-components';
 
 export const GlobalStyles = createGlobalStyle`
@@ -5,7 +6,7 @@ export const GlobalStyles = createGlobalStyle`
  body {
   background: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
-  font: 18px 'Inter', sans-serif;
+  font: 18px 'rubikregular', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
