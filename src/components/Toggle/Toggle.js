@@ -20,32 +20,29 @@ const Slider = styled.span`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(1,1,1,0.25);
-  -webkit-transition: .4s;
-  transition: .4s;
+  background-color: ${({ theme }) => theme.shadow};
+  transition: 0.4s;
   border-radius: 1em;
 
   &:before {
     position: absolute;
-    content: "";
+    content: '';
     height: 26px;
     width: 26px;
     left: 4px;
     bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
+    background-color: ${({ theme }) => theme.background};
+    transition: 0.4s;
     border-radius: 50%;
   }
 
-  input:checked + & {
-    background-color: ${(props) => props.theme.accent};
+  input:checked + && {
+    background-color: ${({ theme }) => theme.accent};
   }
 
   input:checked + &:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+    transform: translateX(26px);
+  }
 `;
 
 function Toggle(props) {

@@ -18,7 +18,7 @@ const Card = styled.div`
   border-radius: 2rem;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: ${({ theme }) => theme.hover};
   }
 `;
 

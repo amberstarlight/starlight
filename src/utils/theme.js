@@ -13,18 +13,22 @@ export const lightTheme = {
   text: colours.deepGrey,
   background: colours.platinum,
   accent: colours.violet,
+  shadow: 'rgba(0, 0, 0, 0.25)',
+  hover: 'rgba(0, 0, 0, 0.05)',
 };
 
 export const darkTheme = {
   text: colours.platinum,
   background: colours.deepGrey,
   accent: colours.red,
+  shadow: 'rgba(0, 0, 0, 0.5)',
+  hover: 'rgba(255, 255, 255, 0.05)',
 };
 
 export const StyledText = styled.p`
-  color: ${(props) => props.theme.text};
+  color: ${({ theme }) => theme.text};
 `;
 
 export const StyledHeader = styled.h1`
-  color: ${(props) => props.theme.text};
+  color: ${({ theme }) => theme.text};
 `;
