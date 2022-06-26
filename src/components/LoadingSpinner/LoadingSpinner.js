@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import styled from 'styled-components';
 
 const Wrapper = styled.div`

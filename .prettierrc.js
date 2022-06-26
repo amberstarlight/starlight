@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 module.exports = {
   trailingComma: 'es5',
   tabWidth: 2,

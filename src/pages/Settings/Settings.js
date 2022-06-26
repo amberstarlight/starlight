@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import * as mqttService from '../../services/mqttService';
 
 import Button from '../../components/Button/Button';

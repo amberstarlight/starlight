@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import DeviceList from '../../components/DeviceList/DeviceList';
 import DeviceSettings from '../../components/DeviceSettings/DeviceSettings';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';

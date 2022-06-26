@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { deviceDescription } from '../../utils/deviceUtilities';
 import styled from 'styled-components';
 import { StyledText, StyledHeader } from '../../utils/theme';

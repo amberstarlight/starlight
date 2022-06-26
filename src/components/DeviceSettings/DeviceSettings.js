@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { useState, useEffect } from 'react';
 
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
