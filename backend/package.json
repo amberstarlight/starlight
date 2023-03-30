@@ -1,0 +1,8 @@
+{
+  "name": "zigbee-backend",
+  "version": "0.0.1",
+  "private": true,
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  }
+}

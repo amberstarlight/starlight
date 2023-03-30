@@ -20,8 +20,7 @@
     "eject": "react-scripts eject",
     "audit": "yarn audit --groups dependencies",
     "prettify": "yarn prettier --write .",
-    "lint": "yarn eslint . --fix",
-    "postinstall": "husky install"
+    "lint": "yarn eslint . --fix"
   },
   "eslintConfig": {
     "extends": [
