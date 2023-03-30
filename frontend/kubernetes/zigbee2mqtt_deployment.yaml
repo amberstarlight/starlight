@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: zigbee2mqtt-deployment
+  labels:
+    app: zigbee2mqtt
+
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: zigbee2mqtt
+
+  template:
+    metadata:
+      labels:
+        app: zigbee2mqtt
+
+    spec:
+      containers:
+        - name: zigbee2mqtt
+          image: koenkk/zigbee2mqtt:1.28.2
+          securityContext:
+            privileged: true
+            runAsUser: 0
+            runAsGroup: 0 
+          envFrom:
+            - configMapRef:
+                name: zigbee2mqtt-config
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: udev
+              mountPath: /run/udev
+            - name: ttyusb
+              mountPath: /dev/ttyUSB0
+
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: zigbee2mqtt-pvc
+        - name: udev
+          hostPath:
+            path: /run/udev
+        - name: ttyusb
+          hostPath:
+            path: /dev/ttyUSB0
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: zigbee2mqtt-pvc
+
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 64Mi
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: zigbee2mqtt-config
+
+data:
+  TZ: Europe/London
+  ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/ttyUSB0
+  ZIGBEE2MQTT_CONFIG_ADVANCED_RTSCTS: "false"
+  ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: zigbee-deployment
+  namespace: zigbee
+  labels:
+    app: zigbee
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zigbee
+
+  template:
+    metadata:
+      labels:
+        app: zigbee
+
+    spec:
+      containers:
+        - name: zigbee-webui
+          image: ghcr.io/amberstarlight/zigbee-webui:latest
