@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 
 const router = express.Router();
 
-router.get("/groups", (req: Request, res: Response) => {
+router.get("/groups", (_req: Request, res: Response) => {
   res.json({
     status: 200,
     groups: "",
