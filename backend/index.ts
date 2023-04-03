@@ -32,11 +32,7 @@ app.listen(port, () => {
 
   init(mqttEndpoint, mqttOptions).then(
     () => {
-      logger(
-        logLevel,
-        "MQTT",
-        `MQTT connection established with ${mqttEndpoint}`
-      );
+      logger(logLevel, "MQTT", `Connection established with ${mqttEndpoint}`);
     },
     (error) => {
       logger(logLevel, error.name, error.message, error.stack);
