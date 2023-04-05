@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
 import { Device } from "./types/zigbee_types";
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { name } from "./package.json";
 
 interface LogEvent {

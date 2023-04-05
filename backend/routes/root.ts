@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import express, { Request, Response } from "express";
 
 const router = express.Router();
