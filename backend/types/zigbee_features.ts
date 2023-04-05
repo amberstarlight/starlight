@@ -101,5 +101,5 @@ interface SwitchFeature extends BaseFeature {
 
 interface ClimateFeature extends BaseFeature {
   type: "climate";
-  features: Feature[];
+  features: Feature[]; // TODO
 }
