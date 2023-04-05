@@ -27,15 +27,15 @@ app.use(rootRoutes);
 app.use(deviceRoutes);
 app.use(groupRoutes);
 
-app.listen(port, () => {
-  logger(logLevel, "Express", `Server listening on ${port}.`);
+init(mqttEndpoint, mqttOptions).then(
+  () => {
+    logger(logLevel, "MQTT", `Connection established with ${mqttEndpoint}`);
 
-  init(mqttEndpoint, mqttOptions).then(
-    () => {
-      logger(logLevel, "MQTT", `Connection established with ${mqttEndpoint}`);
-    },
-    (error) => {
-      logger(logLevel, error.name, error.message, error.stack);
-    }
-  );
-});
+    app.listen(port, () => {
+      logger(logLevel, "Express", `Server listening on ${port}.`);
+    });
+  },
+  (error) => {
+    logger(logLevel, error.name, error.message, error.stack);
+  }
+);
