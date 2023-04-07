@@ -68,7 +68,7 @@ interface TextFeature extends BaseFeature {
 interface CompositeFeature extends BaseFeature {
   type: "composite";
   property: string;
-  features: Exposes[];
+  features: BinaryFeature[] | NumericFeature[] | EnumFeature[];
 }
 
 /**
@@ -103,5 +103,5 @@ interface SwitchFeature extends BaseFeature {
 
 interface ClimateFeature extends BaseFeature {
   type: "climate";
-  features: Feature[]; // TODO
+  features: Feature[]; // TODO https://www.zigbee2mqtt.io/guide/usage/exposes.html#climate
 }
