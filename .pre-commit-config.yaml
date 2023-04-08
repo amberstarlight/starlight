@@ -25,3 +25,13 @@ repos:
           - ./license_header.txt
           - --comment-style
           - // # defaults to:  #
+
+    # The maintainer of this is particularly unhelpful,
+    # consider using a fork or a local version instead.
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v2.7.1"
+    hooks:
+      - id: prettier
+        additional_dependencies:
+          - prettier@2.8.7
+        files: '\.(js?|ts?)$'
