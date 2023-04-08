@@ -42,18 +42,8 @@ function init(
   });
 }
 
-function getDeviceById(deviceId: string): Device | Error {
-  if (devices.length < 1) return new Error("List of devices is empty!");
-
-  let device = devices.find((device) => device.ieee_address === deviceId);
-
-  if (device === undefined) {
-    return new Error(
-      `'${deviceId}' was not found. Is the device on the network?`
-    );
-  }
-
-  return device;
+function getDeviceById(deviceId: string): Device | undefined {
+  return devices.find((device) => device.ieee_address === deviceId);
 }
 
 export { init, devices, getDeviceById };

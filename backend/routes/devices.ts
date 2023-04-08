@@ -13,13 +13,13 @@ router.get("/devices", (_req: Request, res: Response) => {
 });
 
 router.get("/devices/:deviceId", (req: Request, res: Response) => {
-  let response = getDeviceById(req.params.deviceId);
+  const device = getDeviceById(req.params.deviceId);
 
-  if (response instanceof Error) {
-    res.status(404).json({ error: response.message });
-  } else {
-    res.status(200).json(response);
+  if (device === undefined) {
+    return res.status(404).json({ error: "Device not found." });
   }
+
+  res.status(200).json(device);
 });
 
 router.post("/devices/:deviceId", (req: Request, res: Response) => {
