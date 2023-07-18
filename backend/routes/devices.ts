@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import express, { Request, Response } from "express";
-import { devices, getDeviceById } from "../mqtt_service";
+import { devices, getDeviceById, setDeviceSetting } from "../mqtt_service";
 
 const router = express.Router();
 
@@ -23,12 +23,33 @@ router.get("/devices/:deviceId", (req: Request, res: Response) => {
 });
 
 router.post("/devices/:deviceId", (req: Request, res: Response) => {
-  // deal with the request
-  res.json({
+  if (typeof req.query.setting !== "string") {
+    return res.status(400).json({
+      error: "Settings must be provided as strings.",
+    });
+  }
+
+  if (!req.query.value || req.query.value === undefined) {
+    return res.status(400).json({
+      error: "Value was not provided.",
+    });
+  }
+
+  if (typeof req.query.value !== "string") {
+    return res.status(400).json({
+      error: "Values must be provided as strings.",
+    });
+  }
+
+  setDeviceSetting(req.params.deviceId, req.query.setting, req.query.value);
+
+  return res.json({
     status: 200,
     device: req.params.deviceId,
-    // will return the result
   });
+
+  // TODO: get device setting to check update was successful, then return the
+  // updated values to client
 });
 
 export { router as deviceRoutes };
