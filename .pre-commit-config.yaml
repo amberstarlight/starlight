@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
@@ -9,29 +9,18 @@ repos:
       - id: check-added-large-files
 
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.1
+    rev: v1.5.4
     hooks:
       - id: insert-license
-        files: \.js$
-        args:
-          - --license-filepath
-          - ./license_header.txt
-          - --comment-style
-          - // # defaults to:  #
-      - id: insert-license
-        files: \.ts$
+        files: '\.(js?|ts?)$'
         args:
           - --license-filepath
           - ./license_header.txt
           - --comment-style
           - // # defaults to:  #
 
-    # The maintainer of this is particularly unhelpful,
-    # consider using a fork or a local version instead.
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v3.0.0"
+    rev: "v4.0.0-alpha.8"
     hooks:
       - id: prettier
-        additional_dependencies:
-          - prettier@2.8.7
         files: '\.(js?|ts?)$'

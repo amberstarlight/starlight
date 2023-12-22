@@ -1,155 +1,252 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
-import { Device } from "./types/zigbee_types";
 import { logger } from "./logger";
+import { Device } from "./types/zigbee_types";
+import { elementDiff, getByPath, quoteList } from "./utils";
+import { Feature } from "./types/zigbee_features";
 
-const baseTopic: string = "zigbee2mqtt";
+const SUCCESS: OperationStatus = { success: true };
 
-let client: MqttClient;
-let devices: Device[] = [];
-let deviceLastKnownState: Record<string, any> = {};
-
-function init(
-  mqttEndpoint: string,
-  mqttOptions?: IClientOptions
-): Promise<void> {
-  client = mqtt.connect(mqttEndpoint, mqttOptions);
-
-  client.on("message", messageHandler);
-
-  return new Promise((resolve, reject) => {
-    client.once("connect", () => {
-      if (client === undefined) {
-        reject(new TypeError("Client is undefined!"));
-      } else {
-        client.subscribe([
-          `${baseTopic}/bridge/info`,
-          `${baseTopic}/bridge/devices`,
-        ]);
-      }
-
-      resolve();
-    });
-
-    client.once("error", reject);
-  });
+interface OperationStatusSuccess {
+  success: true;
 }
 
-function messageHandler(topic: string, payload: Buffer) {
-  switch (topic) {
-    case `${baseTopic}/bridge/info`:
-      // do something
-      break;
+interface OperationStatusFailure {
+  success: false;
+  error: string | Error;
+}
 
-    case `${baseTopic}/bridge/devices`:
-      devices = JSON.parse(payload.toString());
-      let deviceFriendlyNames = devices.map((device) => device.friendly_name);
-      let deviceTopics = deviceFriendlyNames.map(
-        (deviceFriendlyName) => `${baseTopic}/${deviceFriendlyName}`
-      );
-      client.subscribe(deviceTopics);
+type OperationStatus = OperationStatusSuccess | OperationStatusFailure;
 
-      const deviceSettings = devices.map((device) => {
-        let settingNames = device.definition?.exposes.flatMap((expose) => {
-          if (expose.features === undefined) return [];
-          return expose.features.map((feature) => feature.name);
-        });
+class MqttDevice {
+  getValue(expose: string): any {
+    // could be any type, number, bool, etc
+  }
 
-        if (settingNames === undefined) settingNames = [];
-
-        return {
-          device: {
-            ieee_address: device.ieee_address,
-            friendly_name: device.friendly_name,
-          },
-          settingNames,
-        };
-      });
-
-      let devicesWithSettings = deviceSettings.filter(
-        (deviceSetting) => deviceSetting.settingNames.length > 0
-      );
-
-      devicesWithSettings.forEach(({ device, settingNames }) => {
-        let payload: Record<string, ""> = {};
-        for (let setting of settingNames) {
-          payload[setting] = "";
-        }
-
-        client.publish(
-          `${baseTopic}/${device.friendly_name}/get`,
-          JSON.stringify(payload)
-        );
-      });
-
-      break;
-
-    default:
-      logger("debug", topic, "updated", payload.toString());
-
-      const message = JSON.parse(payload.toString());
-      let device = topic.split("/")[1];
-
-      let deviceMessage = {
-        received_timestamp: Date.now(),
-        message,
-      };
-
-      deviceLastKnownState[device] = deviceMessage;
-      break;
+  setValue(expose: string): OperationStatus {
+    return SUCCESS;
   }
 }
 
-function getDeviceFriendlyName(deviceId: string): string | undefined {
-  const device = devices.find((device) => device.ieee_address === deviceId);
-  return device?.friendly_name;
+class MqttGroup {
+  addDevice(deviceId: string): OperationStatus {
+    return SUCCESS;
+  }
+
+  removeDevice(deviceId: string): OperationStatus {
+    return SUCCESS;
+  }
 }
 
-function getDeviceById(deviceId: string): Device | undefined {
-  return devices.find((device) => device.ieee_address === deviceId);
+function recurseFeatures(
+  features: Feature[],
+  handler: (feature: Feature, path: string[]) => void,
+  basePath: string[] = [],
+) {
+  const path = [...basePath];
+  for (const feature of features) {
+    if (feature.type === "composite") {
+      recurseFeatures(feature.features, handler, [
+        ...basePath,
+        feature.property,
+      ]);
+    } else {
+      handler(feature, path);
+    }
+  }
 }
 
-function setDeviceSetting(
-  deviceFriendlyName: string,
-  settingName: string,
-  settingValue: string | number
-): any {
-  let payload: Record<string, string | number> = {};
-
-  payload[settingName] = settingValue;
-
-  client.publish(
-    `${baseTopic}/${deviceFriendlyName}/set`,
-    JSON.stringify(payload)
-  );
+// TODO: Proper typing
+function buildGetter(features: Feature[]): Record<string, any> {
+  const getterObject: Record<string, any> = {};
+  for (const feature of features) {
+    if (feature.type === "composite") {
+      getterObject[feature.property] = {
+        ...getterObject[feature.property],
+        ...buildGetter(feature.features),
+      };
+    } else {
+      getterObject[feature.property ?? feature.name] = "";
+    }
+  }
+  return getterObject;
 }
 
-//TODO: get message from device topic and return it
-
-function getDeviceSetting(
-  deviceFriendlyName: string,
-  settingName: string
-): Record<string, any> {
-  const topic = `${baseTopic}/${deviceFriendlyName}`;
-  let payload: Record<string, string> = {};
-  payload[settingName] = "";
-
-  let deviceState: Record<string, any> = {};
-
-  client.publish(`${topic}/get`, JSON.stringify(payload));
-
-  // this isn't being retrieved fast enough before execution and the return,
-  // so we don't get anything
-  deviceState = deviceLastKnownState[deviceFriendlyName];
-
-  return deviceState;
+function featuresFor(device: Device): Feature[] {
+  if (!device.definition) return [];
+  const features = device.definition.exposes.flatMap((expose) => {
+    if (expose.features) return expose.features;
+    return [];
+  });
+  return features;
 }
 
-export {
-  init,
-  devices,
-  getDeviceFriendlyName,
-  getDeviceById,
-  setDeviceSetting,
-};
+export class Zigbee2MqttService {
+  #client: MqttClient;
+  #mqttClientConnected: Promise<OperationStatus>;
+  #baseTopic: string;
+  #devices: Record<string, Device> = {};
+  #devicesData: Record<string, any> = {};
+
+  constructor(
+    endpoint: string,
+    options: IClientOptions,
+    baseTopic: string = "zigbee2mqtt",
+  ) {
+    this.#baseTopic = baseTopic;
+    this.#client = mqtt.connect(endpoint, options);
+
+    this.#mqttClientConnected = new Promise((resolve) => {
+      this.#client.once("connect", () => {
+        this.#client.on("message", (topic, payload) =>
+          this.#handleMessage(topic, payload),
+        );
+
+        this.#client.subscribe(`${baseTopic}/bridge/devices`);
+        logger("info", "MQTT", `Successfully connected to ${endpoint}`);
+        resolve(SUCCESS);
+      });
+
+      this.#client.once("error", (error) => resolve({ success: false, error }));
+    });
+  }
+
+  async #handleMessage(topic: string, payload: Buffer) {
+    switch (topic) {
+      case `${this.#baseTopic}/bridge/devices`:
+        const updatedDeviceList: Device[] = JSON.parse(payload.toString());
+
+        const { added, removed } = elementDiff(
+          Object.values(this.#devices),
+          updatedDeviceList,
+          (a, b) => a.friendly_name === b.friendly_name,
+        );
+
+        const deviceArray: Device[] = JSON.parse(payload.toString());
+        this.#devices = Object.fromEntries(
+          deviceArray.map((device) => [device.ieee_address, device]),
+        );
+
+        const extractTopics = (devices: Device[]) =>
+          devices.map((device) => `${this.#baseTopic}/${device.friendly_name}`);
+
+        if (added.length > 0) {
+          const newTopics = extractTopics(added);
+          logger(
+            "info",
+            "MQTT",
+            `Devices updated, subscribing to new topics: ${quoteList(
+              newTopics,
+            )}`,
+          );
+          this.#client.subscribe(newTopics);
+
+          added.forEach((device) => {
+            logger(
+              "info",
+              "MQTT",
+              `Requesting initial data for '${device.friendly_name}' [${device.ieee_address}]`,
+            );
+            const features = featuresFor(device);
+            this.#client.publish(
+              `${this.#baseTopic}/${device.friendly_name}/get`,
+              JSON.stringify(buildGetter(features)),
+            );
+          });
+        }
+
+        if (removed.length > 0) {
+          const removedTopics = extractTopics(removed);
+          logger(
+            "info",
+            "MQTT",
+            `Unsubscribing from: ${quoteList(removedTopics)}`,
+          );
+          this.#client.unsubscribe(removedTopics);
+        }
+
+        break;
+
+      default:
+        const deviceFriendlyName = topic.split("/")[1];
+        const ieee = await this.getIeeeAddress(deviceFriendlyName);
+
+        if (payload.toString().trim().length === 0) {
+          logger(
+            "warn",
+            "MQTT",
+            `Payload was empty on '${topic}'. Maybe a device updated its name?`,
+          );
+        } else if (ieee !== undefined) {
+          logger(
+            "info",
+            "MQTT",
+            `Updating data for: '${deviceFriendlyName}' [${ieee}]`,
+          );
+          const jsonPayload = JSON.parse(payload.toString());
+          // TODO: This should do recursive object merging to prevent
+          //       reliance on the home assistant modes
+          this.#devicesData[ieee] = jsonPayload;
+        } else {
+          logger(
+            "warn",
+            "MQTT",
+            `Unhandled message on '${topic}': ${payload.toString()}`,
+          );
+        }
+
+        break;
+    }
+  }
+
+  async cacheFullyPopulated(): Promise<boolean> {
+    const cachePromises = Object.keys(this.#devices).map((deviceId) =>
+      this.cachePopulated(deviceId),
+    );
+    const cacheStatus = await Promise.all(cachePromises);
+    return cacheStatus.every((status) => status);
+  }
+
+  async cachePopulated(deviceId: string): Promise<boolean> {
+    await this.#mqttClientConnected;
+    const device = this.#devices[deviceId];
+    if (device === undefined) return false;
+
+    const deviceData = this.#devicesData[deviceId];
+
+    // loop through each device field make sure we have data for that??
+    const features = featuresFor(device);
+    let dataSet = true;
+    recurseFeatures(features, (feature, path) => {
+      const featureProperty = feature.property ?? feature.name;
+      // TODO: Make a proper function for checking access levels to actually check if bit 1 is set
+      if (feature.access !== 7) return;
+      if (getByPath(deviceData, [...path, featureProperty]) === undefined)
+        dataSet = false;
+    });
+    return dataSet;
+  }
+
+  async getDevice(deviceId: string): Promise<MqttDevice> {
+    await this.#mqttClientConnected;
+    return new MqttDevice();
+  }
+
+  async getDevices(): Promise<MqttDevice[]> {
+    await this.#mqttClientConnected;
+    return [];
+  }
+
+  async getIeeeAddress(
+    deviceFriendlyName: string,
+  ): Promise<string | undefined> {
+    await this.#mqttClientConnected;
+
+    const device = Object.values(this.#devices).find(
+      (device) => device.friendly_name === deviceFriendlyName,
+    );
+
+    return device?.ieee_address;
+  }
+}

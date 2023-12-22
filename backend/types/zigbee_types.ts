@@ -11,15 +11,18 @@ export interface Device {
   disabled: boolean;
   description?: string;
   endpoints: Record<number, Data>;
-  definition?: {
-    model: string;
-    vendor: string;
-    description: string;
-    supports_ota: boolean;
-    options: []; // TODO
-    exposes: Exposes[];
-    icon: string;
-  };
+  definition:
+    | {
+        model: string;
+        vendor: string;
+        description: string;
+        supports_ota: boolean;
+        options: []; // TODO
+        exposes: Exposes[];
+        icon: string;
+      }
+    | null
+    | undefined;
   power_source?: string;
   date_code?: string;
   model_id?: string;

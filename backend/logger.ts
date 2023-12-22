@@ -17,7 +17,7 @@ function logger(
   logLevel: "debug" | "info" | "warn" | "error" | "fatal",
   logName: string,
   logMessage: string,
-  logStack?: string
+  logStack?: string,
 ): void {
   const wrappedLog: LogEvent = {
     timestamp: new Date().toISOString(),
@@ -30,7 +30,18 @@ function logger(
     },
   };
 
-  console.log(JSON.stringify(wrappedLog));
+  if (process.env.NODE_ENV != "production") {
+    console.log(
+      `[${wrappedLog.level}] ${wrappedLog.timestamp}: ${wrappedLog.message.logMessage}`,
+    );
+    if (wrappedLog.message.logStack) {
+      console.log(
+        `[${wrappedLog.level}] ${wrappedLog.timestamp}: ${wrappedLog.message.logStack}`,
+      );
+    }
+  } else {
+    console.log(JSON.stringify(wrappedLog));
+  }
 }
 
 export { logger };
