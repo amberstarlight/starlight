@@ -1,11 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import express, { Request, Response } from "express";
+import express, { Response, Router } from "express";
+import { Zigbee2MqttService } from "../zigbee2mqttService";
 
 const router = express.Router();
 
-router.get("/healthcheckz", (_req: Request, res: Response) => {
-  res.status(200).send("OK");
-});
+export default function rootRouter(
+  zigbee2mqttService: Zigbee2MqttService,
+): Router {
+  router.get("/healthcheckz", (_, res: Response) => {
+    zigbee2mqttService.cacheStatus().then((cache) => {
+      const allCached = Object.values(cache).every((status) => status);
+      res.status(allCached ? 200 : 503).send({ cache: cache });
+    });
+  });
 
-export { router as rootRoutes };
+  return router;
+}

@@ -200,12 +200,18 @@ export class Zigbee2MqttService {
     }
   }
 
-  async cacheFullyPopulated(): Promise<boolean> {
-    const cachePromises = Object.keys(this.#devices).map((deviceId) =>
-      this.cachePopulated(deviceId),
-    );
-    const cacheStatus = await Promise.all(cachePromises);
-    return cacheStatus.every((status) => status);
+  async cacheStatus(): Promise<Record<string, boolean>> {
+    const cachePromises: Promise<[string, boolean]>[] = Object.keys(
+      this.#devices,
+    ).map(async (deviceId) => {
+      const status: [string, boolean] = [
+        deviceId,
+        await this.cachePopulated(deviceId),
+      ];
+      return status;
+    });
+    const cacheStatus = Object.fromEntries(await Promise.all(cachePromises));
+    return cacheStatus;
   }
 
   async cachePopulated(deviceId: string): Promise<boolean> {
