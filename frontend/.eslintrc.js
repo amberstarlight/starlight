@@ -7,35 +7,35 @@ module.exports = {
     node: true,
   },
   extends: [
-    'eslint:recommended',
-    'plugin:react/recommended',
-    'plugin:react/jsx-runtime',
-    'prettier',
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
+    "prettier",
   ],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
     ecmaVersion: 12,
-    sourceType: 'module',
+    sourceType: "module",
   },
-  plugins: ['react'],
+  plugins: ["react"],
   settings: {
     react: {
-      version: 'detect',
+      version: "detect",
     },
   },
   rules: {
-    'react/prop-types': 'off',
-    'eol-last': ['error', 'always'],
+    "react/prop-types": "off",
+    "eol-last": ["error", "always"],
     indent: [
-      'error',
+      "error",
       2,
       {
         SwitchCase: 1,
       },
     ],
-    quotes: ['error', 'single'],
-    semi: ['error', 'always'],
+    quotes: ["error", "single"],
+    semi: ["error", "always"],
   },
 };

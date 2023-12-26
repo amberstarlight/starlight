@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "name": "zigbee-webui",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "backend": "yarn workspace backend dev",
+    "frontend": "yarn workspace frontend start",
+    "start": "concurrently --kill-others-on-fail \"yarn backend\" \"yarn frontend\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
