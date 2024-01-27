@@ -30,6 +30,7 @@ const mqttOptions: IClientOptions = {
 
 const mqttService = new Zigbee2MqttService(mqttEndpoint, mqttOptions);
 
+app.use(express.json());
 app.use(rootRouter(mqttService));
 app.use(devicesRouter(mqttService));
 

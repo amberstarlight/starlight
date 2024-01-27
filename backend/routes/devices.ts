@@ -29,25 +29,19 @@ export default function deviceRouter(
   router.post("/devices/:deviceId", async (req: Request, res: Response) => {
     const device = await zigbee2mqttService.getDevice(req.params.deviceId);
 
-    if (typeof req.query.setting !== "string") {
+    if (typeof req.body.setting !== "string") {
       return res.status(400).json({
         error: "Settings must be provided as strings.",
       });
     }
 
-    if (!req.query.value || req.query.value === undefined) {
+    if (!req.body.value || req.body.value === undefined) {
       return res.status(400).json({
         error: "Value was not provided.",
       });
     }
 
-    if (typeof req.query.value !== "string") {
-      return res.status(400).json({
-        error: "Values must be provided as strings.",
-      });
-    }
-
-    device.setValue(req.query.setting, req.query.value);
+    device.setValue(req.body.setting, req.body.value);
 
     return res.json({
       status: 200,
