@@ -5,6 +5,7 @@ import express, { Express } from "express";
 import { IClientOptions } from "mqtt";
 
 import rootRouter from "./routes/root";
+import devicesRouter from "./routes/devices";
 
 import { logger } from "./logger";
 import { Zigbee2MqttService } from "./zigbee2mqttService";
@@ -24,11 +25,13 @@ const mqttOptions: IClientOptions = {
   reconnectPeriod: 1000,
   port: mqttPort,
   clientId: `zigbee-backend-${Math.random().toString(16).substring(2, 8)}`,
+  connectTimeout: 10000,
 };
 
 const mqttService = new Zigbee2MqttService(mqttEndpoint, mqttOptions);
 
 app.use(rootRouter(mqttService));
+app.use(devicesRouter(mqttService));
 
 app.listen(port, () => {
   logger(logLevel, "Express", `Server listening on ${port}.`);

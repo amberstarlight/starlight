@@ -19,22 +19,27 @@ interface OperationStatusFailure {
 
 type OperationStatus = OperationStatusSuccess | OperationStatusFailure;
 
+type ExposeUpdater = (
+  device: string,
+  fieldName: string,
+  fieldValue: any,
+) => void;
+
 class MqttDevice {
+  device: Device;
+  #updater: ExposeUpdater;
+
+  constructor(device: Device, updater: ExposeUpdater) {
+    this.device = device;
+    this.#updater = updater;
+  }
+
   getValue(expose: string): any {
     // could be any type, number, bool, etc
   }
 
-  setValue(expose: string): OperationStatus {
-    return SUCCESS;
-  }
-}
-
-class MqttGroup {
-  addDevice(deviceId: string): OperationStatus {
-    return SUCCESS;
-  }
-
-  removeDevice(deviceId: string): OperationStatus {
+  setValue(expose: string, value: any): OperationStatus {
+    this.#updater(this.device.friendly_name, expose, value);
     return SUCCESS;
   }
 }
@@ -200,6 +205,15 @@ export class Zigbee2MqttService {
     }
   }
 
+  exposeUpdater: ExposeUpdater = (device, expose, value) => {
+    this.#client.publish(
+      `${this.#baseTopic}/${device}/set`,
+      JSON.stringify({
+        [expose]: value,
+      }),
+    );
+  };
+
   async cacheStatus(): Promise<Record<string, boolean>> {
     const cachePromises: Promise<[string, boolean]>[] = Object.keys(
       this.#devices,
@@ -236,12 +250,14 @@ export class Zigbee2MqttService {
 
   async getDevice(deviceId: string): Promise<MqttDevice> {
     await this.#mqttClientConnected;
-    return new MqttDevice();
+    const device = this.#devices[deviceId];
+    return new MqttDevice(device, this.exposeUpdater);
   }
 
   async getDevices(): Promise<MqttDevice[]> {
     await this.#mqttClientConnected;
-    return [];
+    const devices = Object.values(this.#devices);
+    return devices.map((device) => new MqttDevice(device, this.exposeUpdater));
   }
 
   async getIeeeAddress(
