@@ -6,6 +6,7 @@ import { IClientOptions } from "mqtt";
 
 import rootRouter from "./routes/root";
 import devicesRouter from "./routes/devices";
+import groupsRouter from "./routes/groups";
 
 import { logger } from "./logger";
 import { Zigbee2MqttService } from "./zigbee2mqttService";
@@ -33,6 +34,7 @@ const mqttService = new Zigbee2MqttService(mqttEndpoint, mqttOptions);
 app.use(express.json());
 app.use(rootRouter(mqttService));
 app.use(devicesRouter(mqttService));
+app.use(groupsRouter(mqttService));
 
 app.listen(port, () => {
   logger(logLevel, "Express", `Server listening on ${port}.`);

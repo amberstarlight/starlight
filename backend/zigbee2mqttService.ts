@@ -2,7 +2,7 @@
 
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
 import { logger } from "./logger";
-import { Device } from "./types/zigbee_types";
+import { Device, Group } from "./types/zigbee_types";
 import { elementDiff, getByPath, quoteList } from "./utils";
 import { Feature } from "./types/zigbee_features";
 
@@ -93,6 +93,7 @@ export class Zigbee2MqttService {
   #baseTopic: string;
   #devices: Record<string, Device> = {};
   #devicesData: Record<string, any> = {};
+  #groups: Record<string, Group> = {};
 
   constructor(
     endpoint: string,
@@ -108,7 +109,11 @@ export class Zigbee2MqttService {
           this.#handleMessage(topic, payload),
         );
 
-        this.#client.subscribe(`${baseTopic}/bridge/devices`);
+        this.#client.subscribe([
+          `${baseTopic}/bridge/devices`,
+          `${baseTopic}/bridge/groups`,
+        ]);
+
         logger("info", "MQTT", `Successfully connected to ${endpoint}`);
         resolve(SUCCESS);
       });
@@ -122,7 +127,7 @@ export class Zigbee2MqttService {
       case `${this.#baseTopic}/bridge/devices`:
         const updatedDeviceList: Device[] = JSON.parse(payload.toString());
 
-        const { added, removed } = elementDiff(
+        const devices = elementDiff(
           Object.values(this.#devices),
           updatedDeviceList,
           (a, b) => a.friendly_name === b.friendly_name,
@@ -133,11 +138,11 @@ export class Zigbee2MqttService {
           deviceArray.map((device) => [device.ieee_address, device]),
         );
 
-        const extractTopics = (devices: Device[]) =>
+        const extractDeviceTopics = (devices: Device[]) =>
           devices.map((device) => `${this.#baseTopic}/${device.friendly_name}`);
 
-        if (added.length > 0) {
-          const newTopics = extractTopics(added);
+        if (devices.added.length > 0) {
+          const newTopics = extractDeviceTopics(devices.added);
           logger(
             "info",
             "MQTT",
@@ -145,9 +150,10 @@ export class Zigbee2MqttService {
               newTopics,
             )}`,
           );
+
           this.#client.subscribe(newTopics);
 
-          added.forEach((device) => {
+          devices.added.forEach((device) => {
             logger(
               "info",
               "MQTT",
@@ -161,8 +167,52 @@ export class Zigbee2MqttService {
           });
         }
 
-        if (removed.length > 0) {
-          const removedTopics = extractTopics(removed);
+        if (devices.removed.length > 0) {
+          const removedTopics = extractDeviceTopics(devices.removed);
+          logger(
+            "info",
+            "MQTT",
+            `Unsubscribing from: ${quoteList(removedTopics)}`,
+          );
+          this.#client.unsubscribe(removedTopics);
+        }
+
+        break;
+
+      case `${this.#baseTopic}/bridge/groups`:
+        console.log("groups topic updated");
+
+        const updatedGroupList: Group[] = JSON.parse(payload.toString());
+
+        const groups = elementDiff(
+          Object.values(this.#groups),
+          updatedGroupList,
+          (a, b) => a.friendly_name === b.friendly_name,
+        );
+
+        const groupArray: Group[] = JSON.parse(payload.toString());
+        this.#groups = Object.fromEntries(
+          groupArray.map((group) => [group.friendly_name, group]),
+        );
+
+        const extractGroupTopics = (groups: Group[]) =>
+          groups.map((group) => `${this.#baseTopic}/${group.friendly_name}`);
+
+        if (groups.added.length > 0) {
+          const newTopics = extractGroupTopics(groups.added);
+          logger(
+            "info",
+            "MQTT",
+            `Groups updated, subscribing to new topics: ${quoteList(
+              newTopics,
+            )}`,
+          );
+
+          this.#client.subscribe(newTopics);
+        }
+
+        if (groups.removed.length > 0) {
+          const removedTopics = extractGroupTopics(groups.removed);
           logger(
             "info",
             "MQTT",
@@ -258,6 +308,55 @@ export class Zigbee2MqttService {
     await this.#mqttClientConnected;
     const devices = Object.values(this.#devices);
     return devices.map((device) => new MqttDevice(device, this.exposeUpdater));
+  }
+
+  async getGroup(groupName: string): Promise<Group> {
+    await this.#mqttClientConnected;
+    const group = this.#groups[groupName];
+    return group;
+  }
+
+  async getGroups(): Promise<Group[]> {
+    await this.#mqttClientConnected;
+    const groups = Object.values(this.#groups);
+    return groups;
+  }
+
+  async addGroup(friendlyName: string, id?: number) {
+    await this.#mqttClientConnected;
+
+    this.#client.publish(
+      `${this.#baseTopic}/bridge/request/group/add`,
+      JSON.stringify({
+        friendly_name: friendlyName,
+        id: id,
+      }),
+    );
+  }
+
+  async removeGroup(friendlyName: string, id?: number, force?: boolean) {
+    await this.#mqttClientConnected;
+
+    this.#client.publish(
+      `${this.#baseTopic}/bridge/request/group/remove`,
+      JSON.stringify({
+        friendly_name: friendlyName,
+        id: id,
+        force: force,
+      }),
+    );
+  }
+
+  async addDeviceToGroup(group: string, deviceFriendlyName: string) {
+    await this.#mqttClientConnected;
+
+    this.#client.publish(
+      `${this.#baseTopic}/bridge/request/group/members/add`,
+      JSON.stringify({
+        group: group,
+        device: deviceFriendlyName,
+      }),
+    );
   }
 
   async getIeeeAddress(

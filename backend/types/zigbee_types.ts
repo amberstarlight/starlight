@@ -65,3 +65,15 @@ interface Exposes {
   features?: Feature[];
   type: string;
 }
+
+interface GroupMember {
+  ieee_address: string;
+  endpoint?: number;
+}
+
+export interface Group {
+  id: number;
+  friendly_name: string;
+  scenes: Scene[];
+  members: GroupMember[];
+}
