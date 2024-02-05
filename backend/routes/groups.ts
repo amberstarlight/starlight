@@ -17,8 +17,10 @@ export default function groupsRouter(
     });
   });
 
-  router.get("/groups/:groupName", async (req: Request, res: Response) => {
-    const group = await zigbee2mqttService.getGroup(req.params.groupName);
+  router.get("/groups/:groupId", async (req: Request, res: Response) => {
+    const group = await zigbee2mqttService.getGroup(
+      parseInt(req.params.groupId),
+    );
 
     if (group === undefined) {
       return res.status(404).json({ error: "Group not found." });
@@ -27,8 +29,10 @@ export default function groupsRouter(
     res.status(200).json(group);
   });
 
-  router.post("/groups/:groupName", async (req: Request, res: Response) => {
-    const group = await zigbee2mqttService.getGroup(req.params.groupName);
+  router.post("/groups/:groupId", async (req: Request, res: Response) => {
+    const group = await zigbee2mqttService.getGroup(
+      parseInt(req.params.groupId),
+    );
 
     if (group === undefined) {
       return res.status(404).json({ error: "Group not found." });
@@ -50,17 +54,56 @@ export default function groupsRouter(
 
     return res.json({
       status: 200,
-      group: req.params.groupName,
+      group: req.params.groupId,
     });
   });
 
-  router.post("/groups/:groupName/add", async (req: Request, res: Response) => {
-    const group = await zigbee2mqttService.getGroup(req.params.groupName);
+  router.post("/groups/:groupId/add", async (req: Request, res: Response) => {
+    const group = await zigbee2mqttService.getGroup(
+      parseInt(req.params.groupId),
+    );
+    const device = await zigbee2mqttService.getDevice(req.body.device);
 
     if (group === undefined) {
       return res.status(404).json({ error: "Group not found." });
     }
+
+    if (device === undefined) {
+      return res.status(404).json({ error: "Device not found." });
+    }
+
+    group.addDevice(device.device.friendly_name);
+
+    return res.json({
+      status: 200,
+      group: group,
+    });
   });
+
+  router.post(
+    "/groups/:groupId/remove",
+    async (req: Request, res: Response) => {
+      const group = await zigbee2mqttService.getGroup(
+        parseInt(req.params.groupId),
+      );
+      const device = await zigbee2mqttService.getDevice(req.body.device);
+
+      if (group === undefined) {
+        return res.status(404).json({ error: "Group not found." });
+      }
+
+      if (device === undefined) {
+        return res.status(404).json({ error: "Device not found." });
+      }
+
+      group.removeDevice(device.device.friendly_name);
+
+      return res.json({
+        status: 200,
+        group: group,
+      });
+    },
+  );
 
   return router;
 }

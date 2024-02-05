@@ -25,6 +25,17 @@ type ExposeUpdater = (
   fieldValue: any,
 ) => void;
 
+enum GroupOperation {
+  Add,
+  Remove,
+}
+
+type GroupMemberUpdater = (
+  groupName: string,
+  deviceId: string,
+  operation: GroupOperation,
+) => void;
+
 class MqttDevice {
   device: Device;
   #updater: ExposeUpdater;
@@ -51,10 +62,16 @@ class MqttDevice {
 class MqttGroup {
   group: Group;
   #updater: ExposeUpdater;
+  #memberUpdater: GroupMemberUpdater;
 
-  constructor(group: Group, updater: ExposeUpdater) {
+  constructor(
+    group: Group,
+    updater: ExposeUpdater,
+    memberUpdater: GroupMemberUpdater,
+  ) {
     this.group = group;
     this.#updater = updater;
+    this.#memberUpdater = memberUpdater;
   }
 
   toJSON(): Group {
@@ -63,6 +80,16 @@ class MqttGroup {
 
   setValue(expose: string, value: any): OperationStatus {
     this.#updater(this.group.friendly_name, expose, value);
+    return SUCCESS;
+  }
+
+  addDevice(deviceId: string): OperationStatus {
+    this.#memberUpdater(this.group.friendly_name, deviceId, 0);
+    return SUCCESS;
+  }
+
+  removeDevice(deviceId: string): OperationStatus {
+    this.#memberUpdater(this.group.friendly_name, deviceId, 1);
     return SUCCESS;
   }
 }
@@ -117,6 +144,7 @@ export class Zigbee2MqttService {
   #devices: Record<string, Device> = {};
   #devicesData: Record<string, any> = {};
   #groups: Record<string, Group> = {};
+  #groupsData: Record<string, any> = {};
 
   constructor(
     endpoint: string,
@@ -213,7 +241,7 @@ export class Zigbee2MqttService {
 
         const groupArray: Group[] = JSON.parse(payload.toString());
         this.#groups = Object.fromEntries(
-          groupArray.map((group) => [group.friendly_name, group]),
+          groupArray.map((group) => [group.id, group]),
         );
 
         const extractGroupTopics = (groups: Group[]) =>
@@ -285,6 +313,21 @@ export class Zigbee2MqttService {
     );
   };
 
+  groupMemberUpdater: GroupMemberUpdater = (
+    group: string,
+    device: string,
+    operation: GroupOperation,
+  ) => {
+    const keyword = operation ? "remove" : "add";
+    this.#client.publish(
+      `${this.#baseTopic}/bridge/request/group/members/${keyword}`,
+      JSON.stringify({
+        group: group,
+        device: device,
+      }),
+    );
+  };
+
   async cacheStatus(): Promise<Record<string, boolean>> {
     const cachePromises: Promise<[string, boolean]>[] = Object.keys(
       this.#devices,
@@ -331,16 +374,19 @@ export class Zigbee2MqttService {
     return devices.map((device) => new MqttDevice(device, this.exposeUpdater));
   }
 
-  async getGroup(groupName: string): Promise<MqttGroup> {
+  async getGroup(groupId: number): Promise<MqttGroup> {
     await this.#mqttClientConnected;
-    const group = this.#groups[groupName];
-    return new MqttGroup(group, this.exposeUpdater);
+    const group = this.#groups[groupId];
+    return new MqttGroup(group, this.exposeUpdater, this.groupMemberUpdater);
   }
 
   async getGroups(): Promise<MqttGroup[]> {
     await this.#mqttClientConnected;
     const groups = Object.values(this.#groups);
-    return groups.map((group) => new MqttGroup(group, this.exposeUpdater));
+    return groups.map(
+      (group) =>
+        new MqttGroup(group, this.exposeUpdater, this.groupMemberUpdater),
+    );
   }
 
   async addGroup(friendlyName: string, id?: number) {
@@ -364,18 +410,6 @@ export class Zigbee2MqttService {
         friendly_name: friendlyName,
         id: id,
         force: force,
-      }),
-    );
-  }
-
-  async addDeviceToGroup(group: string, device: string) {
-    await this.#mqttClientConnected;
-
-    this.#client.publish(
-      `${this.#baseTopic}/bridge/request/group/members/add`,
-      JSON.stringify({
-        group: group,
-        device: device,
       }),
     );
   }
