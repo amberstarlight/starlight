@@ -34,12 +34,35 @@ class MqttDevice {
     this.#updater = updater;
   }
 
+  toJSON(): Device {
+    return this.device;
+  }
+
   getValue(expose: string): any {
     // could be any type, number, bool, etc
   }
 
   setValue(expose: string, value: any): OperationStatus {
     this.#updater(this.device.friendly_name, expose, value);
+    return SUCCESS;
+  }
+}
+
+class MqttGroup {
+  group: Group;
+  #updater: ExposeUpdater;
+
+  constructor(group: Group, updater: ExposeUpdater) {
+    this.group = group;
+    this.#updater = updater;
+  }
+
+  toJSON(): Group {
+    return this.group;
+  }
+
+  setValue(expose: string, value: any): OperationStatus {
+    this.#updater(this.group.friendly_name, expose, value);
     return SUCCESS;
   }
 }
@@ -180,8 +203,6 @@ export class Zigbee2MqttService {
         break;
 
       case `${this.#baseTopic}/bridge/groups`:
-        console.log("groups topic updated");
-
         const updatedGroupList: Group[] = JSON.parse(payload.toString());
 
         const groups = elementDiff(
@@ -255,9 +276,9 @@ export class Zigbee2MqttService {
     }
   }
 
-  exposeUpdater: ExposeUpdater = (device, expose, value) => {
+  exposeUpdater: ExposeUpdater = (deviceOrGroup, expose, value) => {
     this.#client.publish(
-      `${this.#baseTopic}/${device}/set`,
+      `${this.#baseTopic}/${deviceOrGroup}/set`,
       JSON.stringify({
         [expose]: value,
       }),
@@ -310,16 +331,16 @@ export class Zigbee2MqttService {
     return devices.map((device) => new MqttDevice(device, this.exposeUpdater));
   }
 
-  async getGroup(groupName: string): Promise<Group> {
+  async getGroup(groupName: string): Promise<MqttGroup> {
     await this.#mqttClientConnected;
     const group = this.#groups[groupName];
-    return group;
+    return new MqttGroup(group, this.exposeUpdater);
   }
 
-  async getGroups(): Promise<Group[]> {
+  async getGroups(): Promise<MqttGroup[]> {
     await this.#mqttClientConnected;
     const groups = Object.values(this.#groups);
-    return groups;
+    return groups.map((group) => new MqttGroup(group, this.exposeUpdater));
   }
 
   async addGroup(friendlyName: string, id?: number) {
@@ -347,14 +368,14 @@ export class Zigbee2MqttService {
     );
   }
 
-  async addDeviceToGroup(group: string, deviceFriendlyName: string) {
+  async addDeviceToGroup(group: string, device: string) {
     await this.#mqttClientConnected;
 
     this.#client.publish(
       `${this.#baseTopic}/bridge/request/group/members/add`,
       JSON.stringify({
         group: group,
-        device: deviceFriendlyName,
+        device: device,
       }),
     );
   }
