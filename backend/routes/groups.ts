@@ -11,9 +11,8 @@ export default function groupsRouter(
   router.get("/groups", async (_req: Request, res: Response) => {
     const groups = await zigbee2mqttService.getGroups();
 
-    res.json({
-      status: 200,
-      groups: groups,
+    res.status(200).json({
+      data: groups,
     });
   });
 
@@ -26,7 +25,9 @@ export default function groupsRouter(
       return res.status(404).json({ error: "Group not found." });
     }
 
-    res.status(200).json(group);
+    res.status(200).json({
+      data: group,
+    });
   });
 
   router.post("/groups/:groupId", async (req: Request, res: Response) => {
@@ -52,9 +53,8 @@ export default function groupsRouter(
 
     group.setValue(req.body.setting, req.body.value);
 
-    return res.json({
-      status: 200,
-      group: req.params.groupId,
+    return res.status(200).json({
+      data: req.params.groupId,
     });
   });
 
@@ -74,9 +74,8 @@ export default function groupsRouter(
 
     group.addDevice(device.device.friendly_name);
 
-    return res.json({
-      status: 200,
-      group: group,
+    return res.status(200).json({
+      data: group,
     });
   });
 
@@ -98,9 +97,8 @@ export default function groupsRouter(
 
       group.removeDevice(device.device.friendly_name);
 
-      return res.json({
-        status: 200,
-        group: group,
+      return res.status(200).json({
+        data: group,
       });
     },
   );
