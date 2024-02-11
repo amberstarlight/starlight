@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import "dotenv/config";
-import express, { Express } from "express";
+import express, { Express, Request, Response, NextFunction } from "express";
 import { IClientOptions } from "mqtt";
 
 import rootRouter from "./routes/root";
@@ -32,6 +32,22 @@ const mqttOptions: IClientOptions = {
 const mqttService = new Zigbee2MqttService(mqttEndpoint, mqttOptions);
 
 app.use(express.json());
+
+const checkIfReady = function (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  if (!mqttService.ready) {
+    return res.status(503).json({
+      error: "Service unavailable.",
+    });
+  }
+
+  next();
+};
+
+app.use(checkIfReady);
 app.use(rootRouter(mqttService));
 app.use(devicesRouter(mqttService));
 app.use(groupsRouter(mqttService));

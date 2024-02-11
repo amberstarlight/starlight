@@ -138,13 +138,14 @@ function featuresFor(device: Device): Feature[] {
 }
 
 export class Zigbee2MqttService {
-  #client: MqttClient;
-  #mqttClientConnected: Promise<OperationStatus>;
   #baseTopic: string;
-  #devices: Record<string, Device> = {};
+  #client: MqttClient;
   #devicesData: Record<string, any> = {};
-  #groups: Record<string, Group> = {};
+  #devices: Record<string, Device> = {};
   #groupsData: Record<string, any> = {};
+  #groups: Record<string, Group> = {};
+  #mqttClientConnected: Promise<OperationStatus>;
+  #ready: Boolean = false;
 
   constructor(
     endpoint: string,
@@ -166,11 +167,16 @@ export class Zigbee2MqttService {
         ]);
 
         logger("info", "MQTT", `Successfully connected to ${endpoint}`);
+        this.#ready = true;
         resolve(SUCCESS);
       });
 
       this.#client.once("error", (error) => resolve({ success: false, error }));
     });
+  }
+
+  get ready() {
+    return this.#ready;
   }
 
   async #handleMessage(topic: string, payload: Buffer) {

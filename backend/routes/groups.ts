@@ -85,6 +85,7 @@ export default function groupsRouter(
       const group = await zigbee2mqttService.getGroup(
         parseInt(req.params.groupId),
       );
+
       const device = await zigbee2mqttService.getDevice(req.body.device);
 
       if (group === undefined) {
