@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const SliderContainer = styled.div`
   display: flex;
@@ -10,7 +10,7 @@ const SliderContainer = styled.div`
 `;
 
 const StyledSlider = styled.input.attrs((props) => ({
-  type: 'range',
+  type: "range",
   disabled: props.disabled || false,
 }))`
   appearance: none;

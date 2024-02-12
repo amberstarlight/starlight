@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import DeviceList from '../../components/DeviceList/DeviceList';
-import DeviceSettings from '../../components/DeviceSettings/DeviceSettings';
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import DeviceList from "../../components/DeviceList/DeviceList";
+import DeviceSettings from "../../components/DeviceSettings/DeviceSettings";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 function Devices(props) {
   const selectedDevice = props.selectedDevice;
@@ -18,7 +18,7 @@ function Devices(props) {
     deviceContent = <DeviceList devices={props.devices} />;
   }
 
-  return <>{deviceContent !== undefined ? deviceContent : ''}</>;
+  return <>{deviceContent !== undefined ? deviceContent : ""}</>;
 }
 
 export default Devices;

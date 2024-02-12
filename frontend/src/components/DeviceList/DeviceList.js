@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { Link } from 'wouter';
-import DeviceCard from '../DeviceCard/DeviceCard';
+import { Link } from "wouter";
+import DeviceCard from "../DeviceCard/DeviceCard";
 
 function DeviceList(props) {
   return (

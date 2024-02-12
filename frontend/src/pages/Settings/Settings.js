@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import * as mqttService from '../../services/mqttService';
+import * as mqttService from "../../services/mqttService";
 
-import Button from '../../components/Button/Button';
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import Button from "../../components/Button/Button";
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
 function Settings(props) {
   let settingsContent = undefined;
@@ -21,11 +21,11 @@ function Settings(props) {
           <>
             <p>Devices can join.</p>
             <Button
-              text={'Disable Join'}
+              text={"Disable Join"}
               onClick={() => {
                 mqttService.sendMqttMessage(
-                  'zigbee2mqtt/bridge/request/permit_join',
-                  { value: false }
+                  "zigbee2mqtt/bridge/request/permit_join",
+                  { value: false },
                 );
               }}
             />
@@ -34,11 +34,11 @@ function Settings(props) {
           <>
             <p>Devices cannot join.</p>
             <Button
-              text={'Permit Join'}
+              text={"Permit Join"}
               onClick={() => {
                 mqttService.sendMqttMessage(
-                  'zigbee2mqtt/bridge/request/permit_join',
-                  { value: true }
+                  "zigbee2mqtt/bridge/request/permit_join",
+                  { value: true },
                 );
               }}
             />
@@ -48,7 +48,7 @@ function Settings(props) {
     );
   }
 
-  return <>{settingsContent !== undefined ? settingsContent : ''}</>;
+  return <>{settingsContent !== undefined ? settingsContent : ""}</>;
 }
 
 export default Settings;

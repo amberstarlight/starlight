@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const StyledButton = styled.button`
   display: inline-block;
@@ -10,7 +10,9 @@ const StyledButton = styled.button`
   color: ${({ theme }) => theme.text};
   border-radius: 2rem;
   border: 1px solid ${(props) => props.theme.text};
-  font: 0.8em 'rubikregular', sans-serif;
+  font:
+    0.8em "rubikregular",
+    sans-serif;
   background: transparent;
   text-align: center;
   transition: background 0.4s;
@@ -25,7 +27,7 @@ function Button(props) {
   return (
     <StyledButton
       className={props.className}
-      type={props.type || 'button'}
+      type={props.type || "button"}
       disabled={props.disabled || false}
       onClick={props.onClick}
     >

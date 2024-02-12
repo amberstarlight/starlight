@@ -8,15 +8,15 @@ import {
   rgbToHex,
   rgbToHSL,
   updateDeviceState,
-} from '../../utils/deviceUtilities';
-import { numericTransformer } from '../../utils/transformers';
-import ColorPicker from '../ColorPicker/ColorPicker';
-import Toggle from '../Toggle/Toggle';
+} from "../../utils/deviceUtilities";
+import { numericTransformer } from "../../utils/transformers";
+import ColorPicker from "../ColorPicker/ColorPicker";
+import Toggle from "../Toggle/Toggle";
 
 export const deviceSettingsGenerator = (
   device,
   deviceSettingsState,
-  setDeviceSettingsState
+  setDeviceSettingsState,
 ) => {
   const exposes = device.definition.exposes;
   let deviceSettingsList = [];
@@ -24,7 +24,7 @@ export const deviceSettingsGenerator = (
   for (let feature of exposes[0].features) {
     let settingComponentsArray = [];
     switch (feature.type) {
-      case 'binary':
+      case "binary":
         settingComponentsArray.push(
           <Toggle
             key={feature.name}
@@ -36,27 +36,27 @@ export const deviceSettingsGenerator = (
                 setDeviceSettingsState,
                 device.friendly_name,
                 feature.name,
-                newMqttState
+                newMqttState,
               );
             }}
-          />
+          />,
         );
         break;
 
-      case 'numeric':
+      case "numeric":
         settingComponentsArray.push(
           numericTransformer(
             feature,
             device,
             deviceSettingsState,
-            setDeviceSettingsState
-          )
+            setDeviceSettingsState,
+          ),
         );
 
         break;
 
-      case 'composite':
-        if (feature.name === 'color_hs') {
+      case "composite":
+        if (feature.name === "color_hs") {
           let rgb = hslToRGB({
             h: deviceSettingsState.color.hue,
             s: deviceSettingsState.color.saturation / 100,
@@ -65,7 +65,7 @@ export const deviceSettingsGenerator = (
 
           settingComponentsArray.push(
             <ColorPicker
-              label={'Color'}
+              label={"Color"}
               key={feature.name}
               value={rgbToHex(rgb)}
               onChange={(event) => {
@@ -82,11 +82,11 @@ export const deviceSettingsGenerator = (
                   deviceSettingsState,
                   setDeviceSettingsState,
                   device.friendly_name,
-                  'color',
-                  newMqttColor
+                  "color",
+                  newMqttColor,
                 );
               }}
-            />
+            />,
           );
         }
 

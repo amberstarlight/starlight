@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import {
   getDeviceSettings,
   setDeviceFriendlyName,
-} from '../../services/mqttService';
-import { deviceSettingsGenerator } from './generator';
-import EditableText from '../EditableText/EditableText';
-import { deviceDescription } from '../../utils/deviceUtilities';
+} from "../../services/mqttService";
+import { deviceSettingsGenerator } from "./generator";
+import EditableText from "../EditableText/EditableText";
+import { deviceDescription } from "../../utils/deviceUtilities";
 
 function DeviceSettings(props) {
   const [deviceSettingsState, setDeviceSettingsState] = useState();
   const [deviceFriendlyNameState, setDeviceFriendlyNameState] = useState(
-    props.device.friendly_name
+    props.device.friendly_name,
   );
 
   if (!props.device.supported)
@@ -26,11 +26,11 @@ function DeviceSettings(props) {
     let properties = {};
 
     features.forEach((property) => {
-      properties[property.name] = '';
+      properties[property.name] = "";
     });
 
     getDeviceSettings(props.device.friendly_name, properties).then(
-      setDeviceSettingsState
+      setDeviceSettingsState,
     );
   }, []);
 
@@ -43,7 +43,7 @@ function DeviceSettings(props) {
       <div>
         <EditableText
           text={deviceFriendlyNameState}
-          fontSize={'2em'}
+          fontSize={"2em"}
           onChange={(event) => {
             const newFriendlyName = event.target.value;
             setDeviceFriendlyNameState(newFriendlyName);
@@ -51,7 +51,7 @@ function DeviceSettings(props) {
           onEditFinish={() => {
             setDeviceFriendlyName(
               props.device.friendly_name,
-              deviceFriendlyNameState
+              deviceFriendlyNameState,
             );
           }}
         />
@@ -62,7 +62,7 @@ function DeviceSettings(props) {
         {deviceSettingsGenerator(
           props.device,
           deviceSettingsState,
-          setDeviceSettingsState
+          setDeviceSettingsState,
         )}
       </div>
     </>

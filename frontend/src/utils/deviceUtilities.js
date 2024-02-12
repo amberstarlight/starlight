@@ -1,15 +1,15 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { setDeviceSettings } from '../services/mqttService';
+import { setDeviceSettings } from "../services/mqttService";
 
 export const mqttStateToBoolean = (state) => {
-  if (state === 'ON') return true;
+  if (state === "ON") return true;
   return false;
 };
 
 export const booleanToMqttState = (boolean) => {
-  if (boolean) return 'ON';
-  return 'OFF';
+  if (boolean) return "ON";
+  return "OFF";
 };
 
 export const updateDeviceState = (
@@ -17,7 +17,7 @@ export const updateDeviceState = (
   setDeviceSettingsState,
   deviceFriendlyName,
   property,
-  value
+  value,
 ) => {
   const updateObject = {};
   updateObject[property] = value;
@@ -32,11 +32,11 @@ export const deviceDescription = (deviceDefinition) => {
   if (deviceDefinition)
     return `${deviceDefinition.vendor} ${deviceDefinition.description}`;
 
-  return 'Unknown';
+  return "Unknown";
 };
 
 export const hexToRGB = (hexValue) => {
-  if (hexValue.startsWith('#')) {
+  if (hexValue.startsWith("#")) {
     hexValue = hexValue.slice(1);
   }
 
@@ -52,7 +52,7 @@ export const hexToRGB = (hexValue) => {
 const byteToHex = (byte) => {
   byte = Math.round(byte);
   let hex = byte.toString(16);
-  return hex.length === 1 ? '0' + hex : hex;
+  return hex.length === 1 ? "0" + hex : hex;
 };
 
 export const rgbToHex = (rgb) => {
@@ -134,8 +134,8 @@ export const kelvinToMired = (kelvin) => {
 
 export const stringTidy = (string) => {
   return string
-    .replace(/[^0-9a-z]/gi, ' ')
-    .split(' ')
+    .replace(/[^0-9a-z]/gi, " ")
+    .split(" ")
     .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
-    .join(' ');
+    .join(" ");
 };

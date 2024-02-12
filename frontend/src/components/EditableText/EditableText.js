@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { useState } from 'react';
-import styled from 'styled-components';
+import { useState } from "react";
+import styled from "styled-components";
 
 const StyledEditable = styled.div`
   display: flex;

@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import { deviceDescription } from '../../utils/deviceUtilities';
-import styled from 'styled-components';
-import { StyledText, StyledHeader } from '../../utils/theme';
+import { deviceDescription } from "../../utils/deviceUtilities";
+import styled from "styled-components";
+import { StyledText, StyledHeader } from "../../utils/theme";
 
 const emojiLookup = {
-  light: '💡',
-  switch: '🔌',
-  fan: '🌡️',
-  cover: '🪟',
-  lock: '🔒',
-  climate: '❄️️',
+  light: "💡",
+  switch: "🔌",
+  fan: "🌡️",
+  cover: "🪟",
+  lock: "🔒",
+  climate: "❄️️",
 };
 
 const Card = styled.div`
@@ -25,7 +25,7 @@ const Card = styled.div`
 `;
 
 function DeviceCard(props) {
-  let deviceEmoji = '❓';
+  let deviceEmoji = "❓";
   let deviceDefinition = props.device.definition;
 
   if (deviceDefinition && deviceDefinition.exposes.length > 0) {

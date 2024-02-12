@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Switch = styled.label`
   position: relative;
@@ -28,7 +28,7 @@ const Slider = styled.span`
 
   &:before {
     position: absolute;
-    content: '';
+    content: "";
     height: 26px;
     width: 26px;
     left: 4px;
@@ -51,7 +51,7 @@ function Toggle(props) {
   return (
     <Switch>
       <input
-        type={'checkbox'}
+        type={"checkbox"}
         checked={props.checked}
         onChange={props.onChange}
       />

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: flex;
@@ -46,12 +46,12 @@ const LdsRipple = styled.div`
 `;
 
 const loadingMessages = [
-  'Retrieving server info...',
-  'Sending client info...',
-  'Reticulating splines...',
-  'Loading...',
-  'Fetching data...',
-  'Zzz...',
+  "Retrieving server info...",
+  "Sending client info...",
+  "Reticulating splines...",
+  "Loading...",
+  "Fetching data...",
+  "Zzz...",
 ];
 
 const pickRandom = (array) => {

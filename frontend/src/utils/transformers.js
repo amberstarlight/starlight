@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import Button from '../components/Button/Button';
-import Slider from '../components/Slider/Slider';
+import Button from "../components/Button/Button";
+import Slider from "../components/Slider/Slider";
 
 import {
   miredToKelvin,
   stringTidy,
   updateDeviceState,
-} from './deviceUtilities';
+} from "./deviceUtilities";
 
 const percentage = (value, maxValue) => Math.floor((value / maxValue) * 100);
 
@@ -15,14 +15,14 @@ export const numericTransformer = (
   feature,
   device,
   deviceSettingsState,
-  setDeviceSettingsState
+  setDeviceSettingsState,
 ) => {
   let componentsArray = [];
-  let unit = '%';
+  let unit = "%";
   let displayValue = percentage(deviceSettingsState[feature.name], 254);
 
-  if (feature.name.includes('color')) {
-    unit = 'K';
+  if (feature.name.includes("color")) {
+    unit = "K";
     displayValue = miredToKelvin(deviceSettingsState[feature.name]);
   }
 
@@ -33,7 +33,7 @@ export const numericTransformer = (
       min={feature.value_min || 0}
       max={feature.value_max || 100}
       step={feature.value_step || 1}
-      value={deviceSettingsState[feature.name] || '?'}
+      value={deviceSettingsState[feature.name] || "?"}
       displayUnit={unit}
       displayValue={displayValue}
       onChange={(event) => {
@@ -43,10 +43,10 @@ export const numericTransformer = (
           setDeviceSettingsState,
           device.friendly_name,
           feature.name,
-          newMqttValue
+          newMqttValue,
         );
       }}
-    />
+    />,
   );
 
   if (feature.presets) {
@@ -60,7 +60,7 @@ export const numericTransformer = (
             setDeviceSettingsState,
             device.friendly_name,
             feature.name,
-            preset.value
+            preset.value,
           );
         }}
       ></Button>
@@ -70,7 +70,7 @@ export const numericTransformer = (
       <div key={`preset-list-${feature.name}`}>
         <p>Presets for {stringTidy(feature.name)}:</p>
         {presets}
-      </div>
+      </div>,
     );
   }
 

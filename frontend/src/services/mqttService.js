@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import mqtt from 'mqtt';
+import mqtt from "mqtt";
 let client;
 
 let oneTimeTopicCallbacks = {};
@@ -15,13 +15,13 @@ export const init = (options, bridgeInfoOnChange) => {
   client = mqtt.connect(mqttEndpoint, options);
 
   if (!client.connected) {
-    client.on('message', (topic, payload) => {
+    client.on("message", (topic, payload) => {
       switch (topic) {
-        case 'zigbee2mqtt/bridge/info':
+        case "zigbee2mqtt/bridge/info":
           if (bridgeInfoOnChange)
             bridgeInfoOnChange(JSON.parse(payload.toString()));
           break;
-        case 'zigbee2mqtt/bridge/devices':
+        case "zigbee2mqtt/bridge/devices":
           devices = JSON.parse(payload.toString());
           break;
         default:
@@ -37,15 +37,15 @@ export const init = (options, bridgeInfoOnChange) => {
       }
     });
 
-    client.once('connect', () => {
-      client.subscribe('zigbee2mqtt/bridge/devices');
-      client.subscribe('zigbee2mqtt/bridge/info');
+    client.once("connect", () => {
+      client.subscribe("zigbee2mqtt/bridge/devices");
+      client.subscribe("zigbee2mqtt/bridge/info");
     });
   }
 };
 
 export const getDevices = () => {
-  let topic = 'zigbee2mqtt/bridge/devices';
+  let topic = "zigbee2mqtt/bridge/devices";
 
   return new Promise((resolve) => {
     if (devices !== undefined) resolve(devices);
@@ -82,7 +82,7 @@ export const setDeviceSettings = (deviceFriendlyName, settings) => {
 };
 
 export const setDeviceFriendlyName = (deviceFriendlyName, newFriendlyName) => {
-  const topic = 'zigbee2mqtt/bridge/request/device/rename';
+  const topic = "zigbee2mqtt/bridge/request/device/rename";
   const message = {
     from: deviceFriendlyName,
     to: newFriendlyName,

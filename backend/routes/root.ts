@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 import express, { Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
