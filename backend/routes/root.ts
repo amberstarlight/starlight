@@ -33,10 +33,8 @@ async function getShortSha(): Promise<string> {
 
 const router = express.Router();
 
-export default function rootRouter(
-  zigbee2mqttService: Zigbee2MqttService,
-): Router {
-  router.get("/healthcheckz", async (_, res: Response) => {
+export function rootRouter(zigbee2mqttService: Zigbee2MqttService): Router {
+  router.get("/healthcheck", async (_, res: Response) => {
     getShortSha().then((sha) => {
       zigbee2mqttService.cacheStatus().then((cache) => {
         const allCached = Object.values(cache).every((status) => status);

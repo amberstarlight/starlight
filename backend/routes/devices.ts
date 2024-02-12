@@ -5,10 +5,8 @@ import { Zigbee2MqttService } from "../zigbee2mqttService";
 
 const router = express.Router();
 
-export default function deviceRouter(
-  zigbee2mqttService: Zigbee2MqttService,
-): Router {
-  router.get("/devices", async (_req: Request, res: Response) => {
+export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
+  router.get("/", async (_req: Request, res: Response) => {
     const devices = await zigbee2mqttService.getDevices();
     res.json({
       status: 200,
@@ -16,7 +14,7 @@ export default function deviceRouter(
     });
   });
 
-  router.get("/devices/:deviceId", async (req: Request, res: Response) => {
+  router.get("/:deviceId", async (req: Request, res: Response) => {
     const device = await zigbee2mqttService.getDevice(req.params.deviceId);
 
     if (device === undefined) {
@@ -26,7 +24,7 @@ export default function deviceRouter(
     res.status(200).json(device);
   });
 
-  router.post("/devices/:deviceId", async (req: Request, res: Response) => {
+  router.post("/:deviceId", async (req: Request, res: Response) => {
     const device = await zigbee2mqttService.getDevice(req.params.deviceId);
 
     if (typeof req.body.setting !== "string") {

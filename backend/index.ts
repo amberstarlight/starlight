@@ -4,12 +4,13 @@ import "dotenv/config";
 import express, { Express, Request, Response, NextFunction } from "express";
 import { IClientOptions } from "mqtt";
 
-import rootRouter from "./routes/root";
-import devicesRouter from "./routes/devices";
-import groupsRouter from "./routes/groups";
-
 import { logger } from "./logger";
 import { Zigbee2MqttService } from "./zigbee2mqttService";
+
+import { apiRouter } from "./routes/api";
+import { groupsRouter } from "./routes/groups";
+import { deviceRouter } from "./routes/devices";
+import { rootRouter } from "./routes/root";
 
 const app: Express = express();
 const port: string = process.env.PORT || "8080";
@@ -48,9 +49,14 @@ const checkIfReady = function (
 };
 
 app.use(checkIfReady);
-app.use(rootRouter(mqttService));
-app.use(devicesRouter(mqttService));
-app.use(groupsRouter(mqttService));
+app.use(
+  "/api",
+  apiRouter({
+    "/": rootRouter(mqttService),
+    "/devices": deviceRouter(mqttService),
+    "/groups": groupsRouter(mqttService),
+  }),
+);
 
 app.listen(port, () => {
   logger(logLevel, "Express", `Server listening on ${port}.`);
