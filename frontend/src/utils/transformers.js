@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: AGPL-3.0-or-later
 
 import Button from '../components/Button/Button';
 import Slider from '../components/Slider/Slider';
