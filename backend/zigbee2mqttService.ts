@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-// SPDX-License-Identifier: GPL-3.0-or-later
-
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
 import { logger } from "./logger";
 import { Device, Group } from "./types/zigbee_types";
