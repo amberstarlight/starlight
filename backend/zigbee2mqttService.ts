@@ -279,8 +279,10 @@ export class Zigbee2MqttService {
         break;
 
       default:
-        const deviceFriendlyName = topic.split("/")[1];
-        const ieee = await this.getIeeeAddress(deviceFriendlyName);
+        const topicName = topic.split("/")[1];
+        const ieeeAddress = await this.getIeeeAddress(topicName);
+        const groupId = await this.getGroupId(topicName);
+        const jsonPayload = JSON.parse(payload.toString());
 
         if (payload.toString().trim().length === 0) {
           logger(
@@ -288,23 +290,36 @@ export class Zigbee2MqttService {
             "MQTT",
             `Payload was empty on '${topic}'. Maybe a device updated its name?`,
           );
-        } else if (ieee !== undefined) {
+          break;
+        }
+
+        if (ieeeAddress !== undefined) {
           logger(
             "info",
             "MQTT",
-            `Updating data for: '${deviceFriendlyName}' [${ieee}]`,
+            `Updating data for: '${topicName}' [${ieeeAddress}]`,
           );
-          const jsonPayload = JSON.parse(payload.toString());
           // TODO: This should do recursive object merging to prevent
           //       reliance on the home assistant modes
-          this.#devicesData[ieee] = jsonPayload;
-        } else {
-          logger(
-            "warn",
-            "MQTT",
-            `Unhandled message on '${topic}': ${payload.toString()}`,
-          );
+          this.#devicesData[ieeeAddress] = jsonPayload;
+          break;
         }
+
+        if (groupId !== undefined) {
+          logger(
+            "info",
+            "MQTT",
+            `Updating data for group: '${topicName}' [${groupId}]`,
+          );
+          this.#groupsData[groupId] = jsonPayload;
+          break;
+        }
+
+        logger(
+          "warn",
+          "MQTT",
+          `Unhandled message on '${topic}': ${payload.toString()}`,
+        );
 
         break;
     }
@@ -430,5 +445,15 @@ export class Zigbee2MqttService {
     );
 
     return device?.ieee_address;
+  }
+
+  async getGroupId(friendly_name: string): Promise<number | undefined> {
+    await this.#mqttClientConnected;
+
+    const group = Object.values(this.#groups).find(
+      (group) => group.friendly_name === friendly_name,
+    );
+
+    return group?.id;
   }
 }
