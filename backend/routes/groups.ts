@@ -6,6 +6,7 @@ import { Zigbee2MqttService } from "../zigbee2mqttService";
 const router = express.Router();
 
 export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
+  // get data about all existing groups
   router.get("/", async (_req: Request, res: Response) => {
     const groups = await zigbee2mqttService.getGroups();
 
@@ -14,6 +15,27 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     });
   });
 
+  // create a group
+  router.post("/", (req: Request, res: Response) => {
+    const groupName = req.body.name;
+    zigbee2mqttService.addGroup(groupName);
+
+    res.status(202).json({
+      data: groupName,
+    });
+  });
+
+  // delete a group
+  router.delete("/", async (req: Request, res: Response) => {
+    const groupName = req.body.name;
+    zigbee2mqttService.deleteGroup(groupName, true);
+
+    res.status(200).json({
+      message: `Successfully deleted group '${groupName}'.`,
+    });
+  });
+
+  // get data about an existing group
   router.get("/:groupId", async (req: Request, res: Response) => {
     const group = await zigbee2mqttService.getGroup(
       parseInt(req.params.groupId),
@@ -28,6 +50,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     });
   });
 
+  // update an existing group's state
   router.post("/:groupId", async (req: Request, res: Response) => {
     const group = await zigbee2mqttService.getGroup(
       parseInt(req.params.groupId),
@@ -56,6 +79,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     });
   });
 
+  // add a device to an existing group
   router.post("/:groupId/add", async (req: Request, res: Response) => {
     const group = await zigbee2mqttService.getGroup(
       parseInt(req.params.groupId),
@@ -77,6 +101,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     });
   });
 
+  // remove a device from an existing group
   router.post("/:groupId/remove", async (req: Request, res: Response) => {
     const group = await zigbee2mqttService.getGroup(
       parseInt(req.params.groupId),

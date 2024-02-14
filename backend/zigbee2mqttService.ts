@@ -271,7 +271,7 @@ export class Zigbee2MqttService {
           logger(
             "info",
             "MQTT",
-            `Unsubscribing from: ${quoteList(removedTopics)}`,
+            `Groups updated, unsubscribing from: ${quoteList(removedTopics)}`,
           );
           this.#client.unsubscribe(removedTopics);
         }
@@ -282,7 +282,6 @@ export class Zigbee2MqttService {
         const topicName = topic.split("/")[1];
         const ieeeAddress = await this.getIeeeAddress(topicName);
         const groupId = await this.getGroupId(topicName);
-        const jsonPayload = JSON.parse(payload.toString());
 
         if (payload.toString().trim().length === 0) {
           logger(
@@ -292,6 +291,8 @@ export class Zigbee2MqttService {
           );
           break;
         }
+
+        const jsonPayload = JSON.parse(payload.toString());
 
         if (ieeeAddress !== undefined) {
           logger(
@@ -410,26 +411,25 @@ export class Zigbee2MqttService {
     );
   }
 
-  async addGroup(friendlyName: string, id?: number) {
+  async addGroup(friendlyName: string) {
     await this.#mqttClientConnected;
 
     this.#client.publish(
       `${this.#baseTopic}/bridge/request/group/add`,
       JSON.stringify({
         friendly_name: friendlyName,
-        id: id,
       }),
     );
   }
 
-  async removeGroup(friendlyName: string, id?: number, force?: boolean) {
+  async deleteGroup(friendlyName: string, force: boolean = false) {
     await this.#mqttClientConnected;
+    const groupId = await this.getGroupId(friendlyName);
 
     this.#client.publish(
       `${this.#baseTopic}/bridge/request/group/remove`,
       JSON.stringify({
-        friendly_name: friendlyName,
-        id: id,
+        id: groupId,
         force: force,
       }),
     );
@@ -447,11 +447,11 @@ export class Zigbee2MqttService {
     return device?.ieee_address;
   }
 
-  async getGroupId(friendly_name: string): Promise<number | undefined> {
+  async getGroupId(friendlyName: string): Promise<number | undefined> {
     await this.#mqttClientConnected;
 
     const group = Object.values(this.#groups).find(
-      (group) => group.friendly_name === friendly_name,
+      (group) => group.friendly_name === friendlyName,
     );
 
     return group?.id;
