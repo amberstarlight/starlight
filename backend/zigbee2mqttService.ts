@@ -387,6 +387,8 @@ export class Zigbee2MqttService {
   async getDevice(deviceId: string): Promise<MqttDevice> {
     await this.#mqttClientConnected;
     const device = this.#devices[deviceId];
+
+    if (device === undefined) throw new Error("Device does not exist");
     return new MqttDevice(device, this.exposeUpdater);
   }
 
@@ -399,6 +401,8 @@ export class Zigbee2MqttService {
   async getGroup(groupId: number): Promise<MqttGroup> {
     await this.#mqttClientConnected;
     const group = this.#groups[groupId];
+
+    if (group === undefined) throw new Error("Group does not exist");
     return new MqttGroup(group, this.exposeUpdater, this.groupMemberUpdater);
   }
 
@@ -422,14 +426,13 @@ export class Zigbee2MqttService {
     );
   }
 
-  async deleteGroup(friendlyName: string, force: boolean = false) {
+  async deleteGroup(id: number, force: boolean = false) {
     await this.#mqttClientConnected;
-    const groupId = await this.getGroupId(friendlyName);
 
     this.#client.publish(
       `${this.#baseTopic}/bridge/request/group/remove`,
       JSON.stringify({
-        id: groupId,
+        id: id,
         force: force,
       }),
     );

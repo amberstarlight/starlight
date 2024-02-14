@@ -16,38 +16,59 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   });
 
   // create a group
-  router.post("/", (req: Request, res: Response) => {
+  router.post("/", async (req: Request, res: Response) => {
     const groupName = req.body.name;
+    const groupExists = await zigbee2mqttService.getGroupId(groupName);
+
+    if (groupExists) {
+      return res.status(400).json({
+        error: "Group already exists.",
+      });
+    }
+
     zigbee2mqttService.addGroup(groupName);
 
     res.status(202).json({
-      data: groupName,
+      data: groupName, // should return the group's ID
     });
   });
 
   // delete a group
   router.delete("/", async (req: Request, res: Response) => {
-    const groupName = req.body.name;
-    zigbee2mqttService.deleteGroup(groupName, true);
+    const groupId = req.body.id;
 
-    res.status(200).json({
-      message: `Successfully deleted group '${groupName}'.`,
-    });
+    zigbee2mqttService
+      .getGroup(parseInt(groupId))
+      .then((group) => {
+        zigbee2mqttService.deleteGroup(groupId, true);
+
+        res.status(200).json({
+          message: `Successfully deleted group '${group.group.friendly_name}'.`,
+        });
+      })
+      .catch((err) => {
+        res.status(404).json({
+          error: err.message,
+        });
+      });
   });
 
   // get data about an existing group
   router.get("/:groupId", async (req: Request, res: Response) => {
-    const group = await zigbee2mqttService.getGroup(
-      parseInt(req.params.groupId),
-    );
+    const groupId = req.params.groupId;
 
-    if (group === undefined) {
-      return res.status(404).json({ error: "Group not found." });
-    }
-
-    res.status(200).json({
-      data: group,
-    });
+    zigbee2mqttService
+      .getGroup(parseInt(groupId))
+      .then((group) => {
+        res.status(200).json({
+          data: group,
+        });
+      })
+      .catch((err) => {
+        res.status(404).json({
+          error: err.message,
+        });
+      });
   });
 
   // update an existing group's state
