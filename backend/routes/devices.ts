@@ -39,11 +39,15 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       });
     }
 
+    if (device === undefined)
+      return res.status(404).json({
+        error: "Device not found.",
+      });
+
     device.setValue(req.body.setting, req.body.value);
 
-    return res.json({
-      status: 200,
-      device: req.params.deviceId,
+    return res.status(200).json({
+      data: req.params.deviceId,
     });
   });
 

@@ -19,11 +19,15 @@ interface OperationStatusFailure {
 
 type OperationStatus = OperationStatusSuccess | OperationStatusFailure;
 
+type FieldValue = any;
+
 type ExposeUpdater = (
   device: string,
   fieldName: string,
-  fieldValue: any,
+  fieldValue: FieldValue,
 ) => void;
+
+type ExposeRetriever = (id: string, fieldName?: string) => Promise<FieldValue>;
 
 enum GroupOperation {
   Add,
@@ -63,19 +67,27 @@ class MqttGroup {
   group: Group;
   #updater: ExposeUpdater;
   #memberUpdater: GroupMemberUpdater;
+  #exposeRetriever: ExposeRetriever;
 
   constructor(
     group: Group,
     updater: ExposeUpdater,
     memberUpdater: GroupMemberUpdater,
+    exposeRetriever: ExposeRetriever,
   ) {
     this.group = group;
     this.#updater = updater;
     this.#memberUpdater = memberUpdater;
+    this.#exposeRetriever = exposeRetriever;
   }
 
   toJSON(): Group {
     return this.group;
+  }
+
+  async getValue(expose?: string): Promise<FieldValue> {
+    const value = await this.#exposeRetriever(this.group.id.toString(), expose);
+    return value;
   }
 
   setValue(expose: string, value: any): OperationStatus {
@@ -326,6 +338,22 @@ export class Zigbee2MqttService {
     }
   }
 
+  exposeRetriever: ExposeRetriever = async (id, expose) => {
+    // work out if it's a device or a group
+    const group = await this.getGroup(parseInt(id));
+    const device = await this.getDevice(id);
+
+    if (group !== undefined) {
+      if (expose !== undefined) return this.#groupsData[id][expose];
+      return this.#groupsData[id];
+    } else if (device !== undefined) {
+      if (expose !== undefined) return this.#devicesData[id][expose];
+      return this.#devicesData[id];
+    }
+
+    throw new Error("ID not found");
+  };
+
   exposeUpdater: ExposeUpdater = (deviceOrGroup, expose, value) => {
     this.#client.publish(
       `${this.#baseTopic}/${deviceOrGroup}/set`,
@@ -384,11 +412,11 @@ export class Zigbee2MqttService {
     return dataSet;
   }
 
-  async getDevice(deviceId: string): Promise<MqttDevice> {
+  async getDevice(deviceId: string): Promise<MqttDevice | undefined> {
     await this.#mqttClientConnected;
     const device = this.#devices[deviceId];
 
-    if (device === undefined) throw new Error("Device does not exist");
+    if (device === undefined) return undefined;
     return new MqttDevice(device, this.exposeUpdater);
   }
 
@@ -398,12 +426,17 @@ export class Zigbee2MqttService {
     return devices.map((device) => new MqttDevice(device, this.exposeUpdater));
   }
 
-  async getGroup(groupId: number): Promise<MqttGroup> {
+  async getGroup(groupId: number): Promise<MqttGroup | undefined> {
     await this.#mqttClientConnected;
     const group = this.#groups[groupId];
 
-    if (group === undefined) throw new Error("Group does not exist");
-    return new MqttGroup(group, this.exposeUpdater, this.groupMemberUpdater);
+    if (group === undefined) return undefined;
+    return new MqttGroup(
+      group,
+      this.exposeUpdater,
+      this.groupMemberUpdater,
+      this.exposeRetriever,
+    );
   }
 
   async getGroups(): Promise<MqttGroup[]> {
@@ -411,7 +444,12 @@ export class Zigbee2MqttService {
     const groups = Object.values(this.#groups);
     return groups.map(
       (group) =>
-        new MqttGroup(group, this.exposeUpdater, this.groupMemberUpdater),
+        new MqttGroup(
+          group,
+          this.exposeUpdater,
+          this.groupMemberUpdater,
+          this.exposeRetriever,
+        ),
     );
   }
 

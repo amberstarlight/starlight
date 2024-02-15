@@ -40,6 +40,8 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     zigbee2mqttService
       .getGroup(parseInt(groupId))
       .then((group) => {
+        if (group === undefined) throw new Error("Group does not exist.");
+
         zigbee2mqttService.deleteGroup(groupId, true);
 
         res.status(200).json({
@@ -60,6 +62,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     zigbee2mqttService
       .getGroup(parseInt(groupId))
       .then((group) => {
+        if (group === undefined) throw new Error("Group does not exist.");
         res.status(200).json({
           data: group,
         });
@@ -69,35 +72,6 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
           error: err.message,
         });
       });
-  });
-
-  // update an existing group's state
-  router.post("/:groupId", async (req: Request, res: Response) => {
-    const group = await zigbee2mqttService.getGroup(
-      parseInt(req.params.groupId),
-    );
-
-    if (group === undefined) {
-      return res.status(404).json({ error: "Group not found." });
-    }
-
-    if (typeof req.body.setting !== "string") {
-      return res.status(400).json({
-        error: "Settings must be provided as strings.",
-      });
-    }
-
-    if (!req.body.value || req.body.value === undefined) {
-      return res.status(400).json({
-        error: "Value was not provided.",
-      });
-    }
-
-    group.setValue(req.body.setting, req.body.value);
-
-    return res.status(200).json({
-      data: req.params.groupId,
-    });
   });
 
   // add a device to an existing group
@@ -142,6 +116,52 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
     return res.status(200).json({
       data: group,
+    });
+  });
+
+  // get an existing group's state
+  router.get("/:groupId/state", async (req: Request, res: Response) => {
+    const group = await zigbee2mqttService.getGroup(
+      parseInt(req.params.groupId),
+    );
+
+    if (group === undefined) {
+      return res.status(404).json({ error: "Group not found." });
+    }
+
+    const state = await group.getValue(req.query.setting?.toString());
+
+    res.status(200).json({
+      data: state,
+    });
+  });
+
+  // update an existing group's state
+  router.post("/:groupId/state", async (req: Request, res: Response) => {
+    const group = await zigbee2mqttService.getGroup(
+      parseInt(req.params.groupId),
+    );
+
+    if (group === undefined) {
+      return res.status(404).json({ error: "Group not found." });
+    }
+
+    if (typeof req.body.setting !== "string") {
+      return res.status(400).json({
+        error: "Settings must be provided as strings.",
+      });
+    }
+
+    if (!req.body.value || req.body.value === undefined) {
+      return res.status(400).json({
+        error: "Value was not provided.",
+      });
+    }
+
+    group.setValue(req.body.setting, req.body.value);
+
+    return res.status(200).json({
+      data: req.params.groupId,
     });
   });
 
