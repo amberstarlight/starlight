@@ -8,7 +8,8 @@
   "scripts": {
     "backend": "yarn workspace backend dev",
     "frontend": "yarn workspace frontend start",
-    "start": "concurrently --kill-others-on-fail \"yarn backend\" \"yarn frontend\""
+    "start": "concurrently --kill-others-on-fail \"yarn backend\" \"yarn frontend\"",
+    "lint": "yarn prettier -w ."
   },
   "dependencies": {
     "concurrently": "^8.2.2"

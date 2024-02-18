@@ -3,10 +3,10 @@ services:
     container_name: mosquitto
     image: eclipse-mosquitto:latest
     ports:
-      - '1883:1883'
-      - '1884:1884'
+      - "1883:1883"
+      - "1884:1884"
     volumes:
-      - './mosquitto.conf:/mosquitto/config/mosquitto.conf'
+      - "./mosquitto.conf:/mosquitto/config/mosquitto.conf"
 
   zigbee2mqtt:
     container_name: zigbee2mqtt
@@ -28,4 +28,4 @@ services:
     container_name: zigbee_webui
     image: ghcr.io/amberstarlight/zigbee-webui:latest
     ports:
-      - '80:80'
+      - "80:80"
