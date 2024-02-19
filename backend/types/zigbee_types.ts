@@ -77,3 +77,9 @@ export interface Group {
   scenes: Scene[];
   members: GroupMember[];
 }
+
+export interface BridgeResponse {
+  status: "ok" | "error";
+  error?: string;
+  data: any;
+}

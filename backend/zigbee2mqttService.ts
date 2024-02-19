@@ -2,7 +2,7 @@
 
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
 import { logger } from "./logger";
-import { Device, Group } from "./types/zigbee_types";
+import { BridgeResponse, Device, Group } from "./types/zigbee_types";
 import { elementDiff, getByPath, quoteList } from "./utils";
 import { Feature } from "./types/zigbee_features";
 
@@ -158,6 +158,7 @@ export class Zigbee2MqttService {
   #groups: Record<string, Group> = {};
   #mqttClientConnected: Promise<OperationStatus>;
   #ready: Boolean = false;
+  #topicCallbacks: Record<string, Function[]> = {};
 
   constructor(
     endpoint: string,
@@ -328,6 +329,17 @@ export class Zigbee2MqttService {
           break;
         }
 
+        if (
+          this.#topicCallbacks[topic] &&
+          this.#topicCallbacks[topic].length > 0
+        ) {
+          let callback = this.#topicCallbacks[topic].shift();
+          if (typeof callback === "function") {
+            callback(jsonPayload);
+          }
+          break;
+        }
+
         logger(
           "warn",
           "MQTT",
@@ -453,15 +465,28 @@ export class Zigbee2MqttService {
     );
   }
 
-  async addGroup(friendlyName: string) {
+  async addGroup(friendlyName: string): Promise<BridgeResponse> {
     await this.#mqttClientConnected;
 
-    this.#client.publish(
-      `${this.#baseTopic}/bridge/request/group/add`,
-      JSON.stringify({
-        friendly_name: friendlyName,
-      }),
-    );
+    return new Promise((resolve) => {
+      const responseTopic = `${this.#baseTopic}/bridge/response/group/add`;
+      this.#client.subscribe(responseTopic);
+
+      const callback = (response: any) => {
+        resolve(response);
+      };
+
+      if (!this.#topicCallbacks[responseTopic])
+        this.#topicCallbacks[responseTopic] = [];
+      this.#topicCallbacks[responseTopic].push(callback);
+
+      this.#client.publish(
+        `${this.#baseTopic}/bridge/request/group/add`,
+        JSON.stringify({
+          friendly_name: friendlyName,
+        }),
+      );
+    });
   }
 
   async deleteGroup(id: number, force: boolean = false) {

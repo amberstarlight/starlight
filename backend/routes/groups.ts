@@ -26,10 +26,16 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       });
     }
 
-    zigbee2mqttService.addGroup(groupName);
-
-    res.status(202).json({
-      data: groupName, // should return the group's ID
+    zigbee2mqttService.addGroup(groupName).then((data) => {
+      if (data.status === "error") {
+        return res.status(503).json({
+          error: data.error,
+        });
+      } else {
+        return res.status(200).json({
+          data: data.data,
+        });
+      }
     });
   });
 
@@ -72,6 +78,29 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
           error: err.message,
         });
       });
+  });
+
+  // update an existing group's name
+  router.put("/:groupId", async (req: Request, res: Response) => {
+    const group = await zigbee2mqttService.getGroup(
+      parseInt(req.params.groupId),
+    );
+
+    if (group === undefined) {
+      return res.status(404).json({ error: "Group not found." });
+    }
+
+    if (group.group.friendly_name === req.body.name) {
+      return res.status(400).json({
+        error: "Rename request must be different to the group's current name.",
+      });
+    }
+
+    // group.rename(req.body.name).then(data => console.log(data));
+
+    res.status(200).json({
+      data: "",
+    });
   });
 
   // add a device to an existing group
