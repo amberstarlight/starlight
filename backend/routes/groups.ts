@@ -5,6 +5,9 @@ import { Zigbee2MqttService } from "../zigbee2mqttService";
 
 const router = express.Router();
 
+const DEVICE_NOT_FOUND = "Device not found.";
+const GROUP_NOT_FOUND = "Group not found.";
+
 export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   // get data about all existing groups
   router.get("/", async (_req: Request, res: Response) => {
@@ -46,7 +49,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     zigbee2mqttService
       .getGroup(parseInt(groupId))
       .then((group) => {
-        if (group === undefined) throw new Error("Group does not exist.");
+        if (group === undefined) throw new Error(GROUP_NOT_FOUND);
 
         zigbee2mqttService.deleteGroup(groupId, true);
 
@@ -63,12 +66,12 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
   // get data about an existing group
   router.get("/:groupId", async (req: Request, res: Response) => {
-    const groupId = req.params.groupId;
+    const groupId = parseInt(req.params.groupId);
 
     zigbee2mqttService
-      .getGroup(parseInt(groupId))
+      .getGroup(groupId)
       .then((group) => {
-        if (group === undefined) throw new Error("Group does not exist.");
+        if (group === undefined) throw new Error(GROUP_NOT_FOUND);
         res.status(200).json({
           data: group,
         });
@@ -82,24 +85,35 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
   // update an existing group's name
   router.put("/:groupId", async (req: Request, res: Response) => {
-    const group = await zigbee2mqttService.getGroup(
-      parseInt(req.params.groupId),
-    );
+    const groupId = parseInt(req.params.groupId);
+    const newName = req.body.name;
 
-    if (group === undefined) {
-      return res.status(404).json({ error: "Group not found." });
-    }
-
-    if (group.group.friendly_name === req.body.name) {
+    if (newName === undefined) {
       return res.status(400).json({
-        error: "Rename request must be different to the group's current name.",
+        error: "New name not provided.",
       });
     }
 
-    // group.rename(req.body.name).then(data => console.log(data));
+    zigbee2mqttService.getGroup(groupId).then((group) => {
+      if (group === undefined) throw new Error(GROUP_NOT_FOUND);
+      if (group.group.friendly_name === newName) {
+        return res.status(400).json({
+          error:
+            "Rename request must be different to the group's current name.",
+        });
+      }
 
-    res.status(200).json({
-      data: "",
+      zigbee2mqttService.renameGroup(group.group.id, newName).then((data) => {
+        if (data.status === "error") {
+          return res.status(503).json({
+            error: data.error,
+          });
+        } else {
+          return res.status(200).json({
+            data: data.data,
+          });
+        }
+      });
     });
   });
 
@@ -111,17 +125,23 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     const device = await zigbee2mqttService.getDevice(req.body.device);
 
     if (group === undefined) {
-      return res.status(404).json({ error: "Group not found." });
+      return res.status(404).json({ error: GROUP_NOT_FOUND });
     }
 
     if (device === undefined) {
-      return res.status(404).json({ error: "Device not found." });
+      return res.status(404).json({ error: DEVICE_NOT_FOUND });
     }
 
-    group.addDevice(device.device.friendly_name);
-
-    return res.status(200).json({
-      data: group,
+    group.addDevice(device.device.friendly_name).then((data) => {
+      if (data.status === "error") {
+        return res.status(503).json({
+          error: data.error,
+        });
+      } else {
+        return res.status(200).json({
+          data: data.data,
+        });
+      }
     });
   });
 
@@ -134,17 +154,23 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     const device = await zigbee2mqttService.getDevice(req.body.device);
 
     if (group === undefined) {
-      return res.status(404).json({ error: "Group not found." });
+      return res.status(404).json({ error: GROUP_NOT_FOUND });
     }
 
     if (device === undefined) {
-      return res.status(404).json({ error: "Device not found." });
+      return res.status(404).json({ error: DEVICE_NOT_FOUND });
     }
 
-    group.removeDevice(device.device.friendly_name);
-
-    return res.status(200).json({
-      data: group,
+    group.removeDevice(device.device.friendly_name).then((data) => {
+      if (data.status === "error") {
+        return res.status(503).json({
+          error: data.error,
+        });
+      } else {
+        return res.status(200).json({
+          data: data.data,
+        });
+      }
     });
   });
 
@@ -155,7 +181,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     );
 
     if (group === undefined) {
-      return res.status(404).json({ error: "Group not found." });
+      return res.status(404).json({ error: GROUP_NOT_FOUND });
     }
 
     const state = await group.getValue(req.query.setting?.toString());
@@ -172,7 +198,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     );
 
     if (group === undefined) {
-      return res.status(404).json({ error: "Group not found." });
+      return res.status(404).json({ error: GROUP_NOT_FOUND });
     }
 
     if (typeof req.body.setting !== "string") {

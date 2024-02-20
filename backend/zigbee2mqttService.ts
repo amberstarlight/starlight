@@ -38,7 +38,9 @@ type GroupMemberUpdater = (
   groupName: string,
   deviceId: string,
   operation: GroupOperation,
-) => void;
+) => Promise<BridgeResponse>;
+
+type BridgeResponseCallback = (response: BridgeResponse) => void;
 
 class MqttDevice {
   device: Device;
@@ -95,14 +97,12 @@ class MqttGroup {
     return SUCCESS;
   }
 
-  addDevice(deviceId: string): OperationStatus {
-    this.#memberUpdater(this.group.friendly_name, deviceId, 0);
-    return SUCCESS;
+  async addDevice(deviceId: string): Promise<BridgeResponse> {
+    return this.#memberUpdater(this.group.friendly_name, deviceId, 0);
   }
 
-  removeDevice(deviceId: string): OperationStatus {
-    this.#memberUpdater(this.group.friendly_name, deviceId, 1);
-    return SUCCESS;
+  async removeDevice(deviceId: string): Promise<BridgeResponse> {
+    return this.#memberUpdater(this.group.friendly_name, deviceId, 1);
   }
 }
 
@@ -158,7 +158,7 @@ export class Zigbee2MqttService {
   #groups: Record<string, Group> = {};
   #mqttClientConnected: Promise<OperationStatus>;
   #ready: Boolean = false;
-  #topicCallbacks: Record<string, Function[]> = {};
+  #topicCallbacks: Record<string, BridgeResponseCallback[]> = {};
 
   constructor(
     endpoint: string,
@@ -334,9 +334,7 @@ export class Zigbee2MqttService {
           this.#topicCallbacks[topic].length > 0
         ) {
           let callback = this.#topicCallbacks[topic].shift();
-          if (typeof callback === "function") {
-            callback(jsonPayload);
-          }
+          if (callback !== undefined) callback(jsonPayload);
           break;
         }
 
@@ -379,14 +377,11 @@ export class Zigbee2MqttService {
     group: string,
     device: string,
     operation: GroupOperation,
-  ) => {
+  ): Promise<BridgeResponse> => {
     const keyword = operation ? "remove" : "add";
-    this.#client.publish(
+    return this.#bridgeRequest(
       `${this.#baseTopic}/bridge/request/group/members/${keyword}`,
-      JSON.stringify({
-        group: group,
-        device: device,
-      }),
+      { group: group, device: device },
     );
   };
 
@@ -465,14 +460,13 @@ export class Zigbee2MqttService {
     );
   }
 
-  async addGroup(friendlyName: string): Promise<BridgeResponse> {
+  async #bridgeRequest(topic: string, message: any): Promise<BridgeResponse> {
     await this.#mqttClientConnected;
+    const responseTopic = topic.replace("request", "response");
+    this.#client.subscribe(responseTopic);
 
     return new Promise((resolve) => {
-      const responseTopic = `${this.#baseTopic}/bridge/response/group/add`;
-      this.#client.subscribe(responseTopic);
-
-      const callback = (response: any) => {
+      const callback: BridgeResponseCallback = (response: BridgeResponse) => {
         resolve(response);
       };
 
@@ -480,24 +474,33 @@ export class Zigbee2MqttService {
         this.#topicCallbacks[responseTopic] = [];
       this.#topicCallbacks[responseTopic].push(callback);
 
-      this.#client.publish(
-        `${this.#baseTopic}/bridge/request/group/add`,
-        JSON.stringify({
-          friendly_name: friendlyName,
-        }),
-      );
+      this.#client.publish(topic, JSON.stringify(message));
     });
   }
 
-  async deleteGroup(id: number, force: boolean = false) {
+  async addGroup(friendlyName: string): Promise<BridgeResponse> {
     await this.#mqttClientConnected;
+    return this.#bridgeRequest(`${this.#baseTopic}/bridge/request/group/add`, {
+      friendly_name: friendlyName,
+    });
+  }
 
-    this.#client.publish(
+  async deleteGroup(
+    id: number,
+    force: boolean = false,
+  ): Promise<BridgeResponse> {
+    await this.#mqttClientConnected;
+    return this.#bridgeRequest(
       `${this.#baseTopic}/bridge/request/group/remove`,
-      JSON.stringify({
-        id: id,
-        force: force,
-      }),
+      { id: id, force: force },
+    );
+  }
+
+  async renameGroup(groupId: number, newName: string): Promise<BridgeResponse> {
+    await this.#mqttClientConnected;
+    return this.#bridgeRequest(
+      `${this.#baseTopic}/bridge/request/group/rename`,
+      { from: groupId, to: newName },
     );
   }
 
