@@ -191,6 +191,12 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
     const state = await group.getValue(req.query.setting?.toString());
 
+    if (state === undefined) {
+      return res.status(503).json({
+        error: ApiError.StateDataMissing,
+      });
+    }
+
     res.status(200).json({
       data: state,
     });

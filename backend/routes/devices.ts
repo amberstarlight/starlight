@@ -52,5 +52,24 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     });
   });
 
+  router.get("/:deviceId/state", async (req: Request, res: Response) => {
+    const device = await zigbee2mqttService.getDevice(req.params.deviceId);
+
+    if (device === undefined) {
+      return res.status(404).json({ error: ApiError.DeviceNotFound });
+    }
+
+    const state = await device.getValue(req.query.setting?.toString());
+
+    if (state === undefined) {
+      return res.status(503).json({
+        error: ApiError.StateDataMissing,
+      });
+    }
+
+    res.status(200).json({
+      data: state,
+    });
+  });
   return router;
 }

@@ -45,18 +45,25 @@ type BridgeResponseCallback = (response: BridgeResponse) => void;
 class MqttDevice {
   device: Device;
   #updater: ExposeUpdater;
+  #exposeRetriever: ExposeRetriever;
 
-  constructor(device: Device, updater: ExposeUpdater) {
+  constructor(
+    device: Device,
+    updater: ExposeUpdater,
+    exposeRetriever: ExposeRetriever,
+  ) {
     this.device = device;
     this.#updater = updater;
+    this.#exposeRetriever = exposeRetriever;
   }
 
   toJSON(): Device {
     return this.device;
   }
 
-  getValue(expose: string): any {
-    // could be any type, number, bool, etc
+  async getValue(expose?: string): Promise<FieldValue> {
+    const value = await this.#exposeRetriever(this.device.ieee_address, expose);
+    return value;
   }
 
   setValue(expose: string, value: any): OperationStatus {
@@ -424,13 +431,16 @@ export class Zigbee2MqttService {
     const device = this.#devices[deviceId];
 
     if (device === undefined) return undefined;
-    return new MqttDevice(device, this.exposeUpdater);
+    return new MqttDevice(device, this.exposeUpdater, this.exposeRetriever);
   }
 
   async getDevices(): Promise<MqttDevice[]> {
     await this.#mqttClientConnected;
     const devices = Object.values(this.#devices);
-    return devices.map((device) => new MqttDevice(device, this.exposeUpdater));
+    return devices.map(
+      (device) =>
+        new MqttDevice(device, this.exposeUpdater, this.exposeRetriever),
+    );
   }
 
   async getGroup(groupId: number): Promise<MqttGroup | undefined> {

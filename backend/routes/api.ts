@@ -17,5 +17,6 @@ export const ApiError = {
   GroupNotFound: "Group not found.",
   NameInUse: "Name already in use.",
   SettingPropertyMalformed: "Setting property malformed.",
+  StateDataMissing: "Could not retrieve state data.",
   ValueNotProvided: "Value property was not provided.",
 };
