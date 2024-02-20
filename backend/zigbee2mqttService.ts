@@ -426,6 +426,24 @@ export class Zigbee2MqttService {
     return dataSet;
   }
 
+  async #bridgeRequest(topic: string, message: any): Promise<BridgeResponse> {
+    await this.#mqttClientConnected;
+    const responseTopic = topic.replace("request", "response");
+    this.#client.subscribe(responseTopic);
+
+    return new Promise((resolve) => {
+      const callback: BridgeResponseCallback = (response: BridgeResponse) => {
+        resolve(response);
+      };
+
+      if (!this.#topicCallbacks[responseTopic])
+        this.#topicCallbacks[responseTopic] = [];
+      this.#topicCallbacks[responseTopic].push(callback);
+
+      this.#client.publish(topic, JSON.stringify(message));
+    });
+  }
+
   async getDevice(deviceId: string): Promise<MqttDevice | undefined> {
     await this.#mqttClientConnected;
     const device = this.#devices[deviceId];
@@ -440,6 +458,17 @@ export class Zigbee2MqttService {
     return devices.map(
       (device) =>
         new MqttDevice(device, this.exposeUpdater, this.exposeRetriever),
+    );
+  }
+
+  async renameDevice(
+    deviceId: string,
+    newName: string,
+  ): Promise<BridgeResponse> {
+    await this.#mqttClientConnected;
+    return this.#bridgeRequest(
+      `${this.#baseTopic}/bridge/request/device/rename`,
+      { from: deviceId, to: newName },
     );
   }
 
@@ -468,24 +497,6 @@ export class Zigbee2MqttService {
           this.exposeRetriever,
         ),
     );
-  }
-
-  async #bridgeRequest(topic: string, message: any): Promise<BridgeResponse> {
-    await this.#mqttClientConnected;
-    const responseTopic = topic.replace("request", "response");
-    this.#client.subscribe(responseTopic);
-
-    return new Promise((resolve) => {
-      const callback: BridgeResponseCallback = (response: BridgeResponse) => {
-        resolve(response);
-      };
-
-      if (!this.#topicCallbacks[responseTopic])
-        this.#topicCallbacks[responseTopic] = [];
-      this.#topicCallbacks[responseTopic].push(callback);
-
-      this.#client.publish(topic, JSON.stringify(message));
-    });
   }
 
   async addGroup(friendlyName: string): Promise<BridgeResponse> {
