@@ -2,6 +2,7 @@
 
 import express, { Request, Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
+import { ApiError } from "./api";
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     const device = await zigbee2mqttService.getDevice(req.params.deviceId);
 
     if (device === undefined) {
-      return res.status(404).json({ error: "Device not found." });
+      return res.status(404).json({ error: ApiError.DeviceNotFound });
     }
 
     res.status(200).json(device);
@@ -29,19 +30,19 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
     if (typeof req.body.setting !== "string") {
       return res.status(400).json({
-        error: "Settings must be provided as strings.",
+        error: ApiError.SettingPropertyMalformed,
       });
     }
 
     if (!req.body.value || req.body.value === undefined) {
       return res.status(400).json({
-        error: "Value was not provided.",
+        error: ApiError.ValueNotProvided,
       });
     }
 
     if (device === undefined)
       return res.status(404).json({
-        error: "Device not found.",
+        error: ApiError.DeviceNotFound,
       });
 
     device.setValue(req.body.setting, req.body.value);

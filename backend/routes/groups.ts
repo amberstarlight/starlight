@@ -2,11 +2,9 @@
 
 import express, { Request, Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
+import { ApiError } from "./api";
 
 const router = express.Router();
-
-const DEVICE_NOT_FOUND = "Device not found.";
-const GROUP_NOT_FOUND = "Group not found.";
 
 export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   // get data about all existing groups
@@ -25,7 +23,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
     if (groupExists) {
       return res.status(400).json({
-        error: "Group already exists.",
+        error: ApiError.NameInUse,
       });
     }
 
@@ -49,7 +47,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     zigbee2mqttService
       .getGroup(parseInt(groupId))
       .then((group) => {
-        if (group === undefined) throw new Error(GROUP_NOT_FOUND);
+        if (group === undefined) throw new Error(ApiError.GroupNotFound);
 
         zigbee2mqttService.deleteGroup(groupId, true);
 
@@ -71,7 +69,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     zigbee2mqttService
       .getGroup(groupId)
       .then((group) => {
-        if (group === undefined) throw new Error(GROUP_NOT_FOUND);
+        if (group === undefined) throw new Error(ApiError.GroupNotFound);
         res.status(200).json({
           data: group,
         });
@@ -98,13 +96,13 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
     if (group === undefined) {
       return res.status(404).json({
-        error: GROUP_NOT_FOUND,
+        error: ApiError.GroupNotFound,
       });
     }
 
     if (group.group.friendly_name === newName) {
       return res.status(400).json({
-        error: "Rename request must be different to the group's current name.",
+        error: ApiError.NameInUse,
       });
     }
 
@@ -132,11 +130,11 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     const device = await zigbee2mqttService.getDevice(req.body.device);
 
     if (group === undefined) {
-      return res.status(404).json({ error: GROUP_NOT_FOUND });
+      return res.status(404).json({ error: ApiError.GroupNotFound });
     }
 
     if (device === undefined) {
-      return res.status(404).json({ error: DEVICE_NOT_FOUND });
+      return res.status(404).json({ error: ApiError.DeviceNotFound });
     }
 
     group.addDevice(device.device.friendly_name).then((data) => {
@@ -161,11 +159,11 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     const device = await zigbee2mqttService.getDevice(req.body.device);
 
     if (group === undefined) {
-      return res.status(404).json({ error: GROUP_NOT_FOUND });
+      return res.status(404).json({ error: ApiError.GroupNotFound });
     }
 
     if (device === undefined) {
-      return res.status(404).json({ error: DEVICE_NOT_FOUND });
+      return res.status(404).json({ error: ApiError.DeviceNotFound });
     }
 
     group.removeDevice(device.device.friendly_name).then((data) => {
@@ -188,7 +186,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     );
 
     if (group === undefined) {
-      return res.status(404).json({ error: GROUP_NOT_FOUND });
+      return res.status(404).json({ error: ApiError.GroupNotFound });
     }
 
     const state = await group.getValue(req.query.setting?.toString());
@@ -205,18 +203,18 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     );
 
     if (group === undefined) {
-      return res.status(404).json({ error: GROUP_NOT_FOUND });
+      return res.status(404).json({ error: ApiError.GroupNotFound });
     }
 
     if (typeof req.body.setting !== "string") {
       return res.status(400).json({
-        error: "Settings must be provided as strings.",
+        error: ApiError.SettingPropertyMalformed,
       });
     }
 
     if (!req.body.value || req.body.value === undefined) {
       return res.status(400).json({
-        error: "Value was not provided.",
+        error: ApiError.ValueNotProvided,
       });
     }
 

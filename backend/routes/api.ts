@@ -11,3 +11,11 @@ export function apiRouter(obj: Record<string, Router>): Router {
 
   return router;
 }
+
+export const ApiError = {
+  DeviceNotFound: "Device not found.",
+  GroupNotFound: "Group not found.",
+  NameInUse: "Name already in use.",
+  SettingPropertyMalformed: "Setting property malformed.",
+  ValueNotProvided: "Value property was not provided.",
+};
