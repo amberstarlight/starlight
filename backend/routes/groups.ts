@@ -94,26 +94,33 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       });
     }
 
-    zigbee2mqttService.getGroup(groupId).then((group) => {
-      if (group === undefined) throw new Error(GROUP_NOT_FOUND);
-      if (group.group.friendly_name === newName) {
-        return res.status(400).json({
-          error:
-            "Rename request must be different to the group's current name.",
-        });
-      }
+    const group = await zigbee2mqttService.getGroup(groupId);
 
-      zigbee2mqttService.renameGroup(group.group.id, newName).then((data) => {
-        if (data.status === "error") {
-          return res.status(503).json({
-            error: data.error,
-          });
-        } else {
-          return res.status(200).json({
-            data: data.data,
-          });
-        }
+    if (group === undefined) {
+      return res.status(404).json({
+        error: GROUP_NOT_FOUND,
       });
+    }
+
+    if (group.group.friendly_name === newName) {
+      return res.status(400).json({
+        error: "Rename request must be different to the group's current name.",
+      });
+    }
+
+    const response = await zigbee2mqttService.renameGroup(
+      group.group.id,
+      newName,
+    );
+
+    if (response.status === "error") {
+      return res.status(503).json({
+        error: response.error,
+      });
+    }
+
+    return res.status(200).json({
+      data: response.data,
     });
   });
 
