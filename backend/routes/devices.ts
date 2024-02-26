@@ -60,6 +60,29 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     });
   });
 
+  // delete a device from the network
+  router.delete("/:deviceId", async (req: Request, res: Response) => {
+    const device = await zigbee2mqttService.getDevice(req.params.deviceId);
+
+    if (device === undefined) {
+      return res.status(404).json({ error: ApiError.DeviceNotFound });
+    }
+
+    const response = await zigbee2mqttService.deleteDevice(
+      device.device.ieee_address,
+    );
+
+    if (response.status === "error") {
+      return res.status(503).json({
+        error: response.error,
+      });
+    }
+
+    return res.status(200).json({
+      data: response.data,
+    });
+  });
+
   // get an existing device's state
   router.get("/:deviceId/state", async (req: Request, res: Response) => {
     const device = await zigbee2mqttService.getDevice(req.params.deviceId);

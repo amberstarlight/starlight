@@ -472,6 +472,14 @@ export class Zigbee2MqttService {
     );
   }
 
+  async deleteDevice(deviceId: string): Promise<BridgeResponse> {
+    await this.#mqttClientConnected;
+    return this.#bridgeRequest(
+      `${this.#baseTopic}/bridge/request/device/remove`,
+      { id: deviceId },
+    );
+  }
+
   async getGroup(groupId: number): Promise<MqttGroup | undefined> {
     await this.#mqttClientConnected;
     const group = this.#groups[groupId];
