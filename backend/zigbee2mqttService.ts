@@ -444,6 +444,23 @@ export class Zigbee2MqttService {
     });
   }
 
+  async permitJoining(
+    state: boolean,
+    device?: string,
+    time?: number,
+  ): Promise<BridgeResponse> {
+    await this.#mqttClientConnected;
+
+    return this.#bridgeRequest(
+      `${this.#baseTopic}/bridge/request/permit_join`,
+      {
+        value: state,
+        device: device,
+        time: time,
+      },
+    );
+  }
+
   async getDevice(deviceId: string): Promise<MqttDevice | undefined> {
     await this.#mqttClientConnected;
     const device = this.#devices[deviceId];

@@ -11,6 +11,7 @@ import { apiRouter } from "./routes/api";
 import { groupsRouter } from "./routes/groups";
 import { deviceRouter } from "./routes/devices";
 import { rootRouter } from "./routes/root";
+import { settingRouter } from "./routes/settings";
 
 const app: Express = express();
 const port: string = process.env.PORT || "8080";
@@ -55,6 +56,7 @@ app.use(
     "/": rootRouter(mqttService),
     "/devices": deviceRouter(mqttService),
     "/groups": groupsRouter(mqttService),
+    "/settings": settingRouter(mqttService),
   }),
 );
 

@@ -35,15 +35,13 @@ const router = express.Router();
 
 export function rootRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   router.get("/healthcheck", async (_, res: Response) => {
-    getShortSha().then((sha) => {
-      zigbee2mqttService.cacheStatus().then((cache) => {
-        const allCached = Object.values(cache).every((status) => status);
+    const sha = await getShortSha();
+    const cacheStatus = await zigbee2mqttService.cacheStatus();
+    const allCached = Object.values(cacheStatus).every((status) => status);
 
-        res.status(allCached ? 200 : 503).json({
-          git_sha1: sha,
-          cache: cache,
-        });
-      });
+    return res.status(allCached ? 200 : 503).json({
+      git_sha1: sha,
+      cache: cacheStatus,
     });
   });
 
