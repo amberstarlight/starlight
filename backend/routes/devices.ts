@@ -10,9 +10,9 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   // get data about all existing devices
   router.get("/", async (_req: Request, res: Response) => {
     const devices = await zigbee2mqttService.getDevices();
-    res.json({
-      status: 200,
-      devices: devices,
+
+    return res.status(200).json({
+      data: devices,
     });
   });
 
@@ -24,13 +24,22 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       return res.status(404).json({ error: ApiError.DeviceNotFound });
     }
 
-    res.status(200).json(device);
+    return res.status(200).json({
+      data: device.device,
+    });
   });
 
   // rename an existing device
   router.put("/:deviceId", async (req: Request, res: Response) => {
-    const device = await zigbee2mqttService.getDevice(req.params.deviceId);
     const newName = req.body.name;
+
+    if (newName === undefined) {
+      return res.status(400).json({
+        error: "New name not provided.",
+      });
+    }
+
+    const device = await zigbee2mqttService.getDevice(req.params.deviceId);
 
     if (device === undefined) {
       return res.status(404).json({
@@ -99,7 +108,7 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       data: state,
     });
   });
@@ -107,6 +116,12 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   // update an existing device's state
   router.post("/:deviceId/state", async (req: Request, res: Response) => {
     const device = await zigbee2mqttService.getDevice(req.params.deviceId);
+
+    if (device === undefined) {
+      return res.status(404).json({
+        error: ApiError.DeviceNotFound,
+      });
+    }
 
     if (typeof req.body.setting !== "string") {
       return res.status(400).json({
@@ -119,11 +134,6 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
         error: ApiError.ValueNotProvided,
       });
     }
-
-    if (device === undefined)
-      return res.status(404).json({
-        error: ApiError.DeviceNotFound,
-      });
 
     device.setValue(req.body.setting, req.body.value);
 

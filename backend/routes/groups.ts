@@ -11,7 +11,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   router.get("/", async (_req: Request, res: Response) => {
     const groups = await zigbee2mqttService.getGroups();
 
-    res.status(200).json({
+    return res.status(200).json({
       data: groups,
     });
   });
@@ -27,58 +27,57 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       });
     }
 
-    zigbee2mqttService.addGroup(groupName).then((data) => {
-      if (data.status === "error") {
-        return res.status(503).json({
-          error: data.error,
-        });
-      } else {
-        return res.status(200).json({
-          data: data.data,
-        });
-      }
+    const response = await zigbee2mqttService.addGroup(groupName);
+
+    if (response.status === "error") {
+      return res.status(503).json({
+        error: response.error,
+      });
+    }
+
+    return res.status(200).json({
+      data: response.data,
     });
   });
 
   // delete a group
-  router.delete("/", async (req: Request, res: Response) => {
-    const groupId = req.body.id;
+  router.delete("/:groupId", async (req: Request, res: Response) => {
+    const groupId = parseInt(req.params.groupId);
+    const group = await zigbee2mqttService.getGroup(groupId);
 
-    zigbee2mqttService
-      .getGroup(parseInt(groupId))
-      .then((group) => {
-        if (group === undefined) throw new Error(ApiError.GroupNotFound);
-
-        zigbee2mqttService.deleteGroup(groupId, true);
-
-        res.status(200).json({
-          message: `Successfully deleted group '${group.group.friendly_name}'.`,
-        });
-      })
-      .catch((err) => {
-        res.status(404).json({
-          error: err.message,
-        });
+    if (group === undefined) {
+      return res.status(400).json({
+        error: ApiError.GroupNotFound,
       });
+    }
+
+    const response = await zigbee2mqttService.deleteGroup(group.group.id);
+
+    if (response.status === "error") {
+      return res.status(503).json({
+        error: response.error,
+      });
+    }
+
+    return res.status(200).json({
+      data: response.data,
+    });
   });
 
   // get data about an existing group
   router.get("/:groupId", async (req: Request, res: Response) => {
     const groupId = parseInt(req.params.groupId);
+    const group = await zigbee2mqttService.getGroup(groupId);
 
-    zigbee2mqttService
-      .getGroup(groupId)
-      .then((group) => {
-        if (group === undefined) throw new Error(ApiError.GroupNotFound);
-        res.status(200).json({
-          data: group,
-        });
-      })
-      .catch((err) => {
-        res.status(404).json({
-          error: err.message,
-        });
+    if (group === undefined) {
+      return res.status(404).json({
+        error: ApiError.GroupNotFound,
       });
+    }
+
+    return res.status(200).json({
+      data: group.group,
+    });
   });
 
   // update an existing group's name
@@ -197,7 +196,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       data: state,
     });
   });
