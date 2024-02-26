@@ -131,7 +131,7 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
     if (!req.body.value || req.body.value === undefined) {
       return res.status(400).json({
-        error: ApiError.ValueNotProvided,
+        error: ApiError.ParameterMissing("value"),
       });
     }
 

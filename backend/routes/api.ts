@@ -18,5 +18,6 @@ export const ApiError = {
   NameInUse: "Name already in use.",
   SettingPropertyMalformed: "Setting property malformed.",
   StateDataMissing: "Could not retrieve state data.",
-  ValueNotProvided: "Value property was not provided.",
+  ParameterMissing: (param: string) =>
+    `Parameter '${param}' missing in request.`,
 };

@@ -15,7 +15,7 @@ export function settingRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
     if (state === undefined) {
       return res.status(404).json({
-        error: ApiError.ValueNotProvided,
+        error: ApiError.ParameterMissing("state"),
       });
     }
 
