@@ -3,6 +3,7 @@
 import express, { Request, Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
 import { ApiError } from "./api";
+import { range } from "../utils";
 
 const router = express.Router();
 
@@ -229,6 +230,65 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       data: req.params.groupId,
     });
   });
+
+  router.get("/:groupId/scenes", async (req: Request, res: Response) => {
+    const group = await zigbee2mqttService.getGroup(
+      parseInt(req.params.groupId),
+    );
+
+    if (group === undefined) {
+      return res.status(404).json({ error: ApiError.GroupNotFound });
+    }
+
+    return res.status(200).json({
+      data: group.group.scenes,
+    });
+  });
+
+  // create a new scene
+  router.post("/:groupId/scenes", async (req: Request, res: Response) => {
+    const group = await zigbee2mqttService.getGroup(
+      parseInt(req.params.groupId),
+    );
+
+    if (group === undefined) {
+      return res.status(404).json({ error: ApiError.GroupNotFound });
+    }
+
+    let sceneId: number = 0;
+    const idRange = range(0, 255);
+
+    if (group.group.scenes.length !== 0) {
+      const usedIds = new Set(group.group.scenes.map((scene) => scene.id));
+      const feasibleIds = idRange.filter((value) => !usedIds.has(value));
+      sceneId = Math.min(...feasibleIds);
+    }
+
+    const newScene = {
+      scene_add: {
+        ID: sceneId,
+        name: req.body.name,
+      },
+    };
+  });
+
+  // recall a scene
+  router.post(
+    "/:groupId/scenes/:sceneId",
+    async (req: Request, res: Response) => {},
+  );
+
+  // update a scene
+  router.put(
+    "/:groupId/scenes/:sceneId",
+    async (req: Request, res: Response) => {},
+  );
+
+  // delete a scene
+  router.delete(
+    "/:groupId/scenes/:sceneId",
+    async (req: Request, res: Response) => {},
+  );
 
   return router;
 }

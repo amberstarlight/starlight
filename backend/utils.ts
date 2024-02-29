@@ -40,3 +40,13 @@ export function getByPath(
   }
   return objPointer;
 }
+
+export function range(
+  start: number,
+  stop: number,
+  step: number = 1,
+): Array<number> {
+  return Array(Math.floor((stop - start) / step + 1))
+    .fill(start)
+    .map((_, index) => start + index * step);
+}
