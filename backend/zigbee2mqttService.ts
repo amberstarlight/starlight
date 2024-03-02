@@ -3,7 +3,7 @@
 
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
 import { logger } from "./logger";
-import { BridgeResponse, Device, Group } from "./types/zigbee_types";
+import { BridgeResponse, Device, Group, Scene } from "./types/zigbee_types";
 import { elementDiff, getByPath, quoteList } from "./utils";
 import { Feature } from "./types/zigbee_features";
 
@@ -571,5 +571,16 @@ export class Zigbee2MqttService {
     );
 
     return group?.id;
+  }
+
+  async createScene(friendlyName: string, sceneData: Scene) {
+    await this.#mqttClientConnected;
+
+    this.#client.publish(
+      `${this.#baseTopic}/${friendlyName}/set`,
+      JSON.stringify({
+        scene_add: sceneData,
+      }),
+    );
   }
 }

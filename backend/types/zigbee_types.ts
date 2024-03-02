@@ -33,10 +33,38 @@ export interface Device {
   software_build_id?: string;
 }
 
-interface Scene {
-  id: number;
+interface BaseScene {
+  ID: number;
   name: string;
 }
+
+interface SceneFields {
+  transition: number;
+  state: "ON" | "OFF";
+  brightness: number;
+}
+
+type WhiteSpectrum = number;
+
+type RgbHueSat = {
+  hue: number;
+  saturation: number;
+};
+
+type RgbXY = {
+  x: number;
+  y: number;
+};
+
+type RgbHex = {
+  color: string;
+};
+
+type ColorTempContainer = { color_temp: WhiteSpectrum; color: never };
+type ColorContainer = { color: RgbHueSat | RgbXY | RgbHex; color_temp: never };
+
+export type Scene = BaseScene &
+  Partial<SceneFields & (ColorTempContainer | ColorContainer)>;
 
 interface Data {
   bindings: {
