@@ -34,7 +34,7 @@ export interface Device {
 }
 
 interface BaseScene {
-  ID: number;
+  id: number;
   name: string;
 }
 

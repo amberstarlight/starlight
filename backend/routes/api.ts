@@ -17,8 +17,9 @@ export const ApiError = {
   DeviceNotFound: "Device not found.",
   GroupNotFound: "Group not found.",
   NameInUse: "Name already in use.",
-  SettingPropertyMalformed: "Setting property malformed.",
-  StateDataMissing: "Could not retrieve state data.",
   ParameterMissing: (param: string) =>
     `Parameter '${param}' missing in request.`,
+  SceneNotFound: "Scene not found.",
+  SettingPropertyMalformed: "Setting property malformed.",
+  StateDataMissing: "Could not retrieve state data.",
 };

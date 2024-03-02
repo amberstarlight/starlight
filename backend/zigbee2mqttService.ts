@@ -579,7 +579,22 @@ export class Zigbee2MqttService {
     this.#client.publish(
       `${this.#baseTopic}/${friendlyName}/set`,
       JSON.stringify({
-        scene_add: sceneData,
+        scene_add: {
+          // in creating a scene, we must uppercase ID. horrible.
+          ID: sceneData.id,
+          ...sceneData,
+        },
+      }),
+    );
+  }
+
+  async recallScene(friendlyName: string, sceneId: number) {
+    await this.#mqttClientConnected;
+
+    this.#client.publish(
+      `${this.#baseTopic}/${friendlyName}/set`,
+      JSON.stringify({
+        scene_recall: sceneId,
       }),
     );
   }

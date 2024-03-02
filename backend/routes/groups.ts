@@ -257,42 +257,84 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       return res.status(404).json({ error: ApiError.GroupNotFound });
     }
 
+    const currentSceneNames = group.group.scenes.map((scene) => scene.name);
+
     if (req.body.name === undefined) {
       return res.status(404).json({ error: ApiError.ParameterMissing("name") });
+    }
+
+    if (currentSceneNames.includes(req.body.name)) {
+      // don't let API users overwrite scenes. updates are done through a PUT
+      // to /:groupId/scenes/:sceneId
+      return res.status(404).json({ error: ApiError.NameInUse });
     }
 
     let sceneId: number = 0;
     const idRange = range(0, 255);
 
     if (group.group.scenes.length !== 0) {
-      const usedIds = new Set(group.group.scenes.map((scene) => scene.ID));
+      const usedIds = new Set(group.group.scenes.map((scene) => scene.id));
       const feasibleIds = idRange.filter((value) => !usedIds.has(value));
       sceneId = Math.min(...feasibleIds);
     }
 
-    const newScene: Scene = {
-      ID: sceneId,
-      name: req.body.name,
-      transition: req.body.transition | 0,
-    };
+    // transition on scenes can only be set with 'scene_add', so if we have the
+    // property in the body we should first call createScene with just the
+    // required properties and transition, then call updateScene with the other
+    // properties.
 
-    const scene = await zigbee2mqttService.createScene(
-      group.group.friendly_name,
-      newScene,
-    );
+    let newScene: Scene;
 
-    return res.status(200).json({
-      data: {
-        id: `Next scene ID will be ${sceneId}`,
+    if (req.body.transition !== undefined && req.body.transition > 0) {
+      newScene = {
+        id: sceneId,
         name: req.body.name,
-      },
-    });
+        transition: req.body.transition,
+      };
+
+      zigbee2mqttService.createScene(group.group.friendly_name, newScene);
+      // zigbee2mqttService.updateScene(group.group.friendly_name, {
+      //   id: sceneId,
+      //   ...req.body,
+      // });
+    } else {
+      newScene = {
+        id: sceneId,
+        name: req.body.name,
+        ...req.body,
+      };
+
+      zigbee2mqttService.createScene(group.group.friendly_name, newScene);
+    }
+
+    return res.status(200).send();
   });
 
   // recall a scene
   router.post(
     "/:groupId/scenes/:sceneId",
-    async (req: Request, res: Response) => {},
+    async (req: Request, res: Response) => {
+      const group = await zigbee2mqttService.getGroup(
+        parseInt(req.params.groupId),
+      );
+      const sceneId = parseInt(req.params.sceneId);
+
+      if (group === undefined) {
+        return res.status(404).json({ error: ApiError.GroupNotFound });
+      }
+
+      const currentSceneIds = group.group.scenes.map((scene) => scene.id);
+
+      if (!currentSceneIds.includes(sceneId)) {
+        return res.status(404).json({ error: ApiError.SceneNotFound });
+      }
+
+      zigbee2mqttService.recallScene(group.group.friendly_name, sceneId);
+
+      return res.status(200).json({
+        data: sceneId,
+      });
+    },
   );
 
   // update a scene
