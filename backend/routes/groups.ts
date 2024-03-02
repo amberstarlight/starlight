@@ -279,8 +279,8 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     }
 
     // transition on scenes can only be set with 'scene_add', so if we have the
-    // property in the body we should first call createScene with just the
-    // required properties and transition, then call updateScene with the other
+    // property in the body we should first call createOrUpdateScene with just
+    // the required properties and transition, then call it again with the other
     // properties.
 
     let newScene: Scene;
@@ -292,11 +292,15 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
         transition: req.body.transition,
       };
 
-      zigbee2mqttService.createScene(group.group.friendly_name, newScene);
-      // zigbee2mqttService.updateScene(group.group.friendly_name, {
-      //   id: sceneId,
-      //   ...req.body,
-      // });
+      zigbee2mqttService.createOrUpdateScene(
+        group.group.friendly_name,
+        newScene,
+      );
+
+      zigbee2mqttService.createOrUpdateScene(group.group.friendly_name, {
+        id: sceneId,
+        ...req.body,
+      });
     } else {
       newScene = {
         id: sceneId,
@@ -304,7 +308,10 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
         ...req.body,
       };
 
-      zigbee2mqttService.createScene(group.group.friendly_name, newScene);
+      zigbee2mqttService.createOrUpdateScene(
+        group.group.friendly_name,
+        newScene,
+      );
     }
 
     return res.status(200).send();
@@ -340,13 +347,54 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   // update a scene
   router.put(
     "/:groupId/scenes/:sceneId",
-    async (req: Request, res: Response) => {},
+    async (req: Request, res: Response) => {
+      const group = await zigbee2mqttService.getGroup(
+        parseInt(req.params.groupId),
+      );
+      const sceneId = parseInt(req.params.sceneId);
+
+      if (group === undefined) {
+        return res.status(404).json({ error: ApiError.GroupNotFound });
+      }
+
+      const currentSceneIds = group.group.scenes.map((scene) => scene.id);
+
+      if (!currentSceneIds.includes(sceneId)) {
+        return res.status(404).json({ error: ApiError.SceneNotFound });
+      }
+
+      zigbee2mqttService.createOrUpdateScene(
+        group.group.friendly_name,
+        req.body,
+      );
+
+      return res.status(200).send();
+    },
   );
 
   // delete a scene
   router.delete(
     "/:groupId/scenes/:sceneId",
-    async (req: Request, res: Response) => {},
+    async (req: Request, res: Response) => {
+      const group = await zigbee2mqttService.getGroup(
+        parseInt(req.params.groupId),
+      );
+      const sceneId = parseInt(req.params.sceneId);
+
+      if (group === undefined) {
+        return res.status(404).json({ error: ApiError.GroupNotFound });
+      }
+
+      const currentSceneIds = group.group.scenes.map((scene) => scene.id);
+
+      if (!currentSceneIds.includes(sceneId)) {
+        return res.status(404).json({ error: ApiError.SceneNotFound });
+      }
+
+      zigbee2mqttService.deleteScene(group.group.friendly_name, sceneId);
+
+      return res.status(200).send();
+    },
   );
 
   return router;

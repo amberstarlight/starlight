@@ -573,7 +573,9 @@ export class Zigbee2MqttService {
     return group?.id;
   }
 
-  async createScene(friendlyName: string, sceneData: Scene) {
+  // creating and updating the scene can be done with the same topic, so
+  // this can be create or update.
+  async createOrUpdateScene(friendlyName: string, sceneData: Scene) {
     await this.#mqttClientConnected;
 
     this.#client.publish(
@@ -595,6 +597,28 @@ export class Zigbee2MqttService {
       `${this.#baseTopic}/${friendlyName}/set`,
       JSON.stringify({
         scene_recall: sceneId,
+      }),
+    );
+  }
+
+  async deleteScene(friendlyName: string, sceneId: number) {
+    await this.#mqttClientConnected;
+
+    this.#client.publish(
+      `${this.#baseTopic}/${friendlyName}/set`,
+      JSON.stringify({
+        scene_remove: sceneId,
+      }),
+    );
+  }
+
+  async deleteAllScenes(friendlyName: string) {
+    await this.#mqttClientConnected;
+
+    this.#client.publish(
+      `${this.#baseTopic}/${friendlyName}/set`,
+      JSON.stringify({
+        scene_remove_all: "",
       }),
     );
   }
