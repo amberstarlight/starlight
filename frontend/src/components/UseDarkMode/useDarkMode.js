@@ -1,3 +1,4 @@
+// SPDX-FileCopyrightText: © 2022 Amber Cronin <software@amber.vision>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { useEffect, useState } from "react";

@@ -1,3 +1,4 @@
+// SPDX-FileCopyrightText: © 2021 Amber Cronin <software@amber.vision>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 const reportWebVitals = (onPerfEntry) => {

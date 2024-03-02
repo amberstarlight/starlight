@@ -1,3 +1,4 @@
+// SPDX-FileCopyrightText: © 2024 Amber Cronin <software@amber.vision>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import { Router } from "express";
