@@ -4,6 +4,8 @@
 import express, { Request, Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
 import { ApiError } from "./api";
+import { range } from "../utils";
+import { Scene } from "../types/zigbee_types";
 
 const router = express.Router();
 
@@ -158,6 +160,161 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       data: req.params.deviceId,
     });
   });
+
+  // get all scenes for a device
+  router.get("/:deviceId/scenes", async (req: Request, res: Response) => {
+    const device = await zigbee2mqttService.getDevice(req.params.deviceId);
+
+    if (device === undefined) {
+      return res.status(404).json({ error: ApiError.DeviceNotFound });
+    }
+
+    return res.status(200).json({
+      data: device.device.scenes,
+    });
+  });
+
+  // create a new scene
+  router.post("/:deviceId/scenes", async (req: Request, res: Response) => {
+    const device = await zigbee2mqttService.getDevice(req.params.deviceId);
+
+    if (device === undefined) {
+      return res.status(404).json({ error: ApiError.DeviceNotFound });
+    }
+
+    const currentSceneNames = device.device.scenes.map((scene) => scene.name);
+
+    if (req.body.name === undefined) {
+      return res.status(404).json({ error: ApiError.ParameterMissing("name") });
+    }
+
+    if (currentSceneNames.includes(req.body.name)) {
+      // don't let API users overwrite scenes. updates are done through a PUT
+      // to /:deviceId/scenes/:sceneId
+      return res.status(404).json({ error: ApiError.NameInUse });
+    }
+
+    let sceneId: number = 0;
+    const idRange = range(0, 255);
+
+    if (device.device.scenes.length !== 0) {
+      const usedIds = new Set(device.device.scenes.map((scene) => scene.id));
+      const feasibleIds = idRange.filter((value) => !usedIds.has(value));
+      sceneId = Math.min(...feasibleIds);
+    }
+
+    // transition on scenes can only be set with 'scene_add', so if we have the
+    // property in the body we should first call createOrUpdateScene with just
+    // the required properties and transition, then call it again with the other
+    // properties.
+
+    let newScene: Scene;
+
+    if (req.body.transition !== undefined && req.body.transition > 0) {
+      newScene = {
+        id: sceneId,
+        name: req.body.name,
+        transition: req.body.transition,
+      };
+
+      zigbee2mqttService.createOrUpdateScene(
+        device.device.friendly_name,
+        newScene,
+      );
+
+      zigbee2mqttService.createOrUpdateScene(device.device.friendly_name, {
+        id: sceneId,
+        ...req.body,
+      });
+    } else {
+      newScene = {
+        id: sceneId,
+        name: req.body.name,
+        ...req.body,
+      };
+
+      zigbee2mqttService.createOrUpdateScene(
+        device.device.friendly_name,
+        newScene,
+      );
+    }
+
+    return res.status(200).send();
+  });
+
+  // recall a scene
+  router.post(
+    "/:deviceId/scenes/:sceneId",
+    async (req: Request, res: Response) => {
+      const device = await zigbee2mqttService.getDevice(req.params.deviceId);
+      const sceneId = parseInt(req.params.sceneId);
+
+      if (device === undefined) {
+        return res.status(404).json({ error: ApiError.DeviceNotFound });
+      }
+
+      const currentSceneIds = device.device.scenes.map((scene) => scene.id);
+
+      if (!currentSceneIds.includes(sceneId)) {
+        return res.status(404).json({ error: ApiError.SceneNotFound });
+      }
+
+      zigbee2mqttService.recallScene(device.device.friendly_name, sceneId);
+
+      return res.status(200).json({
+        data: sceneId,
+      });
+    },
+  );
+
+  // update a scene
+  router.put(
+    "/:deviceId/scenes/:sceneId",
+    async (req: Request, res: Response) => {
+      const device = await zigbee2mqttService.getDevice(req.params.deviceId);
+      const sceneId = parseInt(req.params.sceneId);
+
+      if (device === undefined) {
+        return res.status(404).json({ error: ApiError.DeviceNotFound });
+      }
+
+      const currentSceneIds = device.device.scenes.map((scene) => scene.id);
+
+      if (!currentSceneIds.includes(sceneId)) {
+        return res.status(404).json({ error: ApiError.SceneNotFound });
+      }
+
+      zigbee2mqttService.createOrUpdateScene(
+        device.device.friendly_name,
+        req.body,
+      );
+
+      return res.status(200).send();
+    },
+  );
+
+  // delete a scene
+  router.delete(
+    "/:deviceId/scenes/:sceneId",
+    async (req: Request, res: Response) => {
+      const device = await zigbee2mqttService.getDevice(req.params.deviceId);
+      const sceneId = parseInt(req.params.sceneId);
+
+      if (device === undefined) {
+        return res.status(404).json({ error: ApiError.DeviceNotFound });
+      }
+
+      const currentSceneIds = device.device.scenes.map((scene) => scene.id);
+
+      if (!currentSceneIds.includes(sceneId)) {
+        return res.status(404).json({ error: ApiError.SceneNotFound });
+      }
+
+      zigbee2mqttService.deleteScene(device.device.friendly_name, sceneId);
+
+      return res.status(200).send();
+    },
+  );
 
   return router;
 }
