@@ -4,6 +4,7 @@
 import { Feature } from "./zigbee_features";
 
 export interface Device {
+  [index: string]: any;
   ieee_address: string;
   type: "Coordinator" | "EndDevice" | "GreenPower" | "Router" | "Unknown";
   network_address: number;

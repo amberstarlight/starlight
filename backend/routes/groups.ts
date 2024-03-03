@@ -233,6 +233,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     });
   });
 
+  // get all scenes for a group
   router.get("/:groupId/scenes", async (req: Request, res: Response) => {
     const group = await zigbee2mqttService.getGroup(
       parseInt(req.params.groupId),

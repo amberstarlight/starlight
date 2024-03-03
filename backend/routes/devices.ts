@@ -9,8 +9,16 @@ const router = express.Router();
 
 export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   // get data about all existing devices
-  router.get("/", async (_req: Request, res: Response) => {
+  router.get("/", async (req: Request, res: Response) => {
     const devices = await zigbee2mqttService.getDevices();
+    const deviceQuery = req.query.parameter?.toString();
+
+    if (deviceQuery !== undefined) {
+      const queriedData = devices.map((device) => device.device[deviceQuery]);
+      return res.status(200).json({
+        data: queriedData,
+      });
+    }
 
     return res.status(200).json({
       data: devices,
@@ -23,6 +31,14 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
 
     if (device === undefined) {
       return res.status(404).json({ error: ApiError.DeviceNotFound });
+    }
+
+    const deviceQuery = req.query.parameter?.toString();
+
+    if (deviceQuery !== undefined) {
+      return res.status(200).json({
+        data: device.device[deviceQuery],
+      });
     }
 
     return res.status(200).json({
