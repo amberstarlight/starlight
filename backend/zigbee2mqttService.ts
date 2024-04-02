@@ -176,7 +176,8 @@ export class Zigbee2MqttService {
     this.#baseTopic = baseTopic;
     this.#client = mqtt.connect(endpoint, options);
 
-    this.#mqttClientConnected = new Promise((resolve) => {
+    this.#mqttClientConnected = new Promise((resolve, reject) => {
+      this.#client.once("error", (error) => reject({ success: false, error }));
       this.#client.once("connect", () => {
         this.#client.on("message", (topic, payload) =>
           this.#handleMessage(topic, payload),
@@ -191,8 +192,6 @@ export class Zigbee2MqttService {
         this.#ready = true;
         resolve(SUCCESS);
       });
-
-      this.#client.once("error", (error) => resolve({ success: false, error }));
     });
   }
 

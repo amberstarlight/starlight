@@ -28,7 +28,7 @@ const mqttPort: number = process.env.MQTT_ENDPOINT_PORT
 const mqttOptions: IClientOptions = {
   reconnectPeriod: 1000,
   port: mqttPort,
-  clientId: `zigbee-backend-${Math.random().toString(16).substring(2, 8)}`,
+  clientId: `starlight-backend-${Math.random().toString(16).substring(2, 8)}`,
   connectTimeout: 10000,
 };
 
@@ -63,4 +63,12 @@ app.use(
 
 app.listen(port, () => {
   logger(logLevel, "Express", `Server listening on ${port}.`);
+
+  if (!mqttService.ready) {
+    logger(
+      logLevel,
+      "MQTT",
+      "Can't establish a connection to MQTT endpoint. Maybe the server is offline?",
+    );
+  }
 });
