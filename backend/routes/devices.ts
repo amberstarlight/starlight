@@ -161,6 +161,20 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     });
   });
 
+  router.post("/:deviceId/identify", async (req: Request, res: Response) => {
+    const device = await zigbee2mqttService.getDevice(req.params.deviceId);
+
+    if (device === undefined) {
+      return res.status(404).json({ error: ApiError.DeviceNotFound });
+    }
+
+    // trigger an effect on a device, such that it can be uniquely identified in
+    // the real world by an end user.
+    device.setValue("effect", "blink");
+
+    return res.status(200).send();
+  });
+
   // get all scenes for a device
   router.get("/:deviceId/scenes", async (req: Request, res: Response) => {
     const device = await zigbee2mqttService.getDevice(req.params.deviceId);
