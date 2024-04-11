@@ -4,10 +4,6 @@
 import { useState, useEffect } from "react";
 
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
-import {
-  getDeviceSettings,
-  setDeviceFriendlyName,
-} from "../../services/mqttService";
 import { deviceSettingsGenerator } from "./generator";
 import EditableText from "../EditableText/EditableText";
 import { deviceDescription } from "../../utils/deviceUtilities";

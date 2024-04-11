@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "api": "yarn workspace api dev",
-    "frontend": "yarn workspace frontend start",
+    "frontend": "yarn workspace frontend dev",
     "start": "concurrently --kill-others-on-fail \"yarn api\" \"yarn frontend\"",
     "lint": "yarn prettier -w ."
   },

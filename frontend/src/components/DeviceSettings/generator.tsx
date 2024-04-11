@@ -5,13 +5,10 @@ import {
   booleanToMqttState,
   hexToRGB,
   hslToRGB,
-  mqttStateToBoolean,
-  rgbToHex,
   rgbToHSL,
   updateDeviceState,
 } from "../../utils/deviceUtilities";
 import { numericTransformer } from "../../utils/transformers";
-import ColorPicker from "../ColorPicker/ColorPicker";
 import Toggle from "../Toggle/Toggle";
 
 export const deviceSettingsGenerator = (

@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: © 2021 Amber Cronin <software@amber.vision>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-import * as mqttService from "../../services/mqttService";
-
 import Button from "../../components/Button/Button";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 
@@ -21,28 +19,12 @@ function Settings(props) {
         {permitJoin === true ? (
           <>
             <p>Devices can join.</p>
-            <Button
-              text={"Disable Join"}
-              onClick={() => {
-                mqttService.sendMqttMessage(
-                  "zigbee2mqtt/bridge/request/permit_join",
-                  { value: false },
-                );
-              }}
-            />
+            <Button text={"Disable Join"} onClick={() => {}} />
           </>
         ) : (
           <>
             <p>Devices cannot join.</p>
-            <Button
-              text={"Permit Join"}
-              onClick={() => {
-                mqttService.sendMqttMessage(
-                  "zigbee2mqtt/bridge/request/permit_join",
-                  { value: true },
-                );
-              }}
-            />
+            <Button text={"Permit Join"} onClick={() => {}} />
           </>
         )}
       </>
