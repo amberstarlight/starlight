@@ -3,12 +3,12 @@
   "name": "zigbee-webui",
   "workspaces": [
     "frontend",
-    "backend"
+    "api"
   ],
   "scripts": {
-    "backend": "yarn workspace backend dev",
+    "api": "yarn workspace api dev",
     "frontend": "yarn workspace frontend start",
-    "start": "concurrently --kill-others-on-fail \"yarn backend\" \"yarn frontend\"",
+    "start": "concurrently --kill-others-on-fail \"yarn api\" \"yarn frontend\"",
     "lint": "yarn prettier -w ."
   },
   "dependencies": {

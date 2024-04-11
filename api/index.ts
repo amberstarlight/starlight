@@ -28,7 +28,7 @@ const mqttPort: number = process.env.MQTT_ENDPOINT_PORT
 const mqttOptions: IClientOptions = {
   reconnectPeriod: 1000,
   port: mqttPort,
-  clientId: `starlight-backend-${Math.random().toString(16).substring(2, 8)}`,
+  clientId: `starlight-api-${Math.random().toString(16).substring(2, 8)}`,
   connectTimeout: 10000,
 };
 
