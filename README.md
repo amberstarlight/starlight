@@ -1,17 +1,17 @@
-# starlight
+# Starlight
 
-> amber starlight  
-> break away the day and bring to me the night  
-> if i should rest before this ends  
-> break the clouds, make them turn to sand  
+Monorepo for _Starlight_, consisting of an [Express][expr] API and [Vite][vite]
+SPA for [Zigbee2MQTT][z2m] - written in [TypeScript][ts].
 
-An alternative frontend for [Zigbee2MQTT][0], using React.
+Starlight is intended to replace the frontend of Zigbee2MQTT, and provide a REST
+API; to abstract away the MQTT message protocol, and for alternative clients
+(such as a TUI application).
 
 ## Contributing
 
 Any changes should be made against a separate branch, and a pull request opened.
-Please remember to [install the pre-commit hooks][1] so these run before you
-commit changes.
+Please remember to [install the pre-commit hooks][precommit] so these run before
+you commit changes.
 
 ### License
 
@@ -20,5 +20,8 @@ This repository is licensed under the GNU Affero General Public License, version
 
 `SPDX-License-Identifier: AGPL-3.0-or-later`
 
-[0]: https://www.zigbee2mqtt.io/
-[1]: https://pre-commit.com/#install
+[z2m]: https://www.zigbee2mqtt.io/
+[expr]: https://expressjs.com/
+[vite]: https://vitejs.dev/
+[ts]: https://www.typescriptlang.org/
+[precommit]: https://pre-commit.com/#install
