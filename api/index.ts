@@ -4,6 +4,7 @@
 import "dotenv/config";
 import express, { Express, Request, Response, NextFunction } from "express";
 import { IClientOptions } from "mqtt";
+import cors from "cors";
 
 import { logger } from "./logger";
 import { Zigbee2MqttService } from "./zigbee2mqttService";
@@ -35,6 +36,7 @@ const mqttOptions: IClientOptions = {
 const mqttService = new Zigbee2MqttService(mqttEndpoint, mqttOptions);
 
 app.use(express.json());
+app.use(cors());
 
 const checkIfReady = function (
   _req: Request,

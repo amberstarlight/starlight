@@ -15,10 +15,6 @@ import Settings from "./pages/Settings/Settings";
 import Button from "./components/Button/Button";
 import DeviceSettings from "./components/DeviceSettings/DeviceSettings";
 
-const options = {
-  reconnectPeriod: 10000,
-};
-
 const Wrapper = styled.div`
   padding: 2em;
 `;
@@ -30,6 +26,8 @@ const NavBar = styled.div`
   margin-bottom: 1em;
 `;
 
+const backend = import.meta.env.VITE_API_URL ?? "";
+
 function App() {
   const [devices, setDevices] = useState();
   const [bridgeState, setBridgeState] = useState();
@@ -38,8 +36,9 @@ function App() {
   const themeMode = theme === "light" ? lightTheme : darkTheme;
 
   useEffect(() => {
-    // mqttService.init(options, setBridgeState);
-    // mqttService.getDevices().then(setDevices);
+    fetch(`${backend}/api/devices`)
+      .then((res) => res.json())
+      .then((data) => setDevices(data.data));
   }, []);
 
   return (
