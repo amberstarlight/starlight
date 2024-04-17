@@ -14,6 +14,9 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   router.get("/", async (req: Request, res: Response) => {
     const devices = await zigbee2mqttService.getDevices();
     const deviceQuery = req.query.parameter?.toString();
+    const filteredDevices = devices.filter(
+      (device) => device.device.type !== "Coordinator",
+    );
 
     if (deviceQuery !== undefined) {
       const queriedData = devices.map((device) => device.device[deviceQuery]);
@@ -23,7 +26,7 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     }
 
     return res.status(200).json({
-      data: devices,
+      data: filteredDevices,
     });
   });
 
