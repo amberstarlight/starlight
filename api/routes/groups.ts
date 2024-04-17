@@ -5,7 +5,7 @@ import express, { Request, Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
 import { ApiError } from "./api";
 import { range } from "../utils";
-import { Scene } from "../types/zigbee_types";
+import { Scene } from "../../types/zigbee_types";
 
 const router = express.Router();
 
