@@ -3,13 +3,14 @@
 
 import { Link } from "wouter";
 import DeviceCard from "../DeviceCard/DeviceCard";
+import { type Device } from "../../../../types/zigbee_types";
 
-function DeviceList(props) {
+function DeviceList(props: { devices: Device[]; onClick: Function }) {
   return (
     <div>
-      {props.devices.map((device) => (
+      {props.devices.map((device: Device) => (
         <Link
-          href={`/devices/${device.friendly_name}`}
+          href={`/devices/${device.ieee_address}`}
           key={device.ieee_address}
         >
           <DeviceCard device={device} onClick={() => props.onClick} />

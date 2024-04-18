@@ -1,30 +1,36 @@
 // SPDX-FileCopyrightText: © 2021 Amber Cronin <software@amber.vision>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-export const mqttStateToBoolean = (state) => {
+const backend = import.meta.env.VITE_API_URL ?? "";
+
+export const mqttStateToBoolean = (state: string): boolean => {
   if (state === "ON") return true;
   return false;
 };
 
-export const booleanToMqttState = (boolean) => {
+export const booleanToMqttState = (boolean: boolean): string => {
   if (boolean) return "ON";
   return "OFF";
 };
 
 export const updateDeviceState = (
-  deviceSettingsState,
-  setDeviceSettingsState,
-  deviceFriendlyName,
-  property,
-  value,
+  deviceId: string,
+  property: string,
+  value: any,
 ) => {
-  const updateObject = {};
-  updateObject[property] = value;
-  setDeviceSettings(deviceFriendlyName, updateObject);
+  const request = new Request(`${backend}/api/devices/${deviceId}/state`, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      setting: property,
+      value: value,
+    }),
+  });
 
-  const clonedState = { ...deviceSettingsState };
-  clonedState[property] = value;
-  setDeviceSettingsState(clonedState);
+  fetch(request).then();
 };
 
 export const deviceDescription = (deviceDefinition) => {

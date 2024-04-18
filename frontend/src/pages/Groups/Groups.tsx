@@ -1,0 +1,23 @@
+// SPDX-FileCopyrightText: © 2024 Amber Cronin <software@amber.vision>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import GroupList from "../../components/GroupList/GroupList";
+
+function Groups(props) {
+  const selectedGroup = props.selectedGroup;
+
+  let groupContent = undefined;
+
+  if (!props.groups || !selectedGroup) groupContent = <LoadingSpinner />;
+
+  if (selectedGroup) groupContent = <GroupSettings group={selectedGroup} />;
+
+  if (props.groups && !selectedGroup) {
+    groupContent = <GroupList groups={props.groups} />;
+  }
+
+  return <>{groupContent !== undefined ? groupContent : ""}</>;
+}
+
+export default Groups;

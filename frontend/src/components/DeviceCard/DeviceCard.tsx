@@ -5,6 +5,8 @@ import { deviceDescription } from "../../utils/deviceUtilities";
 import styled from "styled-components";
 import { StyledText, StyledHeader } from "../../utils/theme";
 
+import { type Device } from "../../../../types/zigbee_types";
+
 const emojiLookup = {
   light: "💡",
   switch: "🔌",
@@ -25,7 +27,7 @@ const Card = styled.div`
   }
 `;
 
-function DeviceCard(props) {
+function DeviceCard(props: { device: Device; onClick: Function }) {
   let deviceEmoji = "❓";
   let deviceDefinition = props.device.definition;
 

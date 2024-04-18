@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import {
+  mqttStateToBoolean,
   booleanToMqttState,
   hexToRGB,
   hslToRGB,
@@ -10,6 +11,7 @@ import {
 } from "../../utils/deviceUtilities";
 import { numericTransformer } from "../../utils/transformers";
 import Toggle from "../Toggle/Toggle";
+import ColorPicker from "../ColorPicker/ColorPicker";
 
 export const deviceSettingsGenerator = (
   device,
@@ -30,9 +32,7 @@ export const deviceSettingsGenerator = (
             onChange={(event) => {
               const newMqttState = booleanToMqttState(event.target.checked);
               updateDeviceState(
-                deviceSettingsState,
-                setDeviceSettingsState,
-                device.friendly_name,
+                device.ieee_address,
                 feature.name,
                 newMqttState,
               );

@@ -11,9 +11,11 @@ import { StyledText, lightTheme, darkTheme } from "./utils/theme";
 
 import Devices from "./pages/Devices/Devices";
 import Settings from "./pages/Settings/Settings";
+import Groups from "./pages/Groups/Groups";
 
 import Button from "./components/Button/Button";
 import DeviceSettings from "./components/DeviceSettings/DeviceSettings";
+import { type Device, type Group } from "../../types/zigbee_types";
 
 const Wrapper = styled.div`
   padding: 2em;
@@ -30,7 +32,7 @@ const backend = import.meta.env.VITE_API_URL ?? "";
 
 function App() {
   const [devices, setDevices] = useState();
-  const [bridgeState, setBridgeState] = useState();
+  const [groups, setGroups] = useState();
   const [theme] = useDarkMode();
 
   const themeMode = theme === "light" ? lightTheme : darkTheme;
@@ -39,6 +41,10 @@ function App() {
     fetch(`${backend}/api/devices`)
       .then((res) => res.json())
       .then((data) => setDevices(data.data));
+
+    fetch(`${backend}/api/groups`)
+      .then((res) => res.json())
+      .then((data) => setGroups(data.data));
   }, []);
 
   return (
@@ -62,21 +68,19 @@ function App() {
           <Devices devices={devices} />
         </Route>
 
-        <Route path={"/devices/:friendlyName"}>
+        <Route path={"/devices/:deviceId"}>
           {(params) => {
             if (!devices) return <></>;
 
             const device = devices.find(
-              (device) =>
-                Object.prototype.hasOwnProperty.call(device, "friendly_name") &&
-                device.friendly_name ===
-                  decodeURIComponent(params.friendlyName),
+              (device: Device) =>
+                device.ieee_address === decodeURIComponent(params.deviceId),
             );
 
             if (!device)
               return (
                 <StyledText>
-                  Device <b>{params.friendlyName}</b> does not exist on this
+                  Device <code>{params.deviceId}</code> does not exist on this
                   network.
                 </StyledText>
               );
@@ -85,8 +89,12 @@ function App() {
           }}
         </Route>
 
+        <Route path={"/groups"}>
+          <Groups groups={groups} />
+        </Route>
+
         <Route path={"/settings"}>
-          <Settings bridgeState={bridgeState} />
+          <Settings bridgeState={{}} />
         </Route>
       </Wrapper>
     </ThemeProvider>

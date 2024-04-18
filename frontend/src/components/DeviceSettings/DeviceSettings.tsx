@@ -8,6 +8,8 @@ import { deviceSettingsGenerator } from "./generator";
 import EditableText from "../EditableText/EditableText";
 import { deviceDescription } from "../../utils/deviceUtilities";
 
+const backend = import.meta.env.VITE_API_URL ?? "";
+
 function DeviceSettings(props) {
   const [deviceSettingsState, setDeviceSettingsState] = useState();
   const [deviceFriendlyNameState, setDeviceFriendlyNameState] = useState(
@@ -26,9 +28,9 @@ function DeviceSettings(props) {
       properties[property.name] = "";
     });
 
-    getDeviceSettings(props.device.friendly_name, properties).then(
-      setDeviceSettingsState,
-    );
+    fetch(`${backend}/api/devices/${props.device.ieee_address}/state`)
+      .then((res) => res.json())
+      .then((data) => setDeviceSettingsState(data.data));
   }, []);
 
   if (!deviceSettingsState) return <LoadingSpinner />;
