@@ -20,7 +20,7 @@ const Card = styled.div`
 function GroupCard(props: { group: Group; onClick: Function }) {
   return (
     <Card onClick={props.onClick}>
-      <StyledHeader>{props.group.friendly_name}</StyledHeader>
+      <StyledHeader>📂 {props.group.friendly_name}</StyledHeader>
       <StyledText>{`${props.group.members.length} devices`}</StyledText>
     </Card>
   );

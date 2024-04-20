@@ -16,6 +16,7 @@ import Groups from "./pages/Groups/Groups";
 import Button from "./components/Button/Button";
 import DeviceSettings from "./components/DeviceSettings/DeviceSettings";
 import { type Device, type Group } from "../../types/zigbee_types";
+import GroupSettings from "./components/GroupSettings/GroupSettings";
 
 const Wrapper = styled.div`
   padding: 2em;
@@ -91,6 +92,27 @@ function App() {
 
         <Route path={"/groups"}>
           <Groups groups={groups} />
+        </Route>
+
+        <Route path={"/groups/:groupId"}>
+          {(params) => {
+            if (!groups) return <></>;
+
+            const group: Group = groups.find(
+              (group: Group) =>
+                group.id === parseInt(decodeURIComponent(params.groupId)),
+            );
+
+            if (!group)
+              return (
+                <StyledText>
+                  Group with ID <code>{params.groupId}</code> does not exist on
+                  this network.
+                </StyledText>
+              );
+
+            return <GroupSettings group={group} />;
+          }}
         </Route>
 
         <Route path={"/settings"}>

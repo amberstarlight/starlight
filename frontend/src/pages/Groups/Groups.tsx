@@ -3,6 +3,7 @@
 
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import GroupList from "../../components/GroupList/GroupList";
+import GroupSettings from "../../components/GroupSettings/GroupSettings";
 
 function Groups(props) {
   const selectedGroup = props.selectedGroup;

@@ -10,7 +10,7 @@ function GroupList(props: { groups: Group[]; onClick?: Function }) {
     <div>
       {props.groups.map((group: Group) => (
         <Link href={`/groups/${group.id}`} key={group.id}>
-          <GroupCard group={group} onClick={() => props.onClick} />
+          <GroupCard group={group} onClick={props.onClick} />
         </Link>
       ))}
     </div>
