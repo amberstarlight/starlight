@@ -1,17 +1,23 @@
 {
+  "name": "starlight",
+  "version": "0.0.1",
+  "license": "AGPL-3.0-or-later",
   "private": true,
-  "name": "zigbee-webui",
   "workspaces": [
-    "frontend",
-    "api"
+    "packages/*"
   ],
   "scripts": {
-    "api": "yarn workspace api dev",
-    "frontend": "yarn workspace frontend dev",
-    "start": "concurrently --kill-others-on-fail \"yarn api\" \"yarn frontend\"",
     "lint": "yarn prettier -w ."
   },
   "dependencies": {
     "concurrently": "^8.2.2"
+  },
+  "packageManager": "yarn@4.2.2",
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "eslint": "^9.1.1",
+    "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }
