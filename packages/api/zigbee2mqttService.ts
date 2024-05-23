@@ -3,9 +3,14 @@
 
 import mqtt, { MqttClient, IClientOptions } from "mqtt";
 import { logger } from "./logger";
-import { BridgeResponse, Device, Group, Scene } from "../types/zigbee_types";
+import {
+  type BridgeResponse,
+  type Device,
+  type Group,
+  type Scene,
+  type Feature,
+} from "@starlight/types";
 import { elementDiff, getByPath, quoteList } from "./utils";
-import { Feature } from "../types/zigbee_features";
 
 const SUCCESS: OperationStatus = { success: true };
 
