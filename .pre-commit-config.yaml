@@ -26,7 +26,7 @@ repos:
     rev: "v4.0.0-alpha.8"
     hooks:
       - id: prettier
-        files: '\.(c?js.?|ts.?)$'
+        files: '\.(m?js.?|c?js.?|ts.?)$'
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.18.2
