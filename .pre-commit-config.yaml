@@ -15,7 +15,6 @@ repos:
     hooks:
       - id: insert-license
         files: '\.(js.?|ts.?)$'
-        exclude: '\.d.ts.?$'
         args:
           - --license-filepath
           - ./license_header.txt
