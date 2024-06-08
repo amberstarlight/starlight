@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import EditableText from "../EditableText/EditableText";
+import { deviceSettingsGenerator } from "../DeviceSettings/generator";
 
 const backend = import.meta.env.VITE_API_URL ?? "";
 
@@ -17,7 +18,10 @@ function GroupSettings(props) {
   useEffect(() => {
     fetch(`${backend}/api/groups/${props.group.id}/state`)
       .then((res) => res.json())
-      .then((data) => setGroupSettingsState(data.data));
+      .then((data) => {
+        setGroupSettingsState(data.data);
+        console.log(data.data);
+      });
   }, []);
 
   if (!groupSettingsState) return <LoadingSpinner />;
@@ -40,8 +44,13 @@ function GroupSettings(props) {
           // }}
         />
       </div>
-
-      <div>"todo"</div>
+      <div>
+        {deviceSettingsGenerator(
+          props.group,
+          groupSettingsState,
+          setGroupSettingsState,
+        )}
+      </div>
     </>
   );
 }

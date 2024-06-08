@@ -3,8 +3,7 @@
 
 import styled from "styled-components";
 import { StyledText, StyledHeader } from "../../utils/theme";
-
-import { type Group } from "../../../../types/zigbee_types";
+import { type Group } from "@starlight/types";
 
 const Card = styled.div`
   margin: 2em 0em;

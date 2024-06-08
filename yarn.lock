@@ -949,6 +949,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@starlight/ui@workspace:packages/ui"
   dependencies:
+    "@starlight/types": "workspace:^"
     "@types/react": "npm:^18.2.66"
     "@types/react-dom": "npm:^18.2.22"
     "@typescript-eslint/eslint-plugin": "npm:^7.2.0"

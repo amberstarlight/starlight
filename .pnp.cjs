@@ -1206,6 +1206,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./packages/ui/",\
         "packageDependencies": [\
           ["@starlight/ui", "workspace:packages/ui"],\
+          ["@starlight/types", "workspace:packages/types"],\
           ["@types/react", "npm:18.2.76"],\
           ["@types/react-dom", "npm:18.2.25"],\
           ["@typescript-eslint/eslint-plugin", "virtual:83234b31f4a42846187a8b483d72ded432f24208b55f837e287a69a5d483858f00cea0ab9685217abbb7dd635227ce77eeadbdff09c5323c85986daeae6ecc05#npm:7.6.0"],\

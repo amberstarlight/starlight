@@ -4,8 +4,7 @@
 import { deviceDescription } from "../../utils/deviceUtilities";
 import styled from "styled-components";
 import { StyledText, StyledHeader } from "../../utils/theme";
-
-import { type Device } from "../../../../types/zigbee_types";
+import { type Device } from "@starlight/types";
 
 const emojiLookup = {
   light: "💡",

@@ -15,7 +15,7 @@ import Groups from "./pages/Groups/Groups";
 
 import Button from "./components/Button/Button";
 import DeviceSettings from "./components/DeviceSettings/DeviceSettings";
-import { type Device, type Group } from "../../types/zigbee_types";
+import { type Device, type Group } from "starlight/types";
 import GroupSettings from "./components/GroupSettings/GroupSettings";
 
 const Wrapper = styled.div`

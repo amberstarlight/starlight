@@ -3,7 +3,7 @@
 
 import { Link } from "wouter";
 import DeviceCard from "../DeviceCard/DeviceCard";
-import { type Device } from "../../../../types/zigbee_types";
+import { type Device } from "@starlight/types";
 
 function DeviceList(props: { devices: Device[]; onClick: Function }) {
   return (

@@ -3,7 +3,7 @@
 
 import { Link } from "wouter";
 import GroupCard from "../GroupCard/GroupCard";
-import { type Group } from "../../../../types/zigbee_types";
+import { type Group } from "@starlight/types";
 
 function GroupList(props: { groups: Group[]; onClick?: Function }) {
   return (
