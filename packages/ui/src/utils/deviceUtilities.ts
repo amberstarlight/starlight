@@ -56,7 +56,7 @@ export const hexToRGB = (hexValue) => {
 
 const byteToHex = (byte) => {
   byte = Math.round(byte);
-  let hex = byte.toString(16);
+  const hex = byte.toString(16);
   return hex.length === 1 ? "0" + hex : hex;
 };
 

@@ -18,7 +18,7 @@ export const numericTransformer = (
   deviceSettingsState,
   setDeviceSettingsState,
 ) => {
-  let componentsArray = [];
+  const componentsArray = [];
   let unit = "%";
   let displayValue = percentage(deviceSettingsState[feature.name], 254);
 

@@ -29,7 +29,7 @@ const Card = styled.div`
 
 function DeviceCard(props: { device: Device; onClick: Function }) {
   let deviceEmoji = "❓";
-  let deviceDefinition = props.device.definition;
+  const deviceDefinition = props.device.definition;
 
   if (deviceDefinition && deviceDefinition.exposes.length > 0) {
     deviceEmoji = emojiLookup[deviceDefinition.exposes[0].type];

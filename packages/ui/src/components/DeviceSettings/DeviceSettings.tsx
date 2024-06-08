@@ -22,7 +22,7 @@ function DeviceSettings(props) {
   const features = props.device.definition.exposes[0].features;
 
   useEffect(() => {
-    let properties = {};
+    const properties = {};
 
     features.forEach((property) => {
       properties[property.name] = "";
@@ -35,7 +35,7 @@ function DeviceSettings(props) {
 
   if (!deviceSettingsState) return <LoadingSpinner />;
 
-  let deviceDefinition = props.device.definition;
+  const deviceDefinition = props.device.definition;
 
   return (
     <>

@@ -170,7 +170,7 @@ export class Zigbee2MqttService {
   #groupsData: Record<string, any> = {};
   #groups: Record<string, Group> = {};
   #mqttClientConnected: Promise<OperationStatus>;
-  #ready: Boolean = false;
+  #ready: boolean = false;
   #topicCallbacks: Record<string, BridgeResponseCallback[]> = {};
 
   constructor(
@@ -345,7 +345,7 @@ export class Zigbee2MqttService {
           this.#topicCallbacks[topic] &&
           this.#topicCallbacks[topic].length > 0
         ) {
-          let callback = this.#topicCallbacks[topic].shift();
+          const callback = this.#topicCallbacks[topic].shift();
           if (callback !== undefined) callback(jsonPayload);
           break;
         }

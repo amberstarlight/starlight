@@ -19,10 +19,10 @@ export const deviceSettingsGenerator = (
   setDeviceSettingsState,
 ) => {
   const exposes = device.definition.exposes;
-  let deviceSettingsList = [];
+  const deviceSettingsList = [];
 
-  for (let feature of exposes[0].features) {
-    let settingComponentsArray = [];
+  for (const feature of exposes[0].features) {
+    const settingComponentsArray = [];
     switch (feature.type) {
       case "binary":
         settingComponentsArray.push(
@@ -55,7 +55,7 @@ export const deviceSettingsGenerator = (
 
       case "composite":
         if (feature.name === "color_hs") {
-          let rgb = hslToRGB({
+          const rgb = hslToRGB({
             h: deviceSettingsState.color.hue,
             s: deviceSettingsState.color.saturation / 100,
             l: 0.5,
