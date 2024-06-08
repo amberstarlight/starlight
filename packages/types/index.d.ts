@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 export interface Device {
-  [index: string]: any;
+  [index: string]: unknown;
   ieee_address: string;
   type: "Coordinator" | "EndDevice" | "GreenPower" | "Router" | "Unknown";
   network_address: number;
@@ -109,7 +109,7 @@ export interface Group {
 export interface BridgeResponse {
   status: "ok" | "error";
   error?: string;
-  data: any;
+  data: unknown;
 }
 
 export type Feature =
@@ -130,9 +130,18 @@ interface BaseFeature {
   access?: 1 | 2 | 5 | 7;
   description?: string;
   name: string;
+  label: string;
   type: string;
   property?: string;
 }
+
+/*
+  Access bitmask
+
+  Bit 1: the property is published in state
+  Bit 2: the property can be set
+  Bit 3: the property can be retrieved (and the state is published)
+*/
 
 interface FeaturePreset {
   description: string;
@@ -140,7 +149,7 @@ interface FeaturePreset {
   value: number; // check this
 }
 
-/**
+/*
  * Generic Features
  */
 
@@ -162,7 +171,7 @@ interface NumericFeature extends BaseFeature {
 
 interface EnumFeature extends BaseFeature {
   type: "enum";
-  values: any[];
+  values: unknown[];
 }
 
 interface ListFeature extends BaseFeature {
@@ -180,10 +189,11 @@ interface TextFeature extends BaseFeature {
 interface CompositeFeature extends BaseFeature {
   type: "composite";
   property: string;
-  features: BinaryFeature[] | NumericFeature[] | EnumFeature[];
+  features: Feature[];
+  category?: "config" | "diagnostic";
 }
 
-/**
+/*
  * Specific Features
  */
 

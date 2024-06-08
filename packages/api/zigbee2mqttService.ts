@@ -206,7 +206,7 @@ export class Zigbee2MqttService {
 
   async #handleMessage(topic: string, payload: Buffer) {
     switch (topic) {
-      case `${this.#baseTopic}/bridge/devices`:
+      case `${this.#baseTopic}/bridge/devices`: {
         const updatedDeviceList: Device[] = JSON.parse(payload.toString());
 
         const devices = elementDiff(
@@ -260,8 +260,9 @@ export class Zigbee2MqttService {
         }
 
         break;
+      }
 
-      case `${this.#baseTopic}/bridge/groups`:
+      case `${this.#baseTopic}/bridge/groups`: {
         const updatedGroupList: Group[] = JSON.parse(payload.toString());
 
         const groups = elementDiff(
@@ -302,8 +303,9 @@ export class Zigbee2MqttService {
         }
 
         break;
+      }
 
-      default:
+      default: {
         const topicName = topic.split("/")[1];
         const ieeeAddress = await this.getIeeeAddress(topicName);
         const groupId = await this.getGroupId(topicName);
@@ -357,6 +359,7 @@ export class Zigbee2MqttService {
         );
 
         break;
+      }
     }
   }
 

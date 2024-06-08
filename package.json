@@ -7,15 +7,14 @@
     "packages/*"
   ],
   "scripts": {
-    "lint": "yarn prettier -w ."
-  },
-  "dependencies": {
-    "concurrently": "^8.2.2"
+    "lint": "yarn eslint .",
+    "fix": "yarn eslint . --fix",
+    "prettier": "yarn prettier -w ."
   },
   "packageManager": "yarn@4.2.2",
   "devDependencies": {
     "@eslint/js": "^9.3.0",
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.14.2",
     "eslint": "9.x",
     "globals": "^15.3.0",
     "prettier": "^3.2.5",

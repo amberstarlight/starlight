@@ -12,6 +12,6 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: [".pnp.*"],
+    ignores: [".pnp.*", "**/dist/", "**/*eslint*"],
   },
 ];
