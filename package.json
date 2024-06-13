@@ -11,7 +11,7 @@
     "fix": "yarn eslint . --fix",
     "prettier": "yarn prettier -w ."
   },
-  "packageManager": "yarn@4.2.2",
+  "packageManager": "yarn@4.3.0",
   "devDependencies": {
     "@eslint/js": "^9.3.0",
     "@types/node": "^20.14.2",
