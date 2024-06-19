@@ -25,7 +25,7 @@ interface OperationStatusFailure {
 
 type OperationStatus = OperationStatusSuccess | OperationStatusFailure;
 
-type FieldValue = any;
+type FieldValue = unknown;
 
 type ExposeUpdater = (
   device: string,
@@ -72,9 +72,11 @@ class MqttDevice {
     return value;
   }
 
-  setValue(expose: string, value: any): OperationStatus {
+  async setValue(expose: string, value: any): Promise<FieldValue> {
     this.#updater(this.device.friendly_name, expose, value);
-    return SUCCESS;
+    const response = await this.getValue(expose);
+    console.log(response);
+    return response;
   }
 }
 

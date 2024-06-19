@@ -157,10 +157,10 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       });
     }
 
-    device.setValue(req.body.setting, req.body.value);
+    const status = await device.setValue(req.body.setting, req.body.value);
 
     return res.status(200).json({
-      data: req.params.deviceId,
+      data: status,
     });
   });
 

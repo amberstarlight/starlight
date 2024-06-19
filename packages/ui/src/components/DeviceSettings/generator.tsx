@@ -7,14 +7,17 @@ import {
   hexToRGB,
   hslToRGB,
   rgbToHSL,
+  rgbToHex,
   updateDeviceState,
 } from "../../utils/deviceUtilities";
 import { numericTransformer } from "../../utils/transformers";
 import Toggle from "../Toggle/Toggle";
 import ColorPicker from "../ColorPicker/ColorPicker";
 
+import { type Device } from "@starlight/types";
+
 export const deviceSettingsGenerator = (
-  device,
+  device: Device,
   deviceSettingsState,
   setDeviceSettingsState,
 ) => {
@@ -35,7 +38,7 @@ export const deviceSettingsGenerator = (
                 device.ieee_address,
                 feature.name,
                 newMqttState,
-              );
+              ).then((res) => console.log(deviceSettingsState));
             }}
           />,
         );

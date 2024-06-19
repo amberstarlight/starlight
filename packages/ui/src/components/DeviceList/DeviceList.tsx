@@ -8,14 +8,22 @@ import { type Device } from "@starlight/types";
 function DeviceList(props: { devices: Device[]; onClick: Function }) {
   return (
     <div>
-      {props.devices.map((device: Device) => (
-        <Link
-          href={`/devices/${device.ieee_address}`}
-          key={device.ieee_address}
-        >
-          <DeviceCard device={device} onClick={() => props.onClick} />
-        </Link>
-      ))}
+      {props.devices
+        .sort((a, b) =>
+          a.friendly_name > b.friendly_name
+            ? 1
+            : b.friendly_name > a.friendly_name
+              ? -1
+              : 0,
+        )
+        .map((device: Device) => (
+          <Link
+            href={`/devices/${device.ieee_address}`}
+            key={device.ieee_address}
+          >
+            <DeviceCard device={device} onClick={() => props.onClick} />
+          </Link>
+        ))}
     </div>
   );
 }

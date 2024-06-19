@@ -13,11 +13,11 @@ export const booleanToMqttState = (boolean: boolean): string => {
   return "OFF";
 };
 
-export const updateDeviceState = (
+export const updateDeviceState = async (
   deviceId: string,
   property: string,
   value: any,
-) => {
+): Promise<unknown> => {
   const request = new Request(`${backend}/api/devices/${deviceId}/state`, {
     method: "POST",
     mode: "cors",
@@ -30,7 +30,11 @@ export const updateDeviceState = (
     }),
   });
 
-  fetch(request).then();
+  return await fetch(request)
+    .then((res) => res.json())
+    .then((data) => {
+      return data;
+    });
 };
 
 export const deviceDescription = (deviceDefinition) => {
