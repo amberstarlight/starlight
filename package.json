@@ -9,7 +9,9 @@
   "scripts": {
     "lint": "yarn eslint .",
     "fix": "yarn eslint . --fix",
-    "prettier": "yarn prettier -w ."
+    "prettier": "yarn prettier -w .",
+    "api:dev": "yarn workspace @starlight/api run dev",
+    "ui:dev": "yarn workspace @starlight/ui run dev"
   },
   "packageManager": "yarn@4.3.0",
   "devDependencies": {

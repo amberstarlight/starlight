@@ -927,9 +927,9 @@ __metadata:
     "@starlight/types": "workspace:^"
     "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^4.17.17"
-    "@types/node": "npm:^20.10.5"
+    "@types/node": "npm:^20.14.5"
     cors: "npm:^2.8.5"
-    dotenv: "npm:^16.0.3"
+    dotenv: "npm:^16.4.5"
     express: "npm:^4.18.2"
     mqtt: "npm:^5.3.3"
     nodemon: "npm:^3.0.2"
@@ -1123,7 +1123,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^20.10.5":
+"@types/node@npm:*":
   version: 20.10.5
   resolution: "@types/node@npm:20.10.5"
   dependencies:
@@ -1138,6 +1138,15 @@ __metadata:
   dependencies:
     undici-types: "npm:~5.26.4"
   checksum: 10c0/2d86e5f2227aaa42212e82ea0affe72799111b888ff900916376450b02b09b963ca888b20d9c332d8d2b833ed4781987867a38eaa2e4863fa8439071468b0a6f
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.14.5":
+  version: 20.14.5
+  resolution: "@types/node@npm:20.14.5"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: 10c0/06a8c304b5f7f190d4497807dc67ad09ee7b14ea2996bfdc823553c624698d8cab1ef9d16f8b764f20cb9eb11caa0e832787741e9ef70e1c89d620797ab28436
   languageName: node
   linkType: hard
 
@@ -2130,10 +2139,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:^16.0.3":
-  version: 16.3.1
-  resolution: "dotenv@npm:16.3.1"
-  checksum: 10c0/b95ff1bbe624ead85a3cd70dbd827e8e06d5f05f716f2d0cbc476532d54c7c9469c3bc4dd93ea519f6ad711cb522c00ac9a62b6eb340d5affae8008facc3fbd7
+"dotenv@npm:^16.4.5":
+  version: 16.4.5
+  resolution: "dotenv@npm:16.4.5"
+  checksum: 10c0/48d92870076832af0418b13acd6e5a5a3e83bb00df690d9812e94b24aff62b88ade955ac99a05501305b8dc8f1b0ee7638b18493deb6fe93d680e5220936292f
   languageName: node
   linkType: hard
 

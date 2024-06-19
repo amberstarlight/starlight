@@ -1179,9 +1179,9 @@ const RAW_RUNTIME_STATE =
           ["@starlight/types", "workspace:packages/types"],\
           ["@types/cors", "npm:2.8.17"],\
           ["@types/express", "npm:4.17.21"],\
-          ["@types/node", "npm:20.10.5"],\
+          ["@types/node", "npm:20.14.5"],\
           ["cors", "npm:2.8.5"],\
-          ["dotenv", "npm:16.3.1"],\
+          ["dotenv", "npm:16.4.5"],\
           ["express", "npm:4.18.2"],\
           ["mqtt", "npm:5.3.4"],\
           ["nodemon", "npm:3.0.2"],\
@@ -1419,6 +1419,14 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "../../.local/share/yarn/berry/cache/@types-node-npm-20.14.2-fa12d1e34b-10c0.zip/node_modules/@types/node/",\
         "packageDependencies": [\
           ["@types/node", "npm:20.14.2"],\
+          ["undici-types", "npm:5.26.5"]\
+        ],\
+        "linkType": "HARD"\
+      }],\
+      ["npm:20.14.5", {\
+        "packageLocation": "../../.local/share/yarn/berry/cache/@types-node-npm-20.14.5-07c835e492-10c0.zip/node_modules/@types/node/",\
+        "packageDependencies": [\
+          ["@types/node", "npm:20.14.5"],\
           ["undici-types", "npm:5.26.5"]\
         ],\
         "linkType": "HARD"\
@@ -2735,10 +2743,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["dotenv", [\
-      ["npm:16.3.1", {\
-        "packageLocation": "../../.local/share/yarn/berry/cache/dotenv-npm-16.3.1-e6d380a398-10c0.zip/node_modules/dotenv/",\
+      ["npm:16.4.5", {\
+        "packageLocation": "../../.local/share/yarn/berry/cache/dotenv-npm-16.4.5-bcb20eb95d-10c0.zip/node_modules/dotenv/",\
         "packageDependencies": [\
-          ["dotenv", "npm:16.3.1"]\
+          ["dotenv", "npm:16.4.5"]\
         ],\
         "linkType": "HARD"\
       }]\
@@ -5523,7 +5531,7 @@ const RAW_RUNTIME_STATE =
           ["@tsconfig/node12", "npm:1.0.11"],\
           ["@tsconfig/node14", "npm:1.0.3"],\
           ["@tsconfig/node16", "npm:1.0.4"],\
-          ["@types/node", "npm:20.10.5"],\
+          ["@types/node", "npm:20.14.5"],\
           ["@types/swc__core", null],\
           ["@types/swc__wasm", null],\
           ["@types/typescript", null],\
