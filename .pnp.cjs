@@ -1207,8 +1207,8 @@ const RAW_RUNTIME_STATE =
         "packageDependencies": [\
           ["@starlight/ui", "workspace:packages/ui"],\
           ["@starlight/types", "workspace:packages/types"],\
-          ["@types/react", "npm:18.2.76"],\
-          ["@types/react-dom", "npm:18.2.25"],\
+          ["@types/react", "npm:18.3.3"],\
+          ["@types/react-dom", "npm:18.3.0"],\
           ["@typescript-eslint/eslint-plugin", "virtual:83234b31f4a42846187a8b483d72ded432f24208b55f837e287a69a5d483858f00cea0ab9685217abbb7dd635227ce77eeadbdff09c5323c85986daeae6ecc05#npm:7.6.0"],\
           ["@typescript-eslint/parser", "virtual:83234b31f4a42846187a8b483d72ded432f24208b55f837e287a69a5d483858f00cea0ab9685217abbb7dd635227ce77eeadbdff09c5323c85986daeae6ecc05#npm:7.6.0"],\
           ["@vitejs/plugin-react", "virtual:83234b31f4a42846187a8b483d72ded432f24208b55f837e287a69a5d483858f00cea0ab9685217abbb7dd635227ce77eeadbdff09c5323c85986daeae6ecc05#npm:4.2.1"],\
@@ -1468,13 +1468,22 @@ const RAW_RUNTIME_STATE =
           ["csstype", "npm:3.1.3"]\
         ],\
         "linkType": "HARD"\
+      }],\
+      ["npm:18.3.3", {\
+        "packageLocation": "../../.local/share/yarn/berry/cache/@types-react-npm-18.3.3-07e68e178e-10c0.zip/node_modules/@types/react/",\
+        "packageDependencies": [\
+          ["@types/react", "npm:18.3.3"],\
+          ["@types/prop-types", "npm:15.7.12"],\
+          ["csstype", "npm:3.1.3"]\
+        ],\
+        "linkType": "HARD"\
       }]\
     ]],\
     ["@types/react-dom", [\
-      ["npm:18.2.25", {\
-        "packageLocation": "../../.local/share/yarn/berry/cache/@types-react-dom-npm-18.2.25-162e24188e-10c0.zip/node_modules/@types/react-dom/",\
+      ["npm:18.3.0", {\
+        "packageLocation": "../../.local/share/yarn/berry/cache/@types-react-dom-npm-18.3.0-111444d3eb-10c0.zip/node_modules/@types/react-dom/",\
         "packageDependencies": [\
-          ["@types/react-dom", "npm:18.2.25"],\
+          ["@types/react-dom", "npm:18.3.0"],\
           ["@types/react", "npm:18.2.76"]\
         ],\
         "linkType": "HARD"\
@@ -4850,7 +4859,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/__virtual__/react-dom-virtual-b31f8d7253/3/.local/share/yarn/berry/cache/react-dom-npm-18.2.0-dd675bca1c-10c0.zip/node_modules/react-dom/",\
         "packageDependencies": [\
           ["react-dom", "virtual:83234b31f4a42846187a8b483d72ded432f24208b55f837e287a69a5d483858f00cea0ab9685217abbb7dd635227ce77eeadbdff09c5323c85986daeae6ecc05#npm:18.2.0"],\
-          ["@types/react", "npm:18.2.76"],\
+          ["@types/react", "npm:18.3.3"],\
           ["loose-envify", "npm:1.4.0"],\
           ["react", "npm:18.2.0"],\
           ["scheduler", "npm:0.23.0"]\
@@ -5367,8 +5376,8 @@ const RAW_RUNTIME_STATE =
           ["styled-components", "virtual:83234b31f4a42846187a8b483d72ded432f24208b55f837e287a69a5d483858f00cea0ab9685217abbb7dd635227ce77eeadbdff09c5323c85986daeae6ecc05#npm:6.1.8"],\
           ["@emotion/is-prop-valid", "npm:1.2.1"],\
           ["@emotion/unitless", "npm:0.8.0"],\
-          ["@types/react", "npm:18.2.76"],\
-          ["@types/react-dom", "npm:18.2.25"],\
+          ["@types/react", "npm:18.3.3"],\
+          ["@types/react-dom", "npm:18.3.0"],\
           ["@types/stylis", "npm:4.2.0"],\
           ["css-to-react-native", "npm:3.2.0"],\
           ["csstype", "npm:3.1.2"],\
@@ -5786,7 +5795,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/__virtual__/use-sync-external-store-virtual-ffb7f292e5/3/.local/share/yarn/berry/cache/use-sync-external-store-npm-1.2.0-44f75d2564-10c0.zip/node_modules/use-sync-external-store/",\
         "packageDependencies": [\
           ["use-sync-external-store", "virtual:b632bb84689677b0300ea3d75f6b33fe3a7309b34a298f0993a30c2bc9743470d44e41f9c9f28caa114685af8436672ff0a724a5837205cd2f788540f3f0cdd6#npm:1.2.0"],\
-          ["@types/react", "npm:18.2.76"],\
+          ["@types/react", "npm:18.3.3"],\
           ["react", "npm:18.2.0"]\
         ],\
         "packagePeers": [\
@@ -5947,7 +5956,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./.yarn/__virtual__/wouter-virtual-b632bb8468/3/.local/share/yarn/berry/cache/wouter-npm-3.1.2-4c27f5a469-10c0.zip/node_modules/wouter/",\
         "packageDependencies": [\
           ["wouter", "virtual:83234b31f4a42846187a8b483d72ded432f24208b55f837e287a69a5d483858f00cea0ab9685217abbb7dd635227ce77eeadbdff09c5323c85986daeae6ecc05#npm:3.1.2"],\
-          ["@types/react", "npm:18.2.76"],\
+          ["@types/react", "npm:18.3.3"],\
           ["mitt", "npm:3.0.1"],\
           ["react", "npm:18.2.0"],\
           ["regexparam", "npm:3.0.0"],\

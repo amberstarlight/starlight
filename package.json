@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "yarn eslint .",
     "fix": "yarn eslint . --fix",
-    "prettier": "yarn prettier -w .",
+    "fmt": "yarn prettier -w .",
     "api:dev": "yarn workspace @starlight/api run dev",
     "ui:dev": "yarn workspace @starlight/ui run dev"
   },

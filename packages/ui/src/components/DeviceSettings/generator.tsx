@@ -83,12 +83,13 @@ export const deviceSettingsGenerator = (
                 };
 
                 updateDeviceState(
-                  deviceSettingsState,
-                  setDeviceSettingsState,
                   device.friendly_name,
                   "color",
                   newMqttColor,
-                );
+                ).then((res) => {
+                  const updated = Object.assign(deviceSettingsState, res);
+                  setDeviceSettingsState(updated);
+                });
               }}
             />,
           );

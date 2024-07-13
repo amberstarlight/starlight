@@ -20,7 +20,6 @@ function GroupSettings(props) {
       .then((res) => res.json())
       .then((data) => {
         setGroupSettingsState(data.data);
-        console.log(data.data);
       });
   }, []);
 

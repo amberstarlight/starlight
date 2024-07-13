@@ -39,12 +39,11 @@ export const numericTransformer = (
       displayValue={displayValue}
       onChange={(event) => {
         const newMqttValue = event.target.value;
-        updateDeviceState(
-          deviceSettingsState,
-          setDeviceSettingsState,
-          device.friendly_name,
-          feature.name,
-          newMqttValue,
+        updateDeviceState(device.ieee_address, feature.name, newMqttValue).then(
+          (res) => {
+            const updated = Object.assign(deviceSettingsState, res);
+            setDeviceSettingsState(updated);
+          },
         );
       }}
     />,
@@ -57,12 +56,13 @@ export const numericTransformer = (
         text={stringTidy(preset.name)}
         onClick={() => {
           updateDeviceState(
-            deviceSettingsState,
-            setDeviceSettingsState,
-            device.friendly_name,
+            device.ieee_address,
             feature.name,
             preset.value,
-          );
+          ).then((res) => {
+            const updated = Object.assign(deviceSettingsState, res);
+            setDeviceSettingsState(updated);
+          });
         }}
       ></Button>
     ));

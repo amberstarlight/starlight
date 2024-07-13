@@ -79,7 +79,6 @@ class MqttDevice {
       expose,
       value,
     );
-    console.log(response);
     return response;
   }
 }
