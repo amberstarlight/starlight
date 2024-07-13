@@ -38,7 +38,10 @@ export const deviceSettingsGenerator = (
                 device.ieee_address,
                 feature.name,
                 newMqttState,
-              ).then((res) => console.log(deviceSettingsState));
+              ).then((res) => {
+                const updated = Object.assign(deviceSettingsState, res);
+                setDeviceSettingsState(updated);
+              });
             }}
           />,
         );

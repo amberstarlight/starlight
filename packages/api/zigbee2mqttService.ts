@@ -31,7 +31,7 @@ type ExposeUpdater = (
   device: string,
   fieldName: string,
   fieldValue: FieldValue,
-) => void;
+) => Promise<FieldValue>;
 
 type ExposeRetriever = (id: string, fieldName?: string) => Promise<FieldValue>;
 
@@ -47,6 +47,7 @@ type GroupMemberUpdater = (
 ) => Promise<BridgeResponse>;
 
 type BridgeResponseCallback = (response: BridgeResponse) => void;
+type StateCallback = (response: unknown) => void;
 
 class MqttDevice {
   device: Device;
@@ -73,8 +74,11 @@ class MqttDevice {
   }
 
   async setValue(expose: string, value: any): Promise<FieldValue> {
-    this.#updater(this.device.friendly_name, expose, value);
-    const response = await this.getValue(expose);
+    const response = await this.#updater(
+      this.device.ieee_address,
+      expose,
+      value,
+    );
     console.log(response);
     return response;
   }
@@ -323,6 +327,14 @@ export class Zigbee2MqttService {
 
         const jsonPayload = JSON.parse(payload.toString());
 
+        if (
+          this.#topicCallbacks[topic] &&
+          this.#topicCallbacks[topic].length > 0
+        ) {
+          const callback = this.#topicCallbacks[topic].shift();
+          if (callback !== undefined) callback(jsonPayload);
+        }
+
         if (ieeeAddress !== undefined) {
           logger(
             "info",
@@ -342,15 +354,6 @@ export class Zigbee2MqttService {
             `Updating data for group: '${topicName}' [${groupId}]`,
           );
           this.#groupsData[groupId] = jsonPayload;
-          break;
-        }
-
-        if (
-          this.#topicCallbacks[topic] &&
-          this.#topicCallbacks[topic].length > 0
-        ) {
-          const callback = this.#topicCallbacks[topic].shift();
-          if (callback !== undefined) callback(jsonPayload);
           break;
         }
 
@@ -381,13 +384,29 @@ export class Zigbee2MqttService {
     throw new Error("ID not found");
   };
 
-  exposeUpdater: ExposeUpdater = (deviceOrGroup, expose, value) => {
-    this.#client.publish(
-      `${this.#baseTopic}/${deviceOrGroup}/set`,
-      JSON.stringify({
-        [expose]: value,
-      }),
-    );
+  exposeUpdater: ExposeUpdater = async (
+    deviceOrGroup,
+    expose,
+    value,
+  ): Promise<unknown> => {
+    const friendlyName = await this.getFriendlyName(deviceOrGroup);
+    const responseTopic = `${this.#baseTopic}/${friendlyName}`;
+    return new Promise((resolve) => {
+      const callback: StateCallback = (response: unknown) => {
+        resolve(response);
+      };
+
+      if (!this.#topicCallbacks[responseTopic])
+        this.#topicCallbacks[responseTopic] = [];
+      this.#topicCallbacks[responseTopic].push(callback);
+
+      this.#client.publish(
+        `${this.#baseTopic}/${deviceOrGroup}/set`,
+        JSON.stringify({
+          [expose]: value,
+        }),
+      );
+    });
   };
 
   groupMemberUpdater: GroupMemberUpdater = (
@@ -570,6 +589,16 @@ export class Zigbee2MqttService {
     );
 
     return device?.ieee_address;
+  }
+
+  async getFriendlyName(ieee_address: string): Promise<string | undefined> {
+    await this.#mqttClientConnected;
+
+    const device = Object.values(this.#devices).find(
+      (device) => device.ieee_address === ieee_address,
+    );
+
+    return device?.friendly_name;
   }
 
   async getGroupId(friendlyName: string): Promise<number | undefined> {

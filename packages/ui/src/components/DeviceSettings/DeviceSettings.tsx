@@ -31,7 +31,7 @@ function DeviceSettings(props) {
     fetch(`${backend}/api/devices/${props.device.ieee_address}/state`)
       .then((res) => res.json())
       .then((data) => setDeviceSettingsState(data.data));
-  }, []);
+  }, [deviceSettingsState]);
 
   if (!deviceSettingsState) return <LoadingSpinner />;
 
