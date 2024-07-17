@@ -31,7 +31,7 @@ export const numericTransformer = (
     <Slider
       key={feature.name}
       label={stringTidy(feature.name)}
-      min={feature.value_min || 0}
+      min={feature.value_min || 1}
       max={feature.value_max || 100}
       step={feature.value_step || 1}
       value={deviceSettingsState[feature.name] || "?"}
