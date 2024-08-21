@@ -5,18 +5,28 @@ import express, { Request, Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
 import { ApiError } from "./api";
 import { range } from "../utils";
-import { Scene } from "@starlight/types";
+import { type Device, Scene } from "@starlight/types";
 
 const router = express.Router();
+
+const deviceSort = (a: Device, b: Device) => {
+  const x: number = parseInt(a.friendly_name[0]);
+  const y: number = parseInt(b.friendly_name[0]);
+
+  return (
+    +isFinite(x) - +isFinite(y) ||
+    a.friendly_name.localeCompare(b.friendly_name, undefined, { numeric: true })
+  );
+};
 
 export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   // get data about all existing devices
   router.get("/", async (req: Request, res: Response) => {
     const devices = await zigbee2mqttService.getDevices();
     const deviceQuery = req.query.parameter?.toString();
-    const filteredDevices = devices.filter(
-      (device) => device.device.type !== "Coordinator",
-    );
+    const cleanedDevices = devices
+      .filter((device) => device.device.type !== "Coordinator")
+      .sort((a, b) => deviceSort(a.device, b.device));
 
     if (deviceQuery !== undefined) {
       const queriedData = devices.map((device) => device.device[deviceQuery]);
@@ -26,7 +36,7 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     }
 
     return res.status(200).json({
-      data: filteredDevices,
+      data: cleanedDevices,
     });
   });
 
