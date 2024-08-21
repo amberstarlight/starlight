@@ -5,12 +5,13 @@ import styled from 'styled-components';
 import { StyledText, StyledHeader } from '../../utils/theme';
 
 const emojiLookup = {
-  light: '💡',
-  switch: '🔌',
-  fan: '🌡️',
-  cover: '🪟',
-  lock: '🔒',
+  numeric: '📶',
   climate: '❄️️',
+  cover: '🪟',
+  fan: '🌡️',
+  light: '💡',
+  lock: '🔒',
+  switch: '🔌',
 };
 
 const Card = styled.div`
@@ -18,6 +19,8 @@ const Card = styled.div`
   padding: 1em;
   cursor: pointer;
   border-radius: 2rem;
+
+  opacity: ${(props) => (props.dimmed ? 1 : 0.5)};
 
   &:hover {
     background-color: ${({ theme }) => theme.hover};
@@ -33,7 +36,7 @@ function DeviceCard(props) {
   }
 
   return (
-    <Card onClick={props.onClick}>
+    <Card onClick={props.onClick} dimmed={props.device.supported}>
       <StyledHeader>
         {deviceEmoji} {props.device.friendly_name}
       </StyledHeader>
