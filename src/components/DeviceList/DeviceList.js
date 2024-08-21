@@ -15,7 +15,6 @@ const deviceSort = (a, b) =>
 function DeviceList(props) {
   return (
     <div>
-      {console.log(props.devices)}
       {props.devices
         .filter(deviceFilter)
         .sort(deviceSort)
