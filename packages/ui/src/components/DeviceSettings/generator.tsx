@@ -19,7 +19,7 @@ import { type Device } from "@starlight/types";
 export const deviceSettingsGenerator = (
   device: Device,
   deviceSettingsState,
-  setDeviceSettingsState,
+  callback,
 ) => {
   const exposes = device.definition.exposes;
   const deviceSettingsList = [];
@@ -38,10 +38,7 @@ export const deviceSettingsGenerator = (
                 device.ieee_address,
                 feature.name,
                 newMqttState,
-              ).then((res) => {
-                const updated = Object.assign(deviceSettingsState, res);
-                setDeviceSettingsState(updated);
-              });
+              ).then(callback);
             }}
           />,
         );
@@ -49,12 +46,7 @@ export const deviceSettingsGenerator = (
 
       case "numeric":
         settingComponentsArray.push(
-          numericTransformer(
-            feature,
-            device,
-            deviceSettingsState,
-            setDeviceSettingsState,
-          ),
+          numericTransformer(feature, device, deviceSettingsState, callback),
         );
 
         break;
@@ -86,10 +78,7 @@ export const deviceSettingsGenerator = (
                   device.friendly_name,
                   "color",
                   newMqttColor,
-                ).then((res) => {
-                  const updated = Object.assign(deviceSettingsState, res);
-                  setDeviceSettingsState(updated);
-                });
+                ).then(callback);
               }}
             />,
           );

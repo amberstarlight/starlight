@@ -48,9 +48,14 @@ const Slider = styled.span`
   }
 `;
 
-function Toggle(props) {
+function Toggle(props: {
+  label: string;
+  checked: boolean;
+  onChange: Function;
+}) {
   return (
     <Switch>
+      {props.label}
       <input
         type={"checkbox"}
         checked={props.checked}

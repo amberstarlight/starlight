@@ -13,28 +13,50 @@ export const booleanToMqttState = (boolean: boolean): string => {
   return "OFF";
 };
 
-export const updateDeviceState = async (
-  deviceId: string,
-  property: string,
-  value: any,
+const backendPostRequest = async (
+  endpoint: string,
+  body: string,
 ): Promise<unknown> => {
-  const request = new Request(`${backend}/api/devices/${deviceId}/state`, {
+  const request = new Request(endpoint, {
     method: "POST",
     mode: "cors",
     headers: {
       "content-type": "application/json",
     },
-    body: JSON.stringify({
+    body: body,
+  });
+
+  const response = await fetch(request);
+  const json = await response.json();
+  return json;
+};
+
+export const updateDeviceState = async (
+  deviceId: string,
+  property: string,
+  value: any,
+): Promise<unknown> => {
+  return await backendPostRequest(
+    `${backend}/api/devices/${deviceId}/state`,
+    JSON.stringify({
       setting: property,
       value: value,
     }),
-  });
+  );
+};
 
-  return await fetch(request)
-    .then((res) => res.json())
-    .then((data) => {
-      return data;
-    });
+export const updateGroupState = async (
+  groupId: string,
+  property: string,
+  value: any,
+): Promise<unknown> => {
+  return await backendPostRequest(
+    `${backend}/api/groups/${groupId}/state`,
+    JSON.stringify({
+      setting: property,
+      value: value,
+    }),
+  );
 };
 
 export const deviceDescription = (deviceDefinition) => {

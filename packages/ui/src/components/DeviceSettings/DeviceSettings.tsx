@@ -7,6 +7,7 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import { deviceSettingsGenerator } from "./generator";
 import EditableText from "../EditableText/EditableText";
 import { deviceDescription } from "../../utils/deviceUtilities";
+import Button from "../Button/Button";
 
 const backend = import.meta.env.VITE_API_URL ?? "";
 
@@ -16,24 +17,48 @@ function DeviceSettings(props) {
     props.device.friendly_name,
   );
 
-  if (!props.device.supported)
-    return <p>This device exposes nothing that can be controlled.</p>;
+  const deleteButton = (
+    <Button
+      text={"❌ Remove Device"}
+      onClick={() => {
+        const request = new Request(
+          `${backend}/api/devices/${props.device.ieee_address}`,
+          {
+            method: "DELETE",
+          },
+        );
+        fetch(request)
+          .then((res) => res.json())
+          .then((data) => console.log(data));
+      }}
+    />
+  );
 
-  const features = props.device.definition.exposes[0].features;
-
-  useEffect(() => {
-    const properties = {};
-
-    features.forEach((property) => {
-      properties[property.name] = "";
-    });
-
+  const fetchStateData = () => {
     fetch(`${backend}/api/devices/${props.device.ieee_address}/state`)
       .then((res) => res.json())
       .then((data) => setDeviceSettingsState(data.data));
-  }, [deviceSettingsState]);
+  };
 
-  if (!deviceSettingsState) return <LoadingSpinner />;
+  if (!props.device.supported)
+    return (
+      <>
+        <p>This device exposes nothing that can be controlled.</p>
+        {deleteButton}
+      </>
+    );
+
+  useEffect(() => {
+    fetchStateData();
+  }, []);
+
+  if (!deviceSettingsState)
+    return (
+      <>
+        <LoadingSpinner />
+        {deleteButton}
+      </>
+    );
 
   const deviceDefinition = props.device.definition;
 
@@ -61,7 +86,7 @@ function DeviceSettings(props) {
         {deviceSettingsGenerator(
           props.device,
           deviceSettingsState,
-          setDeviceSettingsState,
+          fetchStateData,
         )}
       </div>
     </>

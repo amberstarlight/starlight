@@ -3,7 +3,7 @@
 
 import styled from "styled-components";
 
-const SliderContainer = styled.div`
+const SliderContainer = styled.label`
   display: flex;
   align-items: center;
   justify-content: space-between;

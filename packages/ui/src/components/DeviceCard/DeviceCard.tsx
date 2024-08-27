@@ -29,7 +29,11 @@ const Card = styled.div`
   }
 `;
 
-function DeviceCard(props: { device: Device; onClick: Function }) {
+function DeviceCard(props: {
+  device: Device;
+  onClick: Function;
+  dimmed: boolean;
+}) {
   let deviceEmoji = "❓";
   const deviceDefinition = props.device.definition;
 
