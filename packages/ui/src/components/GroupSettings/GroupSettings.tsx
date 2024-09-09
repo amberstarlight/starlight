@@ -23,9 +23,7 @@ function GroupSettings(props) {
   const fetchGroupState = () => {
     fetch(`${backend}/api/groups/${props.group.id}/state`)
       .then((res) => res.json())
-      .then((data) => {
-        setGroupSettingsState(data.data);
-      })
+      .then((data) => setGroupSettingsState(data.data));
   };
 
   useEffect(() => {
