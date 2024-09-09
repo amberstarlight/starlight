@@ -5,17 +5,24 @@ import express, { Request, Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
 import { ApiError } from "./api";
 import { range } from "../utils";
-import { Scene } from "@starlight/types";
+import { type Group, Scene } from "@starlight/types";
 
 const router = express.Router();
+
+const groupSort = (a: Group, b: Group) => {
+  return (
+    a.friendly_name.localeCompare(b.friendly_name, undefined, { numeric: true})
+  );
+}
 
 export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   // get data about all existing groups
   router.get("/", async (_req: Request, res: Response) => {
     const groups = await zigbee2mqttService.getGroups();
+    const sortedGroups = groups.sort((a, b) => groupSort(a.group, b.group));
 
     return res.status(200).json({
-      data: groups,
+      data: sortedGroups,
     });
   });
 
