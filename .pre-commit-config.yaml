@@ -29,6 +29,6 @@ repos:
         files: '\.(m?js.?|c?js.?|ts.?)$'
 
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.2
+    rev: v8.18.4
     hooks:
       - id: gitleaks

@@ -28,7 +28,7 @@ type OperationStatus = OperationStatusSuccess | OperationStatusFailure;
 type FieldValue = unknown;
 
 type ExposeUpdater = (
-  device: string,
+  deviceOrGroupId: string | number,
   fieldName: string,
   fieldValue: FieldValue,
 ) => Promise<FieldValue>;
@@ -110,9 +110,9 @@ class MqttGroup {
     return value;
   }
 
-  setValue(expose: string, value: any): OperationStatus {
-    this.#updater(this.group.friendly_name, expose, value);
-    return SUCCESS;
+  async setValue(expose: string, value: any): Promise<FieldValue> {
+    const response = await this.#updater(this.group.id, expose, value);
+    return response;
   }
 
   async addDevice(deviceId: string): Promise<BridgeResponse> {
@@ -390,6 +390,7 @@ export class Zigbee2MqttService {
   ): Promise<unknown> => {
     const friendlyName = await this.getFriendlyName(deviceOrGroup);
     const responseTopic = `${this.#baseTopic}/${friendlyName}`;
+
     return new Promise((resolve) => {
       const callback: StateCallback = (response: unknown) => {
         resolve(response);
@@ -590,14 +591,20 @@ export class Zigbee2MqttService {
     return device?.ieee_address;
   }
 
-  async getFriendlyName(ieee_address: string): Promise<string | undefined> {
+  async getFriendlyName(
+    deviceOrGroupId: string | number,
+  ): Promise<string | number | undefined> {
     await this.#mqttClientConnected;
 
     const device = Object.values(this.#devices).find(
-      (device) => device.ieee_address === ieee_address,
+      (device) => device.ieee_address === deviceOrGroupId,
     );
 
-    return device?.friendly_name;
+    const group = Object.values(this.#groups).find(
+      (group) => group.id === deviceOrGroupId,
+    );
+
+    return device?.friendly_name || group?.friendly_name;
   }
 
   async getGroupId(friendlyName: string): Promise<number | undefined> {

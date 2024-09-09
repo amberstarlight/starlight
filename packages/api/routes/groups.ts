@@ -10,10 +10,10 @@ import { type Group, Scene } from "@starlight/types";
 const router = express.Router();
 
 const groupSort = (a: Group, b: Group) => {
-  return (
-    a.friendly_name.localeCompare(b.friendly_name, undefined, { numeric: true})
-  );
-}
+  return a.friendly_name.localeCompare(b.friendly_name, undefined, {
+    numeric: true,
+  });
+};
 
 export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
   // get data about all existing groups
@@ -233,10 +233,10 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       });
     }
 
-    group.setValue(req.body.setting, req.body.value);
+    const status = await group.setValue(req.body.setting, req.body.value);
 
     return res.status(200).json({
-      data: req.params.groupId,
+      data: status,
     });
   });
 
