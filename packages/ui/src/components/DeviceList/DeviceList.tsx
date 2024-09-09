@@ -13,7 +13,11 @@ function DeviceList(props: { devices: Device[]; onClick: Function }) {
           href={`/devices/${device.ieee_address}`}
           key={device.ieee_address}
         >
-          <DeviceCard device={device} onClick={() => props.onClick} />
+          <DeviceCard
+            device={device}
+            dimmed={device.supported}
+            onClick={() => props.onClick}
+          />
         </Link>
       ))}
     </div>

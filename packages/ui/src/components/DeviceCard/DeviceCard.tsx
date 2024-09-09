@@ -22,7 +22,7 @@ const Card = styled.div`
   cursor: pointer;
   border-radius: 2rem;
 
-  opacity: ${(props) => (props.dimmed ? 1 : 0.5)};
+  opacity: ${(props) => (props.$dimmed ? 1 : 0.5)};
 
   &:hover {
     background-color: ${({ theme }) => theme.hover};
@@ -42,7 +42,7 @@ function DeviceCard(props: {
   }
 
   return (
-    <Card onClick={props.onClick} dimmed={props.device.supported}>
+    <Card onClick={props.onClick} $dimmed={props.dimmed}>
       <StyledHeader>
         {deviceEmoji} {props.device.friendly_name}
       </StyledHeader>
