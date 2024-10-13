@@ -4,7 +4,7 @@
 import express, { Request, Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
 import { ApiError } from "./api";
-import { range } from "../utils";
+import { nextUnused, range } from "../utils";
 import { type Group, Scene } from "@starlight/types";
 
 const router = express.Router();
@@ -277,14 +277,10 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       return res.status(404).json({ error: ApiError.NameInUse });
     }
 
-    let sceneId: number = 0;
-    const idRange = range(0, 255);
-
-    if (group.group.scenes.length !== 0) {
-      const usedIds = new Set(group.group.scenes.map((scene) => scene.id));
-      const feasibleIds = idRange.filter((value) => !usedIds.has(value));
-      sceneId = Math.min(...feasibleIds);
-    }
+    let sceneId = nextUnused(
+      group.group.scenes.map((scene) => scene.id),
+      range(0, 255),
+    );
 
     // transition on scenes can only be set with 'scene_add', so if we have the
     // property in the body we should first call createOrUpdateScene with just

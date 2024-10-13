@@ -170,3 +170,6 @@ export const stringTidy = (string) => {
     .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
     .join(" ");
 };
+
+export const percentage = (value, maxValue) =>
+  Math.floor((value / maxValue) * 100);

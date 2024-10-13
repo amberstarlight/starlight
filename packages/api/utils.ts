@@ -51,3 +51,15 @@ export function range(
     .fill(start)
     .map((_, index) => start + index * step);
 }
+
+export function nextUnused(items: Array<number>, range: Array<number>): number {
+  let nextUnused: number = 0;
+
+  if (items.length !== 0) {
+    const usedNumbers = new Set(items);
+    const feasibleNumbers = range.filter((value) => !usedNumbers.has(value));
+    nextUnused = Math.min(...feasibleNumbers);
+  }
+
+  return nextUnused;
+}

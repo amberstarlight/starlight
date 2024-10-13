@@ -8,9 +8,8 @@ import {
   miredToKelvin,
   stringTidy,
   updateDeviceState,
+  percentage,
 } from "./deviceUtilities";
-
-const percentage = (value, maxValue) => Math.floor((value / maxValue) * 100);
 
 export const numericTransformer = (
   feature,
