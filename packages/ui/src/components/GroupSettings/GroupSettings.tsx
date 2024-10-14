@@ -52,7 +52,13 @@ function GroupSettings(props) {
     />
   );
 
-  if (!groupSettingsState) return <LoadingSpinner />;
+  if (!groupSettingsState)
+    return (
+      <>
+        <LoadingSpinner />
+        {deleteButton}
+      </>
+    );
 
   const groupSettingsGenerator = (groupSettingsState, callback) => {
     const settingComponents = [];
@@ -95,6 +101,7 @@ function GroupSettings(props) {
               }}
             />,
           );
+          break;
         default:
           break;
       }

@@ -5,7 +5,7 @@ import express, { Request, Response, Router } from "express";
 import { Zigbee2MqttService } from "../zigbee2mqttService";
 import { ApiError } from "./api";
 import { nextUnused, range } from "../utils";
-import { type Group, Scene } from "@starlight/types";
+import { type Group, type Scene } from "@starlight/types";
 
 const router = express.Router();
 
@@ -201,7 +201,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     const state = await group.getValue(req.query.setting?.toString());
 
     if (state === undefined) {
-      return res.status(503).json({
+      return res.status(500).json({
         error: ApiError.StateDataMissing,
       });
     }
@@ -277,7 +277,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       return res.status(404).json({ error: ApiError.NameInUse });
     }
 
-    let sceneId = nextUnused(
+    const sceneId = nextUnused(
       group.group.scenes.map((scene) => scene.id),
       range(0, 255),
     );
@@ -389,7 +389,9 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
         return res.status(404).json({ error: ApiError.GroupNotFound });
       }
 
-      const currentSceneIds = group.group.scenes.map((scene) => scene.id);
+      const currentSceneIds = group.group.scenes.map(
+        (scene: Scene) => scene.id,
+      );
 
       if (!currentSceneIds.includes(sceneId)) {
         return res.status(404).json({ error: ApiError.SceneNotFound });
