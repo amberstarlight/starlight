@@ -61,7 +61,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
       });
     }
 
-    const response = await zigbee2mqttService.deleteGroup(group.group.id);
+    const response = await zigbee2mqttService.deleteGroup(group.group.id, true);
 
     if (response.status === "error") {
       return res.status(503).json({

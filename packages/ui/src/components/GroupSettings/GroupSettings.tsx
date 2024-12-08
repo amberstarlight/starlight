@@ -116,7 +116,6 @@ function GroupSettings(props) {
       <div>
         <EditableText
           text={groupFriendlyNameState}
-          fontSize={"2em"}
           onChange={(event) => {
             const newFriendlyName = event.target.value;
             setGroupFriendlyNameState(newFriendlyName);

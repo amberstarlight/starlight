@@ -11,9 +11,7 @@ const StyledButton = styled.button`
   color: ${({ theme }) => theme.text};
   border-radius: 2rem;
   border: 1px solid ${(props) => props.theme.text};
-  font:
-    0.8em "rubikregular",
-    sans-serif;
+  font-family: "rubikregular", sans-serif;
   background: transparent;
   text-align: center;
   transition: background 0.4s;

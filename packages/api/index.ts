@@ -63,8 +63,8 @@ app.use(
   }),
 );
 
-app.listen(port, () => {
-  logger(logLevel, "Express", `Server listening on ${port}.`);
+const server = app.listen(port, () => {
+  logger(logLevel, "Express", `Server listening on http://0.0.0.0:${port}.`);
 
   if (!mqttService.ready) {
     logger(

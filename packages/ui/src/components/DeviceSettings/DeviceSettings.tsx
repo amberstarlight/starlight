@@ -67,13 +67,10 @@ function DeviceSettings(props) {
       <div>
         <EditableText
           text={deviceFriendlyNameState}
-          fontSize={"2em"}
           onChange={(event) => {
             const newFriendlyName = event.target.value;
             setDeviceFriendlyNameState(newFriendlyName);
-          }}
-          onEditFinish={() => {
-            setDeviceFriendlyName(
+            setDeviceFriendlyNameState(
               props.device.friendly_name,
               deviceFriendlyNameState,
             );

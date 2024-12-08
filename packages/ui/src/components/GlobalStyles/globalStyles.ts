@@ -9,7 +9,7 @@ export const GlobalStyles = createGlobalStyle`
  body {
   background: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
-  font: 18px 'rubikregular', sans-serif;
+  font: 16px 'rubikregular', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
