@@ -4,21 +4,24 @@
 import styled from "styled-components";
 
 const StyledButton = styled.button`
+  font-family: "Lilex Medium", monospace;
+  border: none;
+  padding: 0.75em 2em;
+  background: none;
+
   display: inline-block;
-  padding: 0.75rem 2rem;
   margin: 0.5rem;
-  min-width: 5rem;
-  color: ${({ theme }) => theme.text};
-  border-radius: 2rem;
-  border: 1px solid ${(props) => props.theme.text};
-  font-family: "rubikregular", sans-serif;
+  color: ${({ theme }) => theme.accent};
+  border-radius: 0.25rem;
+  border: 1px solid ${(props) => props.theme.accent};
   background: transparent;
   text-align: center;
   transition: background 0.4s;
 
   &:hover {
     cursor: pointer;
-    background-color: ${({ theme }) => theme.hover};
+    background-color: ${({ theme }) => theme.accent};
+    color: ${(props) => props.theme.background};
   }
 `;
 

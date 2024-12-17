@@ -9,7 +9,6 @@ const Card = styled.div`
   margin: 2em 0em;
   padding: 1em;
   cursor: pointer;
-  border-radius: 2rem;
 
   &:hover {
     background-color: ${({ theme }) => theme.hover};

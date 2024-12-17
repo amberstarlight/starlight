@@ -4,10 +4,20 @@
 import styled from "styled-components";
 
 const SliderContainer = styled.label`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1em;
+  display: grid;
+  grid-template-columns: [setting-name] 15% [slider] 75% [value] 10%;
+
+  span, output {
+    align-self: center;
+  }
+
+  input {
+    width: auto;
+  }
+
+  output {
+    justify-self: end;
+  }
 `;
 
 const StyledSlider = styled.input.attrs((props) => ({
@@ -26,11 +36,27 @@ const StyledSlider = styled.input.attrs((props) => ({
   transition: opacity 0.2s;
   margin: 3em 0em;
 
+  &::-moz-range-track {
+    background: transparent;
+    border: 0px;
+  }
+
   &::-webkit-slider-thumb {
     appearance: none;
     width: 2em;
     height: 2em;
     border-radius: 50%;
+    border: none;
+    background: ${({ theme }) => theme.accent};
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    appearance: none;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    border: none;
     background: ${({ theme }) => theme.accent};
     cursor: pointer;
   }
@@ -39,7 +65,7 @@ const StyledSlider = styled.input.attrs((props) => ({
 function Slider(props) {
   return (
     <SliderContainer>
-      {props.label}
+      <span>{props.label}</span>
       <StyledSlider
         min={props.min}
         max={props.max}

@@ -5,18 +5,27 @@ import "../../font.css";
 import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyles = createGlobalStyle`
- html,
- body {
-  background: ${({ theme }) => theme.background};
-  color: ${({ theme }) => theme.text};
-  font: 16px 'rubikregular', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  margin: 0;
-  height: 100vh;
-  width: 100%;
+  html,
+  body {
+    background: ${({ theme }) => theme.background};
+    color: ${({ theme }) => theme.text};
 
-  transition: background 0.5s linear,
-              color 0.5s linear;
- }
+    font-family: "Lilex Regular", monospace;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    padding: 0;
+    margin: 0 auto;
+    height: 100vh;
+    width: 100%;
+    min-height: 100vb;
+    max-width: 64em;
+
+    transition: background 0.5s linear, color 0.5s linear;
+  }
+
+  h3 {
+    margin-bottom: 1.5em;
+  }
 `;

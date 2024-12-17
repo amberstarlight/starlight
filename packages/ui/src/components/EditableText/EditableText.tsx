@@ -7,14 +7,16 @@ import styled from "styled-components";
 const StyledEditable = styled.input`
   background: transparent;
   border: none;
+  color: ${(props) => props.theme.text};
 
-  font-family: "rubikregular", sans-serif;
+  font-family: "Lilex Medium", monospace;
   font-size: 2em;
 
   height: 48px;
   margin-bottom: 1em;
   padding: 10px 0px;
   width: auto;
+  max-width: 50%;
 
   text-align: left;
 
@@ -33,7 +35,20 @@ const StyledEditable = styled.input`
   transition: all 0.15s ease;
 `;
 
+const StyledEditableLabel = styled.label`
+  display: flex;
+  flex-direction: column;
+  color: ${(props) => props.theme.text};
+
+  &:hover, &:has(input:read-write) {
+    color: ${(props) => props.theme.accent};
+  }
+
+  transition: all 0.15s ease;
+`;
+
 interface EditableTextProps {
+  label: string;
   text: string;
   onChange: Function;
   onEditFinish: Function;
@@ -53,13 +68,16 @@ function EditableText(props: EditableTextProps) {
   };
 
   return (
-    <StyledEditable
-      value={value}
-      onChange={props.onChange}
-      readOnly={!editable}
-      onBlur={handleBlur}
-      onFocus={handleFocus}
-    ></StyledEditable>
+    <StyledEditableLabel>
+      {props.label}
+      <StyledEditable
+        value={value}
+        onChange={props.onChange}
+        readOnly={!editable}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+      ></StyledEditable>
+    </StyledEditableLabel>
   );
 }
 

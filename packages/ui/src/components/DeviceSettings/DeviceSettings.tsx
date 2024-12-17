@@ -66,6 +66,7 @@ function DeviceSettings(props) {
     <>
       <div>
         <EditableText
+          label={"Friendly Name"}
           text={deviceFriendlyNameState}
           onChange={(event) => {
             const newFriendlyName = event.target.value;

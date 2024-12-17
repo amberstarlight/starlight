@@ -115,17 +115,12 @@ function GroupSettings(props) {
     <>
       <div>
         <EditableText
+          label="Friendly Name"
           text={groupFriendlyNameState}
           onChange={(event) => {
             const newFriendlyName = event.target.value;
             setGroupFriendlyNameState(newFriendlyName);
           }}
-          // onEditFinish={() => {
-          //   setGroupFriendlyName(
-          //     props.group.friendly_name,
-          //     groupFriendlyNameState,
-          //   );
-          // }}
         />
         <p>{`${props.group.members.length} devices`}</p>
       </div>

@@ -7,7 +7,7 @@ import { Link, Route } from "wouter";
 import styled, { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "./components/GlobalStyles/globalStyles";
 import { useDarkMode } from "./components/UseDarkMode/useDarkMode";
-import { StyledText, lightTheme, darkTheme } from "./utils/theme";
+import { StyledText, themeColours, darkThemeColours } from "./utils/theme";
 
 import Devices from "./pages/Devices/Devices";
 import Settings from "./pages/Settings/Settings";
@@ -36,7 +36,7 @@ function App() {
   const [groups, setGroups] = useState();
   const [theme] = useDarkMode();
 
-  const themeMode = theme === "light" ? lightTheme : darkTheme;
+  const themeMode = theme === "light" ? themeColours : darkThemeColours;
 
   useEffect(() => {
     fetch(`${backend}/api/devices`)

@@ -20,12 +20,15 @@ const Card = styled.div`
   margin: 2em 0em;
   padding: 1em;
   cursor: pointer;
-  border-radius: 2rem;
 
   opacity: ${(props) => (props.$dimmed ? 1 : 0.5)};
 
   &:hover {
     background-color: ${({ theme }) => theme.hover};
+  }
+
+  > *:visited {
+    border: none;
   }
 `;
 

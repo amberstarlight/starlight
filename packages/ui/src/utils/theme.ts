@@ -3,30 +3,21 @@
 
 import styled from "styled-components";
 
-const colours = {
-  platinum: "#E7E5E5",
-  violet: "#6F73D2",
-  deepGrey: "#18181B",
-  midGrey: "#3C3C3C",
-  red: "#FD151B",
-  spaceBlue: "#2B3A67",
-};
-
-export const lightTheme = {
-  text: colours.deepGrey,
-  background: colours.platinum,
-  accent: colours.violet,
+export const themeColours = {
+  text: "rgb(21, 21, 21)",
+  background: "rgb(245, 249, 233)",
+  accent: "rgb(204, 40, 81)",
   shadow: "rgba(0, 0, 0, 0.25)",
   hover: "rgba(0, 0, 0, 0.05)",
-};
+}
 
-export const darkTheme = {
-  text: colours.platinum,
-  background: colours.deepGrey,
-  accent: colours.red,
+export const darkThemeColours = {
+  text: "rgb(208, 208, 208)",
+  background: "rgb(21, 21, 21)",
+  accent: "rgb(139, 114, 238)",
   shadow: "rgba(0, 0, 0, 0.5)",
   hover: "rgba(255, 255, 255, 0.05)",
-};
+}
 
 export const StyledText = styled.p`
   color: ${({ theme }) => theme.text};
