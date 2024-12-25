@@ -9,7 +9,7 @@ export const themeColours = {
   accent: "rgb(204, 40, 81)",
   shadow: "rgba(0, 0, 0, 0.25)",
   hover: "rgba(0, 0, 0, 0.05)",
-}
+};
 
 export const darkThemeColours = {
   text: "rgb(208, 208, 208)",
@@ -17,7 +17,7 @@ export const darkThemeColours = {
   accent: "rgb(139, 114, 238)",
   shadow: "rgba(0, 0, 0, 0.5)",
   hover: "rgba(255, 255, 255, 0.05)",
-}
+};
 
 export const StyledText = styled.p`
   color: ${({ theme }) => theme.text};

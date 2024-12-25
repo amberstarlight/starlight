@@ -7,7 +7,8 @@ const SliderContainer = styled.label`
   display: grid;
   grid-template-columns: [setting-name] 15% [slider] 75% [value] 10%;
 
-  span, output {
+  span,
+  output {
     align-self: center;
   }
 

@@ -15,6 +15,7 @@ repos:
     hooks:
       - id: insert-license
         files: '\.(js.?|ts.?)$'
+        exclude: "packages/ui/src/vite-env.d.ts"
         args:
           - --license-filepath
           - ./license_header.txt

@@ -40,7 +40,8 @@ const StyledEditableLabel = styled.label`
   flex-direction: column;
   color: ${(props) => props.theme.text};
 
-  &:hover, &:has(input:read-write) {
+  &:hover,
+  &:has(input:read-write) {
     color: ${(props) => props.theme.accent};
   }
 
