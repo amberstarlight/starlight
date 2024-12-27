@@ -26,10 +26,6 @@ const Card = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.hover};
   }
-
-  > *:visited {
-    border: none;
-  }
 `;
 
 function DeviceCard(props: {

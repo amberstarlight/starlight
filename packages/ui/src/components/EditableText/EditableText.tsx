@@ -61,7 +61,6 @@ function EditableText(props: EditableTextProps) {
 
   const handleBlur = (event) => {
     setEditable(false);
-    console.log(event.target.defaultValue);
   };
 
   const handleFocus = () => {

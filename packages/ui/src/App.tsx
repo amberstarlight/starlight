@@ -8,11 +8,13 @@ import styled, { ThemeProvider } from "styled-components";
 import { GlobalStyles } from "./components/GlobalStyles/globalStyles";
 import { useDarkMode } from "./components/UseDarkMode/useDarkMode";
 import { StyledText, themeColours, darkThemeColours } from "./utils/theme";
+import "./font.css";
 
 import Devices from "./pages/Devices/Devices";
 import Settings from "./pages/Settings/Settings";
 import Groups from "./pages/Groups/Groups";
 
+import NavBar from "./components/NavBar/NavBar";
 import Button from "./components/Button/Button";
 import DeviceSettings from "./components/DeviceSettings/DeviceSettings";
 import { type Device, type Group } from "starlight/types";
@@ -20,13 +22,6 @@ import GroupSettings from "./components/GroupSettings/GroupSettings";
 
 const Wrapper = styled.div`
   padding: 2em;
-`;
-
-const NavBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1em;
 `;
 
 const backend = import.meta.env.VITE_API_URL ?? "";
@@ -52,17 +47,21 @@ function App() {
     <ThemeProvider theme={themeMode}>
       <GlobalStyles />
       <Wrapper>
-        <NavBar>
-          <Link href={"/devices"}>
-            <Button text={"Devices"} />
-          </Link>
-          <Link href={"/groups"}>
-            <Button text={"Groups"} />
-          </Link>
-          <Link href={"/settings"}>
-            <Button text={"Settings"} />
-          </Link>
-        </NavBar>
+        <NavBar
+          items={
+            <>
+              <Link href={"/devices"}>
+                <Button text={"Devices"} />
+              </Link>
+              <Link href={"/groups"}>
+                <Button text={"Groups"} />
+              </Link>
+              <Link href={"/settings"}>
+                <Button text={"Settings"} />
+              </Link>
+            </>
+          }
+        ></NavBar>
 
         {/* routes */}
         <Route path={"/devices"}>

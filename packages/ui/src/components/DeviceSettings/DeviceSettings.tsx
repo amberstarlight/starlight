@@ -71,10 +71,6 @@ function DeviceSettings(props) {
           onChange={(event) => {
             const newFriendlyName = event.target.value;
             setDeviceFriendlyNameState(newFriendlyName);
-            setDeviceFriendlyNameState(
-              props.device.friendly_name,
-              deviceFriendlyNameState,
-            );
           }}
         />
         <h3>{deviceDescription(deviceDefinition)}</h3>

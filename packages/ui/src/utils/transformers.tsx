@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import Button from "../components/Button/Button";
+import ButtonGrid from "../components/ButtonGrid/ButtonGrid";
 import Slider from "../components/Slider/Slider";
 
 import {
@@ -69,7 +70,7 @@ export const numericTransformer = (
     componentsArray.push(
       <div key={`preset-list-${feature.name}`}>
         <p>Presets for {stringTidy(feature.name)}:</p>
-        {presets}
+        <ButtonGrid buttons={presets}></ButtonGrid>
       </div>,
     );
   }

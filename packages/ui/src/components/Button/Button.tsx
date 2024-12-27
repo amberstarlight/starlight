@@ -7,12 +7,11 @@ const StyledButton = styled.button`
   font-family: "Lilex Medium", monospace;
   border: none;
   padding: 0.75em 2em;
+  margin-right: 0.5em;
   background: none;
 
   display: inline-block;
-  margin: 0.5rem;
   color: ${({ theme }) => theme.accent};
-  border-radius: 0.25rem;
   border: 1px solid ${(props) => props.theme.accent};
   background: transparent;
   text-align: center;
@@ -23,12 +22,15 @@ const StyledButton = styled.button`
     background-color: ${({ theme }) => theme.accent};
     color: ${(props) => props.theme.background};
   }
+
+  &:is(:last-child):not(:first-child) {
+    margin-right: 0;
+  }
 `;
 
 function Button(props) {
   return (
     <StyledButton
-      className={props.className}
       type={props.type || "button"}
       disabled={props.disabled || false}
       onClick={props.onClick}

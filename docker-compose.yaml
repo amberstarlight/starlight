@@ -20,12 +20,19 @@ services:
     network_mode: host
     privileged: true
     environment:
-      - TZ=Europe/London
-    env_file:
-      - .env
+      TZ: "Europe/London"
+      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: "/dev/ttyUSB0"
+      ZIGBEE2MQTT_CONFIG_ADVANCED_RTSCTS: "false"
+      ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
 
-  webserver:
-    container_name: zigbee_webui
-    image: ghcr.io/amberstarlight/zigbee-webui:latest
+  api:
+    container_name: starlight_api
+    image: ghcr.io/amberstarlight/starlight/ui:latest
+    ports:
+      - "80:80"
+
+  ui:
+    container_name: starlight_ui
+    image: gchr.io/amberstarlight/starlight/api:latest
     ports:
       - "80:80"
