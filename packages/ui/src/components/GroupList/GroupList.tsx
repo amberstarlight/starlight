@@ -6,8 +6,8 @@ import GroupCard from "../GroupCard/GroupCard";
 import { type Group } from "@starlight/types";
 
 const groupSort = (a: Group, b: Group) => {
-  if (a.friendly_name > b.friendly_name) return 1;
-  if (b.friendly_name > a.friendly_name) return -1;
+  if (a.friendly_name.toLowerCase() > b.friendly_name.toLowerCase()) return 1;
+  if (b.friendly_name.toLowerCase() > a.friendly_name.toLowerCase()) return -1;
   return 0;
 };
 
@@ -16,9 +16,10 @@ function GroupList(props: { groups: Group[]; onClick?: Function }) {
     <div>
       {props.groups.sort(groupSort).map((group: Group) => (
         <Link href={`/groups/${group.id}`} key={group.id}>
-          <GroupCard group={group} onClick={props.onClick} />
+          <GroupCard icon="🗂️" group={group} onClick={props.onClick} />
         </Link>
       ))}
+      <GroupCard icon="🆕" onClick={() => {}} />
     </div>
   );
 }

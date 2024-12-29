@@ -5,7 +5,7 @@ import { Link } from "wouter";
 import DeviceCard from "../DeviceCard/DeviceCard";
 import { type Device } from "@starlight/types";
 
-function DeviceList(props: { devices: Device[]; onClick: Function }) {
+function DeviceList(props: { devices: Device[] }) {
   return (
     <div>
       {props.devices.map((device: Device) => (
@@ -13,11 +13,7 @@ function DeviceList(props: { devices: Device[]; onClick: Function }) {
           href={`/devices/${device.ieee_address}`}
           key={device.ieee_address}
         >
-          <DeviceCard
-            device={device}
-            dimmed={device.supported}
-            onClick={() => props.onClick}
-          />
+          <DeviceCard device={device} dimmed={device.supported} />
         </Link>
       ))}
     </div>

@@ -24,6 +24,23 @@ const Wrapper = styled.div`
   padding: 2em;
 `;
 
+const EnvBanner = styled.div`
+  width: 150px;
+  height: 1.5em;
+  position: fixed;
+  top: 1em;
+  right: -3em;
+  background-color: ${({ theme }) => theme.accent};
+  color: ${(props) => props.theme.background};
+  text-align: center;
+  font-weight: bold;
+  transform: rotate(45deg);
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const backend = import.meta.env.VITE_API_URL ?? "";
 
 function App() {
@@ -46,6 +63,7 @@ function App() {
   return (
     <ThemeProvider theme={themeMode}>
       <GlobalStyles />
+      <EnvBanner>BETA</EnvBanner>
       <Wrapper>
         <NavBar
           items={

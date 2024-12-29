@@ -6,11 +6,7 @@ function ColorPicker(props) {
     <>
       <label>
         {props.label}
-        <input
-          type="color"
-          value={props.value}
-          onChange={props.onChange}
-        />
+        <input type="color" value={props.value} onChange={props.onChange} />
       </label>
       <p>{props.value}</p>
     </>

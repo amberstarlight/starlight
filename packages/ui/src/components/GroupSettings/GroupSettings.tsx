@@ -16,6 +16,8 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import Slider from "../Slider/Slider";
 import Toggle from "../Toggle/Toggle";
 
+import { type Group } from "@starlight/types";
+
 const backend = import.meta.env.VITE_API_URL ?? "";
 
 function GroupSettings(props) {
@@ -122,9 +124,12 @@ function GroupSettings(props) {
             setGroupFriendlyNameState(newFriendlyName);
           }}
         />
-        <p>{`${props.group.members.length} devices`}</p>
       </div>
       <div>{groupSettingsGenerator(groupSettingsState, fetchGroupState)}</div>
+      <div>
+        <p>{`${props.group.members.length} devices`}</p>
+        {/* TODO: list all the group members */}
+      </div>
       <div>{deleteButton}</div>
     </>
   );
