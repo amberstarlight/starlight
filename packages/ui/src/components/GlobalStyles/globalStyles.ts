@@ -15,13 +15,7 @@ export const GlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    padding: 0;
-    margin: 0 auto;
-    height: 100vh;
-    width: 100%;
-    min-height: 100vb;
-    max-width: 64em;
-
+    margin: 0;
     transition: background 0.5s linear, color 0.5s linear;
   }
 

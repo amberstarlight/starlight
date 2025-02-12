@@ -522,7 +522,7 @@ export class Zigbee2MqttService {
     await this.#mqttClientConnected;
     return this.#bridgeRequest(
       `${this.#baseTopic}/bridge/request/device/remove`,
-      { id: deviceId },
+      { id: deviceId, force: true },
     );
   }
 

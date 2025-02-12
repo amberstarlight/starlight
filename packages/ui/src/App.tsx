@@ -22,6 +22,9 @@ import GroupSettings from "./components/GroupSettings/GroupSettings";
 
 const Wrapper = styled.div`
   padding: 2em;
+  max-width: 64em;
+  min-height: 90vh;
+  margin: 0 auto;
 `;
 
 const EnvBanner = styled.div`
@@ -39,6 +42,18 @@ const EnvBanner = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const Footer = styled.footer`
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 25vh;
+  background-color: ${({ theme }) => theme.text};
+
+  > * {
+    max-width: 64em;
+  }
 `;
 
 const backend = import.meta.env.VITE_API_URL ?? "";
@@ -136,6 +151,7 @@ function App() {
           <Settings bridgeState={{}} />
         </Route>
       </Wrapper>
+      <Footer></Footer>
     </ThemeProvider>
   );
 }
