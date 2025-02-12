@@ -57,10 +57,10 @@ interface EditableTextProps {
 
 function EditableText(props: EditableTextProps) {
   const [editable, setEditable] = useState(false);
-  const [value, setValue] = useState(props.text);
 
   const handleBlur = (event) => {
     setEditable(false);
+    props.onEditFinish();
   };
 
   const handleFocus = () => {
@@ -71,11 +71,12 @@ function EditableText(props: EditableTextProps) {
     <StyledEditableLabel>
       {props.label}
       <StyledEditable
-        value={value}
+        value={props.text}
         onChange={props.onChange}
         readOnly={!editable}
         onBlur={handleBlur}
         onFocus={handleFocus}
+        onEditFinish={props.onEditFinish}
       ></StyledEditable>
     </StyledEditableLabel>
   );

@@ -110,9 +110,7 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     }
 
     if (group.group.friendly_name === newName) {
-      return res.status(400).json({
-        error: ApiError.NameInUse,
-      });
+      return res.status(204);
     }
 
     const response = await zigbee2mqttService.renameGroup(

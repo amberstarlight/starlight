@@ -17,6 +17,23 @@ function DeviceSettings(props) {
     props.device.friendly_name,
   );
 
+  const updateDeviceName = async (newName: string) => {
+    const request = new Request(
+      `${backend}/api/devices/${props.device.ieee_address}`,
+      {
+        method: "PUT",
+        mode: "cors",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ name: newName }),
+      },
+    );
+    fetch(request)
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  };
+
   const deleteButton = (
     <Button
       text={"❌ Remove Device"}
@@ -71,6 +88,9 @@ function DeviceSettings(props) {
           onChange={(event) => {
             const newFriendlyName = event.target.value;
             setDeviceFriendlyNameState(newFriendlyName);
+          }}
+          onEditFinish={() => {
+            updateDeviceName(deviceFriendlyNameState);
           }}
         />
         <h3>{deviceDescription(deviceDefinition)}</h3>

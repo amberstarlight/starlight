@@ -32,6 +32,19 @@ function GroupSettings(props) {
       .then((data) => setGroupSettingsState(data.data));
   };
 
+  const updateGroupName = async (newName: string) => {
+    const request = new Request(`${backend}/api/groups/${props.group.id}`, {
+      method: "PUT",
+      mode: "cors",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ name: newName }),
+    });
+    fetch(request)
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  };
   const [location, navigate] = useLocation();
 
   useEffect(() => {
@@ -123,6 +136,7 @@ function GroupSettings(props) {
             const newFriendlyName = event.target.value;
             setGroupFriendlyNameState(newFriendlyName);
           }}
+          onEditFinish={updateGroupName(groupFriendlyNameState)}
         />
       </div>
       <div>{groupSettingsGenerator(groupSettingsState, fetchGroupState)}</div>

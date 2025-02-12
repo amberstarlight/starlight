@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
@@ -30,6 +30,6 @@ repos:
         files: '\.(m?js.?|c?js.?|ts.?)$'
 
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.4
+    rev: v8.23.3
     hooks:
       - id: gitleaks
