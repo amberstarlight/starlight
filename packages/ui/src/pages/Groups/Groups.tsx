@@ -18,7 +18,12 @@ function Groups(props) {
     groupContent = <GroupList groups={props.groups} />;
   }
 
-  return <>{groupContent !== undefined ? groupContent : ""}</>;
+  return (
+    <>
+      <h1>Groups</h1>
+      {groupContent !== undefined ? groupContent : ""}
+    </>
+  );
 }
 
 export default Groups;

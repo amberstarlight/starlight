@@ -19,7 +19,12 @@ function Devices(props) {
     deviceContent = <DeviceList devices={props.devices} />;
   }
 
-  return <>{deviceContent !== undefined ? deviceContent : ""}</>;
+  return (
+    <>
+      <h1>Devices</h1>
+      {deviceContent !== undefined ? deviceContent : ""}
+    </>
+  );
 }
 
 export default Devices;

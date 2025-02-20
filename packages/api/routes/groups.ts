@@ -266,13 +266,13 @@ export function groupsRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     const currentSceneNames = group.group.scenes.map((scene) => scene.name);
 
     if (req.body.name === undefined) {
-      return res.status(404).json({ error: ApiError.ParameterMissing("name") });
+      return res.status(400).json({ error: ApiError.ParameterMissing("name") });
     }
 
     if (currentSceneNames.includes(req.body.name)) {
       // don't let API users overwrite scenes. updates are done through a PUT
       // to /:groupId/scenes/:sceneId
-      return res.status(404).json({ error: ApiError.NameInUse });
+      return res.status(400).json({ error: ApiError.NameInUse });
     }
 
     const sceneId = nextUnused(

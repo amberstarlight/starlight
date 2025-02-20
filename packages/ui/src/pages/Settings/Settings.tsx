@@ -1,37 +1,32 @@
 // SPDX-FileCopyrightText: © 2021 Amber Cronin <software@amber.vision>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import { useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
-import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import { toggleDeviceJoining } from "../../utils/deviceUtilities";
 
-function Settings(props) {
-  let settingsContent = undefined;
+function Settings(props: { backend: string }) {
+  const [devicesCanJoin, setDevicesCanJoin] = useState(false);
 
-  if (!props.bridgeState) {
-    settingsContent = <LoadingSpinner />;
-  }
+  useEffect(() => {
+    fetch(`${props.backend}/api/settings/join`)
+      .then((res) => res.json())
+      .then((data) => setDevicesCanJoin(data.value));
+  }, []);
 
-  if (props.bridgeState) {
-    const permitJoin = props.bridgeState.permit_join;
-
-    settingsContent = (
-      <>
-        {permitJoin === true ? (
-          <>
-            <p>Devices can join.</p>
-            <Button text={"Disable Join"} onClick={() => {}} />
-          </>
-        ) : (
-          <>
-            <p>Devices cannot join.</p>
-            <Button text={"Permit Join"} onClick={() => {}} />
-          </>
-        )}
-      </>
-    );
-  }
-
-  return <>{settingsContent !== undefined ? settingsContent : ""}</>;
+  return (
+    <>
+      <h1>Settings</h1>
+      <p>Devices can{devicesCanJoin ? "" : "not"} join the network.</p>
+      <Button
+        text={devicesCanJoin ? "Disable joining" : "Allow joining"}
+        onClick={() => {
+          toggleDeviceJoining(!devicesCanJoin);
+          setDevicesCanJoin(!devicesCanJoin);
+        }}
+      />
+    </>
+  );
 }
 
 export default Settings;

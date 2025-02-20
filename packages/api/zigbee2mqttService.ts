@@ -12,6 +12,8 @@ import {
 } from "@starlight/types";
 import { elementDiff, getByPath, quoteList } from "./utils";
 
+const initialTopics = ["bridge/devices", "bridge/groups", "bridge/info"];
+
 const SUCCESS: OperationStatus = { success: true };
 
 interface OperationStatusSuccess {
@@ -174,6 +176,7 @@ export class Zigbee2MqttService {
   #devices: Record<string, Device> = {};
   #groupsData: Record<string, any> = {};
   #groups: Record<string, Group> = {};
+  #bridgeInfo: Record<string, any> = {};
   #mqttClientConnected: Promise<OperationStatus>;
   #ready: boolean = false;
   #topicCallbacks: Record<string, BridgeResponseCallback[]> = {};
@@ -193,10 +196,9 @@ export class Zigbee2MqttService {
           this.#handleMessage(topic, payload),
         );
 
-        this.#client.subscribe([
-          `${baseTopic}/bridge/devices`,
-          `${baseTopic}/bridge/groups`,
-        ]);
+        this.#client.subscribe(
+          initialTopics.map((topic) => `${baseTopic}/${topic}`),
+        );
 
         logger("info", "MQTT", `Successfully connected to ${endpoint}`);
         this.#ready = true;
@@ -307,6 +309,13 @@ export class Zigbee2MqttService {
           this.#client.unsubscribe(removedTopics);
         }
 
+        break;
+      }
+
+      case `${this.#baseTopic}/bridge/info`: {
+        const bridgeInfo = JSON.parse(payload.toString());
+        this.#bridgeInfo = bridgeInfo;
+        logger("info", "MQTT", "Bridge info updated.");
         break;
       }
 
@@ -665,5 +674,10 @@ export class Zigbee2MqttService {
         scene_remove_all: "",
       }),
     );
+  }
+
+  async getBridgeInfo() {
+    await this.#mqttClientConnected;
+    return this.#bridgeInfo;
   }
 }

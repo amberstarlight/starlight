@@ -66,6 +66,18 @@ export const deviceDescription = (deviceDefinition) => {
   return "Unknown";
 };
 
+export const toggleDeviceJoining = async (
+  joinState: boolean,
+): Promise<unknown> => {
+  console.log(joinState);
+  return await backendPostRequest(
+    `${backend}/api/settings/join`,
+    JSON.stringify({
+      state: joinState,
+    }),
+  );
+};
+
 export const hexToRGB = (hexValue) => {
   if (hexValue.startsWith("#")) {
     hexValue = hexValue.slice(1);

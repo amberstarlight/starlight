@@ -148,7 +148,7 @@ function App() {
         </Route>
 
         <Route path={"/settings"}>
-          <Settings bridgeState={{}} />
+          <Settings backend={backend} />
         </Route>
       </Wrapper>
       <Footer></Footer>
