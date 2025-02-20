@@ -97,6 +97,13 @@ function App() {
         ></NavBar>
 
         {/* routes */}
+        <Route path={"/"}>
+          <h1>Starlight</h1>
+          <p>
+            ⚠️ Starlight is under development and may have missing features! ⚠️
+          </p>
+        </Route>
+
         <Route path={"/devices"}>
           <Devices devices={devices} />
         </Route>
