@@ -11,7 +11,10 @@
     "fix": "yarn eslint . --fix",
     "fmt": "yarn prettier -w .",
     "api:dev": "yarn workspace @starlight/api run dev",
-    "ui:dev": "yarn workspace @starlight/ui run dev"
+    "ui:dev": "yarn workspace @starlight/ui run dev",
+    "api:build": "yarn workspace @starlight/api run build",
+    "ui:build": "yarn workspace @starlight/ui run build",
+    "build": "tsc --build --verbose"
   },
   "packageManager": "yarn@4.4.1",
   "devDependencies": {

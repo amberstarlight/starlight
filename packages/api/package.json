@@ -19,7 +19,7 @@
     "mqtt": "^5.3.3"
   },
   "scripts": {
-    "build": "npx tsc",
+    "build": "yarn tsc",
     "start": "node dist/index.js",
     "dev": "nodemon index.ts"
   }
