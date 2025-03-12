@@ -16,15 +16,15 @@
     "ui:build": "yarn workspace @starlight/ui run build",
     "build": "tsc --build --verbose"
   },
-  "packageManager": "yarn@4.4.1",
+  "packageManager": "yarn@4.7.0",
   "devDependencies": {
-    "@eslint/js": "^9.3.0",
+    "@eslint/js": "^9.22.0",
     "@types/node": "^20.14.2",
-    "eslint": "9.x",
+    "eslint": "^9.22.0",
     "globals": "^15.3.0",
     "prettier": "^3.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.10.0"
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.26.1"
   }
 }
