@@ -176,6 +176,7 @@ export class Zigbee2MqttService {
   #devices: Record<string, Device> = {};
   #groupsData: Record<string, any> = {};
   #groups: Record<string, Group> = {};
+  #availability: Record<string, boolean> = {};
   #bridgeInfo: Record<string, any> = {};
   #mqttClientConnected: Promise<OperationStatus>;
   #ready: boolean = false;
@@ -232,6 +233,9 @@ export class Zigbee2MqttService {
 
         if (devices.added.length > 0) {
           const newTopics = extractDeviceTopics(devices.added);
+          const newAvailabilityTopics = newTopics.map(
+            (topic) => `${topic}/availability`,
+          );
           logger(
             "info",
             "MQTT",
@@ -240,7 +244,7 @@ export class Zigbee2MqttService {
             )}`,
           );
 
-          this.#client.subscribe(newTopics);
+          this.#client.subscribe([...newTopics, ...newAvailabilityTopics]);
 
           devices.added.forEach((device) => {
             logger(
@@ -258,12 +262,18 @@ export class Zigbee2MqttService {
 
         if (devices.removed.length > 0) {
           const removedTopics = extractDeviceTopics(devices.removed);
+          const availabilityTopicsToRemove = removedTopics.map(
+            (topic) => `${topic}/availability`,
+          );
           logger(
             "info",
             "MQTT",
             `Unsubscribing from: ${quoteList(removedTopics)}`,
           );
-          this.#client.unsubscribe(removedTopics);
+          this.#client.unsubscribe([
+            ...removedTopics,
+            ...availabilityTopicsToRemove,
+          ]);
         }
 
         break;
@@ -288,6 +298,9 @@ export class Zigbee2MqttService {
 
         if (groups.added.length > 0) {
           const newTopics = extractGroupTopics(groups.added);
+          const newAvailabilityTopics = newTopics.map(
+            (topic) => `${topic}/availability`,
+          );
           logger(
             "info",
             "MQTT",
@@ -296,17 +309,23 @@ export class Zigbee2MqttService {
             )}`,
           );
 
-          this.#client.subscribe(newTopics);
+          this.#client.subscribe([...newTopics, ...newAvailabilityTopics]);
         }
 
         if (groups.removed.length > 0) {
           const removedTopics = extractGroupTopics(groups.removed);
+          const availabilityTopicsToRemove = removedTopics.map(
+            (topic) => `${topic}/availability`,
+          );
           logger(
             "info",
             "MQTT",
             `Groups updated, unsubscribing from: ${quoteList(removedTopics)}`,
           );
-          this.#client.unsubscribe(removedTopics);
+          this.#client.unsubscribe([
+            ...removedTopics,
+            ...availabilityTopicsToRemove,
+          ]);
         }
 
         break;
@@ -320,9 +339,27 @@ export class Zigbee2MqttService {
       }
 
       default: {
-        const topicName = topic.split("/")[1];
-        const ieeeAddress = await this.getIeeeAddress(topicName);
-        const groupId = await this.getGroupId(topicName);
+        const splitTopic = topic.split("/");
+        const friendlyName = splitTopic[1];
+        const ieeeAddress = await this.getIeeeAddress(friendlyName);
+        const groupId = await this.getGroupId(friendlyName);
+
+        if (splitTopic[splitTopic.length - 1] === "availability") {
+          const availability = payload.toString();
+
+          if (ieeeAddress !== undefined) {
+            this.#availability[ieeeAddress] = availability === "true";
+          } else if (groupId !== undefined) {
+            this.#availability[`group/${groupId}`] = availability === "true";
+          }
+
+          logger(
+            "debug",
+            "MQTT",
+            `'${friendlyName}' [${ieeeAddress || groupId}] reported ${availability}.`,
+          );
+          break;
+        }
 
         if (payload.toString().trim().length === 0) {
           logger(
@@ -347,7 +384,7 @@ export class Zigbee2MqttService {
           logger(
             "info",
             "MQTT",
-            `Updating data for: '${topicName}' [${ieeeAddress}]`,
+            `Updating data for: '${friendlyName}' [${ieeeAddress}]`,
           );
           // TODO: This should do recursive object merging to prevent
           //       reliance on the home assistant modes
@@ -359,7 +396,7 @@ export class Zigbee2MqttService {
           logger(
             "info",
             "MQTT",
-            `Updating data for group: '${topicName}' [${groupId}]`,
+            `Updating data for group: '${friendlyName}' [${groupId}]`,
           );
           this.#groupsData[groupId] = jsonPayload;
           break;
@@ -624,6 +661,11 @@ export class Zigbee2MqttService {
     );
 
     return group?.id;
+  }
+
+  async getAvailability(deviceOrGroupId: string): Promise<boolean> {
+    await this.#mqttClientConnected;
+    return this.#availability[deviceOrGroupId];
   }
 
   // creating and updating the scene can be done with the same topic, so

@@ -24,6 +24,7 @@ services:
       ZIGBEE2MQTT_CONFIG_SERIAL_PORT: "/dev/ttyUSB0"
       ZIGBEE2MQTT_CONFIG_ADVANCED_RTSCTS: "false"
       ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: "false"
+      ZIGBEE2MQTT_CONFIG_AVAILABILITY: "true"
 
   api:
     container_name: starlight_api
