@@ -40,6 +40,12 @@ export function deviceRouter(zigbee2mqttService: Zigbee2MqttService): Router {
     });
   });
 
+  // get availability
+  router.get("/availability", async (req: Request, res: Response) => {
+    const availability = await zigbee2mqttService.getAvailability();
+    return res.status(200).json(availability);
+  });
+
   // get data about an existing device
   router.get("/:deviceId", async (req: Request, res: Response) => {
     const device = await zigbee2mqttService.getDevice(req.params.deviceId);

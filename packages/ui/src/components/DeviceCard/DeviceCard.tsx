@@ -28,11 +28,7 @@ const Card = styled.div`
   }
 `;
 
-function DeviceCard(props: {
-  device: Device;
-  onClick: Function;
-  dimmed: boolean;
-}) {
+function DeviceCard(props: { device: Device; dimmed: boolean }) {
   let deviceEmoji = "❓";
   const deviceDefinition = props.device.definition;
 
@@ -41,7 +37,7 @@ function DeviceCard(props: {
   }
 
   return (
-    <Card onClick={props.onClick} $dimmed={props.dimmed}>
+    <Card $dimmed={props.dimmed}>
       <StyledHeader>
         {deviceEmoji} {props.device.friendly_name}
       </StyledHeader>

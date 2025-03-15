@@ -3,6 +3,7 @@
 
 export interface Device {
   [index: string]: unknown;
+  availability: boolean;
   ieee_address: string;
   type: "Coordinator" | "EndDevice" | "GreenPower" | "Router" | "Unknown";
   network_address: number;

@@ -10,7 +10,12 @@ import {
   type Scene,
   type Feature,
 } from "@starlight/types";
-import { elementDiff, getByPath, quoteList } from "./utils";
+import {
+  availabilityToBoolean,
+  elementDiff,
+  getByPath,
+  quoteList,
+} from "./utils";
 
 const initialTopics = ["bridge/devices", "bridge/groups", "bridge/info"];
 
@@ -348,9 +353,11 @@ export class Zigbee2MqttService {
           const availability = payload.toString();
 
           if (ieeeAddress !== undefined) {
-            this.#availability[ieeeAddress] = availability === "true";
+            this.#availability[ieeeAddress] =
+              availabilityToBoolean[availability];
           } else if (groupId !== undefined) {
-            this.#availability[`group/${groupId}`] = availability === "true";
+            this.#availability[`${groupId}`] =
+              availabilityToBoolean[availability];
           }
 
           logger(
@@ -663,9 +670,16 @@ export class Zigbee2MqttService {
     return group?.id;
   }
 
-  async getAvailability(deviceOrGroupId: string): Promise<boolean> {
+  async getAvailability(
+    deviceOrGroupId?: string,
+  ): Promise<Record<string, boolean> | boolean> {
     await this.#mqttClientConnected;
-    return this.#availability[deviceOrGroupId];
+
+    if (deviceOrGroupId !== undefined) {
+      return this.#availability[deviceOrGroupId];
+    }
+
+    return this.#availability;
   }
 
   // creating and updating the scene can be done with the same topic, so

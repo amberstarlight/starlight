@@ -49,7 +49,7 @@ const Footer = styled.footer`
   padding: 0;
   width: 100%;
   min-height: 25vh;
-  background-color: ${({ theme }) => theme.text};
+  background-color: #444;
 
   > * {
     max-width: 64em;

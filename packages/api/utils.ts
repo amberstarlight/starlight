@@ -63,3 +63,8 @@ export function nextUnused(items: Array<number>, range: Array<number>): number {
 
   return nextUnused;
 }
+
+export const availabilityToBoolean: Record<string, boolean> = {
+  online: true,
+  offline: false,
+};
