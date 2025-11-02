@@ -16,7 +16,7 @@
     "ui:build": "yarn workspace @starlight/ui run build",
     "build": "tsc --build --verbose"
   },
-  "packageManager": "yarn@4.7.0",
+  "packageManager": "yarn@4.10.3",
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "@types/node": "^20.14.2",
