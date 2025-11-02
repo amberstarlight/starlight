@@ -17,6 +17,7 @@ import Slider from "../Slider/Slider";
 import Toggle from "../Toggle/Toggle";
 
 import { type Group } from "@starlight/types";
+import { readableNames } from "../../utils/transformers";
 
 const backend = import.meta.env.VITE_API_URL ?? "";
 
@@ -87,6 +88,7 @@ function GroupSettings(props) {
           settingComponents.push(
             <Toggle
               key={"state"}
+              label={readableNames["state"]}
               checked={mqttStateToBoolean(groupSettingsState[setting])}
               onChange={(event) => {
                 const newMqttState = booleanToMqttState(event.target.checked);
