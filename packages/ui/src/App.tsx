@@ -44,18 +44,6 @@ const EnvBanner = styled.div`
   justify-content: center;
 `;
 
-const Footer = styled.footer`
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 25vh;
-  background-color: #444;
-
-  > * {
-    max-width: 64em;
-  }
-`;
-
 const backend = import.meta.env.VITE_API_URL ?? "";
 
 function App() {
@@ -158,7 +146,6 @@ function App() {
           <Settings backend={backend} />
         </Route>
       </Wrapper>
-      <Footer></Footer>
     </ThemeProvider>
   );
 }

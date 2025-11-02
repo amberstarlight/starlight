@@ -16,7 +16,14 @@ const StyledEditable = styled.input`
   margin-bottom: 1em;
   padding: 10px 0px;
   width: auto;
-  max-width: 50%;
+
+  @media only screen and (max-width: 500px) {
+    max-width: 100%;
+  }
+
+  @media only screen and (min-width: 768px) {
+    max-width: 75%;
+  }
 
   text-align: left;
 

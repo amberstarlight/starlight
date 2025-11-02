@@ -77,3 +77,7 @@ export const numericTransformer = (
 
   return componentsArray;
 };
+
+export const readableNames = {
+  state: "Power",
+};

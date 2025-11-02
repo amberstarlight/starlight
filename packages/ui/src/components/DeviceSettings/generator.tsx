@@ -10,7 +10,7 @@ import {
   rgbToHex,
   updateDeviceState,
 } from "../../utils/deviceUtilities";
-import { numericTransformer } from "../../utils/transformers";
+import { numericTransformer, readableNames } from "../../utils/transformers";
 import Toggle from "../Toggle/Toggle";
 import ColorPicker from "../ColorPicker/ColorPicker";
 
@@ -31,6 +31,7 @@ export const deviceSettingsGenerator = (
         settingComponentsArray.push(
           <Toggle
             key={feature.name}
+            label={readableNames[feature.name]}
             checked={mqttStateToBoolean(deviceSettingsState[feature.name])}
             onChange={(event) => {
               const newMqttState = booleanToMqttState(event.target.checked);

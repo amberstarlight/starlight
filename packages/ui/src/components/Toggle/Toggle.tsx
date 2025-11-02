@@ -3,40 +3,41 @@
 
 import styled from "styled-components";
 
-const Switch = styled.label`
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
+const ToggleContainer = styled.label`
+  display: grid;
+  grid-template-columns: [setting-name] 15% [value] 0% auto;
+  align-items: center;
 
   input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+    visibility: hidden;
+    justify-self: baseline;
   }
 `;
 
 const Slider = styled.span`
-  position: absolute;
+  --toggle-width: 60px;
+  --toggle-height: 34px;
+  --slider-width: 26px;
+  --slider-height: 26px;
+
+  position: relative;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   background-color: ${({ theme }) => theme.shadow};
   transition: 0.4s;
-  border-radius: 1em;
+  border-radius: 0.5em;
 
   &:before {
-    position: absolute;
+    display: block;
+    position: relative;
     content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
+    margin: calc((var(--toggle-height) - var(--slider-height)) / 2);
+    height: var(--slider-height);
+    width: var(--slider-width);
     background-color: ${({ theme }) => theme.background};
     transition: 0.4s;
-    border-radius: 50%;
+    border-radius: 25%;
   }
 
   input:checked + && {
@@ -54,15 +55,15 @@ function Toggle(props: {
   onChange: Function;
 }) {
   return (
-    <Switch>
-      {props.label}
+    <ToggleContainer>
+      <span>{props.label}</span>
       <input
         type={"checkbox"}
         checked={props.checked}
         onChange={props.onChange}
       />
       <Slider></Slider>
-    </Switch>
+    </ToggleContainer>
   );
 }
 

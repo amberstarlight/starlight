@@ -5,7 +5,14 @@ import styled from "styled-components";
 
 const SliderContainer = styled.label`
   display: grid;
-  grid-template-columns: [setting-name] 15% [slider] 75% [value] 10%;
+
+  @media only screen and (max-width: 500px) {
+    grid-template-columns: [setting-name] 25% [slider] 50% [value] 25%;
+  }
+
+  @media only screen and (min-width: 768px) {
+    grid-template-columns: [setting-name] 15% [slider] 75% [value] 10%;
+  }
 
   span,
   output {
