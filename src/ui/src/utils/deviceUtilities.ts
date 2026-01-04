@@ -150,13 +150,13 @@ export const hslToRGB = (hsl) => {
 
   const inRange = (value, min, max) => min <= value && value < max;
 
-  if (normalisedHue === undefined) (r1 = 0), (g1 = 0), (b1 = 0);
-  if (inRange(normalisedHue, 0, 1)) (r1 = c), (g1 = x), (b1 = 0);
-  if (inRange(normalisedHue, 1, 2)) (r1 = x), (g1 = c), (b1 = 0);
-  if (inRange(normalisedHue, 2, 3)) (r1 = 0), (g1 = c), (b1 = x);
-  if (inRange(normalisedHue, 3, 4)) (r1 = 0), (g1 = x), (b1 = c);
-  if (inRange(normalisedHue, 4, 5)) (r1 = x), (g1 = 0), (b1 = c);
-  if (inRange(normalisedHue, 5, 6)) (r1 = c), (g1 = 0), (b1 = x);
+  if (normalisedHue === undefined) ((r1 = 0), (g1 = 0), (b1 = 0));
+  if (inRange(normalisedHue, 0, 1)) ((r1 = c), (g1 = x), (b1 = 0));
+  if (inRange(normalisedHue, 1, 2)) ((r1 = x), (g1 = c), (b1 = 0));
+  if (inRange(normalisedHue, 2, 3)) ((r1 = 0), (g1 = c), (b1 = x));
+  if (inRange(normalisedHue, 3, 4)) ((r1 = 0), (g1 = x), (b1 = c));
+  if (inRange(normalisedHue, 4, 5)) ((r1 = x), (g1 = 0), (b1 = c));
+  if (inRange(normalisedHue, 5, 6)) ((r1 = c), (g1 = 0), (b1 = x));
 
   const m = hsl.l - c / 2;
 
