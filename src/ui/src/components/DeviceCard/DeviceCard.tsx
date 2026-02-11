@@ -3,7 +3,7 @@
 
 import { deviceDescription } from "../../utils/deviceUtilities";
 import styled from "styled-components";
-import { StyledText, StyledHeader } from "../../utils/theme";
+import { StyledText, StyledHeader, Card } from "../../utils/theme";
 import { type Device } from "@starlight/types";
 
 const emojiLookup = {
@@ -15,23 +15,6 @@ const emojiLookup = {
   lock: "🔒",
   switch: "🔌",
 };
-
-const Card = styled.div`
-  margin: 1em;
-  padding: 1em;
-  cursor: pointer;
-
-  height: 12.5em;
-  width: 12.5em;
-
-  border: 1px solid ${({ theme }) => theme.accent};
-
-  opacity: ${(props) => (props.$dimmed ? 1 : 0.5)};
-
-  &:hover {
-    background-color: ${({ theme }) => theme.hover};
-  }
-`;
 
 function DeviceCard(props: { device: Device; dimmed: boolean }) {
   let deviceEmoji = "❓";

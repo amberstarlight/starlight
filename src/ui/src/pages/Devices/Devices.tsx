@@ -16,7 +16,9 @@ function Devices(props) {
     deviceContent = <DeviceSettings device={selectedDevice} />;
 
   if (props.devices && !selectedDevice) {
-    deviceContent = <DeviceList devices={props.devices} />;
+    deviceContent = (
+      <DeviceList devices={props.devices} backend={props.backend} />
+    );
   }
 
   return (

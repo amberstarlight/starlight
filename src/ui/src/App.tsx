@@ -93,7 +93,7 @@ function App() {
         </Route>
 
         <Route path={"/devices"}>
-          <Devices devices={devices} />
+          <Devices devices={devices} backend={backend} />
         </Route>
 
         <Route path={"/devices/:deviceId"}>

@@ -2,29 +2,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 import styled from "styled-components";
-import { StyledText, StyledHeader } from "../../utils/theme";
+import { StyledText, StyledHeader, Card } from "../../utils/theme";
 import { type Group } from "@starlight/types";
-
-const Card = styled.div`
-  margin: 2em 0em;
-  padding: 1em;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.hover};
-  }
-`;
 
 interface groupCardProps {
   group?: Group;
   icon: string;
   onClick: Function;
+  dimmed?: Boolean;
 }
 
 function GroupCard(props: groupCardProps) {
   if (props.group === undefined) {
     return (
-      <Card onClick={props.onClick}>
+      <Card onClick={props.onClick} dimmed={"false"}>
         <StyledHeader>{props.icon} Create Group</StyledHeader>
         <StyledText>Add a new group</StyledText>
       </Card>
@@ -32,7 +23,7 @@ function GroupCard(props: groupCardProps) {
   }
 
   return (
-    <Card onClick={props.onClick}>
+    <Card onClick={props.onClick} dimmed={"false"}>
       <StyledHeader>
         {props.icon} {props.group.friendly_name}
       </StyledHeader>
