@@ -17,9 +17,14 @@ const emojiLookup = {
 };
 
 const Card = styled.div`
-  margin: 2em 0em;
+  margin: 1em;
   padding: 1em;
   cursor: pointer;
+
+  height: 12.5em;
+  width: 12.5em;
+
+  border: 1px solid ${({ theme }) => theme.accent};
 
   opacity: ${(props) => (props.$dimmed ? 1 : 0.5)};
 
