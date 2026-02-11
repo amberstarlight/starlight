@@ -29,7 +29,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./",\
         "packageDependencies": [\
           ["@starlight/api", "workspace:."],\
-          ["@starlight/types", "portal:../types::locator=%40starlight%2Fapi%40workspace%3A."],\
+          ["@starlight/types", "link:../types::locator=%40starlight%2Fapi%40workspace%3A."],\
           ["@types/cors", "npm:2.8.19"],\
           ["@types/express", "npm:4.17.25"],\
           ["@types/node", "npm:20.19.27"],\
@@ -151,7 +151,7 @@ const RAW_RUNTIME_STATE =
         "packageLocation": "./",\
         "packageDependencies": [\
           ["@starlight/api", "workspace:."],\
-          ["@starlight/types", "portal:../types::locator=%40starlight%2Fapi%40workspace%3A."],\
+          ["@starlight/types", "link:../types::locator=%40starlight%2Fapi%40workspace%3A."],\
           ["@types/cors", "npm:2.8.19"],\
           ["@types/express", "npm:4.17.25"],\
           ["@types/node", "npm:20.19.27"],\
@@ -168,12 +168,13 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["@starlight/types", [\
-      ["portal:../types::locator=%40starlight%2Fapi%40workspace%3A.", {\
+      ["link:../types::locator=%40starlight%2Fapi%40workspace%3A.", {\
         "packageLocation": "../types/",\
         "packageDependencies": [\
-          ["@starlight/types", "portal:../types::locator=%40starlight%2Fapi%40workspace%3A."]\
+          ["@starlight/types", "link:../types::locator=%40starlight%2Fapi%40workspace%3A."]\
         ],\
-        "linkType": "SOFT"\
+        "linkType": "SOFT",\
+        "discardFromLookup": true\
       }]\
     ]],\
     ["@tsconfig/node10", [\

@@ -70,7 +70,7 @@ app.listen(port, () => {
     logger(
       logLevel,
       "MQTT",
-      "Can't establish a connection to MQTT endpoint. Maybe the server is offline?",
+      `Can't establish a connection to MQTT endpoint at ${mqttEndpoint}:${mqttPort}. Maybe the server is offline?`,
     );
   }
 });
