@@ -17,19 +17,17 @@ const emojiLookup = {
 };
 
 function DeviceCard(props: { device: Device; dimmed: boolean }) {
-  let deviceEmoji = "❓";
+  let deviceEmoji;
   const deviceDefinition = props.device.definition;
 
   if (deviceDefinition && deviceDefinition.exposes.length > 0) {
-    deviceEmoji = emojiLookup[deviceDefinition.exposes[0].type];
+    deviceEmoji = emojiLookup[deviceDefinition.exposes[0].type] || "❓";
   }
 
   return (
     <Card $dimmed={props.dimmed}>
-      <StyledHeader>
-        {deviceEmoji} {props.device.friendly_name}
-      </StyledHeader>
-      <StyledText>{deviceDescription(deviceDefinition)}</StyledText>
+      <h1>{deviceEmoji}</h1>
+      <StyledHeader>{props.device.friendly_name}</StyledHeader>
     </Card>
   );
 }
