@@ -59,7 +59,7 @@ interface EditableTextProps {
   label: string;
   text: string;
   onChange: Function;
-  onEditFinish: Function;
+  onBlur: Function;
 }
 
 function EditableText(props: EditableTextProps) {
@@ -67,7 +67,7 @@ function EditableText(props: EditableTextProps) {
 
   const handleBlur = (event) => {
     setEditable(false);
-    props.onEditFinish();
+    props.onBlur();
   };
 
   const handleFocus = () => {
@@ -83,7 +83,7 @@ function EditableText(props: EditableTextProps) {
         readOnly={!editable}
         onBlur={handleBlur}
         onFocus={handleFocus}
-        onEditFinish={props.onEditFinish}
+        onBlur={props.onBlur}
       ></StyledEditable>
     </StyledEditableLabel>
   );

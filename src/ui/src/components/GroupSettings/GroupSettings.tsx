@@ -138,7 +138,7 @@ function GroupSettings(props) {
             const newFriendlyName = event.target.value;
             setGroupFriendlyNameState(newFriendlyName);
           }}
-          onEditFinish={updateGroupName(groupFriendlyNameState)}
+          onBlur={updateGroupName(groupFriendlyNameState)}
         />
       </div>
       <div>{groupSettingsGenerator(groupSettingsState, fetchGroupState)}</div>

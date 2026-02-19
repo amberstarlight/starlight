@@ -29,9 +29,7 @@ function DeviceSettings(props) {
         body: JSON.stringify({ name: newName }),
       },
     );
-    fetch(request)
-      .then((res) => res.json())
-      .then((data) => console.log(data));
+    fetch(request).then((res) => res.json());
   };
 
   const deleteButton = (
@@ -89,7 +87,7 @@ function DeviceSettings(props) {
             const newFriendlyName = event.target.value;
             setDeviceFriendlyNameState(newFriendlyName);
           }}
-          onEditFinish={() => {
+          onBlur={() => {
             updateDeviceName(deviceFriendlyNameState);
           }}
         />
