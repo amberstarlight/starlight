@@ -22,7 +22,6 @@ import GroupSettings from "./components/GroupSettings/GroupSettings";
 
 const Wrapper = styled.div`
   padding: 2em;
-  max-width: 64em;
   min-height: 90vh;
   margin: 0 auto;
 `;

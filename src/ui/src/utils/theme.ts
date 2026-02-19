@@ -3,7 +3,7 @@
 
 import styled from "styled-components";
 
-const columns = 3;
+const cardHeight = 12;
 
 export const themeColours = {
   text: "rgb(21, 21, 21)",
@@ -25,22 +25,23 @@ export const StyledText = styled.p`
   color: ${({ theme }) => theme.text};
 `;
 
-export const StyledHeader = styled.h1`
+export const StyledHeader = styled.h2`
   color: ${({ theme }) => theme.text};
 `;
 
 export const ListWrapper = styled.section`
   display: grid;
-  grid-template-columns: repeat(${columns}, 1fr);
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(100%, ${cardHeight}em), 1fr)
+  );
+  gap: 1em;
 `;
 
 export const Card = styled.div<{ $dimmed?: boolean }>`
-  margin: 1em;
   padding: 1em;
   cursor: pointer;
-
-  height: 12.5em;
-  width: 12.5em;
+  aspect-ratio: 1;
 
   border: 1px solid ${({ theme }) => theme.accent};
 
