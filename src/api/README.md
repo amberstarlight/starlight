@@ -9,12 +9,10 @@ endpoint.
 
 The port the API runs on. Defaults to 8080.
 
-
 ### `MQTT_ENDPOINT_HOSTNAME`
 
 The endpoint for the MQTT server. Defaults to `localhost`, using `mqtt`
 protocol.
-
 
 ### `MQTT_ENDPOINT_PORT`
 

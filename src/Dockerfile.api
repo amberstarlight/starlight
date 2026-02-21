@@ -1,0 +1,37 @@
+ARG LTS_VERSION=trixie
+ARG YARN_VERSION=4.12.0
+ARG NODE_ENV=production
+
+# Create a base image to use downstream
+FROM node:lts-${LTS_VERSION} AS base
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update -y && \
+    apt-get upgrade -yy && \
+    apt-get clean autoclean && \
+    apt-get autoremove --yes
+RUN corepack enable && corepack prepare yarn@${YARN_VERSION}
+
+# Build the typescript project
+FROM base AS builder
+WORKDIR /opt/starlight
+COPY ./api ./api
+COPY ./types ./types
+
+WORKDIR /opt/starlight/api
+RUN yarn install --immutable
+RUN yarn build
+
+# Production app
+FROM base AS app
+WORKDIR /opt/app
+
+COPY --from=builder /opt/starlight/api/.yarn ./.yarn
+COPY --from=builder /opt/starlight/api/yarn.lock ./yarn.lock
+COPY --from=builder /opt/starlight/api/.pnp.cjs ./.pnp.cjs
+COPY --from=builder /opt/starlight/api/package.json ./package.json
+COPY --from=builder /opt/starlight/api/dist/ ./dist
+RUN rm -rf ./yarn/unplugged && yarn rebuild
+
+HEALTHCHECK CMD nc -z 0.0.0.0 $PORT
+
+CMD ["yarn", "node", "dist/index.js"]

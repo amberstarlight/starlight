@@ -24,6 +24,11 @@ export const deviceSettingsGenerator = (
   const exposes = device.definition.exposes;
   const deviceSettingsList = [];
 
+  // TODO: generate the components for the device using the entire exposes block
+  for (const expose of exposes) {
+    console.log(expose.type, expose.label);
+  }
+
   for (const feature of exposes[0].features) {
     const settingComponentsArray = [];
     switch (feature.type) {
