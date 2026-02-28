@@ -81,9 +81,11 @@ function EditableText(props: EditableTextProps) {
         value={props.text}
         onChange={props.onChange}
         readOnly={!editable}
-        onBlur={handleBlur}
+        onBlur={() => {
+          handleBlur();
+          props.onBlur();
+        }}
         onFocus={handleFocus}
-        onBlur={props.onBlur}
       ></StyledEditable>
     </StyledEditableLabel>
   );

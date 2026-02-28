@@ -25,6 +25,9 @@ RUN yarn build
 FROM base AS app
 WORKDIR /opt/app
 
+ENV NODE_ENV=production \
+    PORT=8080
+
 COPY --from=builder /opt/starlight/api/.yarn ./.yarn
 COPY --from=builder /opt/starlight/api/yarn.lock ./yarn.lock
 COPY --from=builder /opt/starlight/api/.pnp.cjs ./.pnp.cjs
