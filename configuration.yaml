@@ -1,0 +1,14 @@
+version: 5
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://localhost:1883
+frontend:
+  enabled: false
+homeassistant:
+  enabled: false
+onboarding: false
+serial:
+  port: /dev/ttyUSB0
+  adapter: zstack
+  baudrate: 115200
+  rtscts: false

@@ -1,0 +1,33 @@
+services:
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:2.1-alpine
+    volumes:
+      - './mosquitto.conf:/mosquitto/config/mosquitto.conf:ro'
+    ports:
+      - '1883:1883'
+      - '1884:1884'
+    healthcheck:
+      test: mosquitto_sub -u docker -P docker -t '$$SYS/broker/uptime' -C 1 -i healthcheck -W 3
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  zigbee2mqtt:
+    container_name: zigbee2mqtt
+    image: koenkk/zigbee2mqtt:2.9.1
+    env_file:
+      - ./zigbee2mqtt.env
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+    volumes:
+      - ./configuration.yaml:/app/data/configuration.yaml
+      - /run/udev:/run/udev:ro
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    ports:
+      - '80:80'
+    network_mode: host
+    restart: unless-stopped
